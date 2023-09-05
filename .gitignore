@@ -8,8 +8,6 @@ node_modules/
 
 # Compiled Java class files
 *.class
-.idea
-
 # Compiled Python bytecode
 *.py[cod]
 
