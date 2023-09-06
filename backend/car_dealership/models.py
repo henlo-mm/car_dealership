@@ -1,3 +1,19 @@
+# Create your models here.
 from django.db import models
 
-# Create your models here.
+
+class Role(models.Model):
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'roles'
+
+
+class User(models.Model):
+    name = models.CharField(max_length=255)
+    role_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'users'
