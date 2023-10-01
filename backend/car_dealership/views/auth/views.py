@@ -11,7 +11,9 @@ class AuthView(View):
     def post(self, request):
         try:
             data = json.loads(request.body.decode('utf-8'))
+
             email = data.get('email')
+            print(email)
             password = data.get('password')
 
             try:
@@ -30,7 +32,7 @@ class AuthView(View):
 
                 return JsonResponse({'token': token})
 
-            return JsonResponse({'message': 'Credenciales incorrectas'}, status=400)
+            return JsonResponse({'message': 'Credenciales incorrectas'}, status=401)
 
         except json.JSONDecodeError as e:
             error_message = str(e)

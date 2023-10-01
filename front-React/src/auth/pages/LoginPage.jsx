@@ -1,11 +1,24 @@
 import React from 'react';
 import { Row, Col, Card, Form, Input, Button } from 'antd';
-
+import { login } from '../../services/auth';
+import { useNavigate } from 'react-router-dom';
 
  export const LoginPage = () => {
-  const onFinish = (values) => {
-    console.log('Valores capturados:', values);
-    // agregar la lógica para autenticar al usuario
+  const navigate = useNavigate();
+  
+  const onFinish = async (values) => {
+
+    try {
+
+      const response = await login(values);
+
+      localStorage.setItem('token', response.token);
+
+      navigate('/client/main');
+
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (

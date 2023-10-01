@@ -5,10 +5,9 @@ from .views.users.views import *
 from .views.auth.views import AuthView
 
 urlpatterns = [
-    # path('', index, name='index'),
-    path('users/', index, name='index'),
 
     # Users
+    path('users/', UserView.as_view(), name='index'),
     path('users/create', UserView.as_view(), name='create_user'),
     path('users/get/<int:user_id>', UserView.as_view(), name='get_user'),
     path('users/update/<int:user_id>', UserView.as_view(), name='update_user'),

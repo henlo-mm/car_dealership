@@ -5,10 +5,6 @@ import json
 from ...models import User
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
-
-
 class UserView(View):
 
     def post(self, request):
@@ -39,20 +35,41 @@ class UserView(View):
         except json.JSONDecodeError:
             return HttpResponse("Ha ocurrido un error", status=400)
 
-    def get(self, request, user_id):
+    def get(self, request, user_id=None):
         try:
-            user = User.objects.get(id=user_id)
-            user_data = {
-                'id': user.id,
-                'name': user.name,
-                'username': user.username,
-                'lastname': user.lastname,
-                'phone': user.phone,
-                'email': user.email,
-                'branch_id': user.branch_id,
-                'role_id': user.role_id
-            }
-            return JsonResponse(user_data)
+            if user_id is not None:
+                # Obtener un usuario específico
+                user = User.objects.get(id=user_id)
+                user_data = {
+                    'id': user.id,
+                    'name': user.name,
+                    'username': user.username,
+                    'lastname': user.lastname,
+                    'phone': user.phone,
+                    'email': user.email,
+                    'branch_id': user.branch_id,
+                    'role_id': user.role_id
+                }
+                return JsonResponse(user_data)
+            else:
+                # Obtener todos los usuarios
+                users = User.objects.all()
+                user_data_list = []
+
+                for user in users:
+                    user_data = {
+                        'id': user.id,
+                        'name': user.name,
+                        'username': user.username,
+                        'lastname': user.lastname,
+                        'phone': user.phone,
+                        'email': user.email,
+                        'branch_id': user.branch_id,
+                        'role_id': user.role_id
+                    }
+                    user_data_list.append(user_data)
+
+                return JsonResponse(user_data_list, safe=False) 
         except json.JSONDecodeError:
             return HttpResponse("Ha ocurrido un error", status=400)
         except User.DoesNotExist:
