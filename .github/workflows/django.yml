@@ -34,8 +34,7 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
         script: |
           cd /var/www/car_dealership_backend
-          echo "El directorio actual es: $(pwd)"
-          echo "El contenido del directorio es: $(ls)"
+          git pull origin main
           sudo yum update
           sudo yum install python3-pip
           sudo pip3 install -r requirements.txt
