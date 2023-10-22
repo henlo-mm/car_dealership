@@ -4,14 +4,14 @@ from django.contrib.auth.hashers import make_password
 import json
 from ...models import User
 
-
 class UserView(View):
 
     def post(self, request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             name = data.get('name')
-            username = data.get('username')
+            address = data.get('address')
+            second_phone = data.get('second_phone')
             lastname = data.get('lastname')
             phone = data.get('phone')
             email = data.get('email')
@@ -21,7 +21,8 @@ class UserView(View):
 
             user = User.objects.create(
                 name=name,
-                username=username,
+                address=address,
+                second_phone=second_phone,
                 lastname=lastname,
                 phone=phone,
                 email=email,
@@ -43,7 +44,8 @@ class UserView(View):
                 user_data = {
                     'id': user.id,
                     'name': user.name,
-                    'username': user.username,
+                    'address': user.address,
+                    'second_phone': user.second_phone,
                     'lastname': user.lastname,
                     'phone': user.phone,
                     'email': user.email,
@@ -60,7 +62,8 @@ class UserView(View):
                     user_data = {
                         'id': user.id,
                         'name': user.name,
-                        'username': user.username,
+                        'address': user.address,
+                        'second_phone': user.second_phone,
                         'lastname': user.lastname,
                         'phone': user.phone,
                         'email': user.email,
@@ -80,7 +83,8 @@ class UserView(View):
             user = User.objects.get(id=user_id)
             data = json.loads(request.body.decode('utf-8'))
             user.name = data.get('name', user.name)
-            user.username = data.get('username', user.username)
+            user.address = data.get('address')
+            user.second_phone = data.get('second_phone')
             user.lastname = data.get('lastname', user.lastname)
             user.phone = data.get('phone', user.phone)
             user.email = data.get('email', user.email)

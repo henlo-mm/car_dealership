@@ -49,4 +49,5 @@ Thumbs.db
 
 .env
 backend/.env
-public/reports/*
+# Django bytecode
+__pycache__/
