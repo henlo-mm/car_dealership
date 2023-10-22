@@ -34,8 +34,9 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
         script: |
           cd /var/www
-
-          git clone https://github.com/henlo-mm/car_dealership.git car_dealership
+          if [ ! -d "./car_dealership_backend" ]; then
+            git clone https://github.com/henlo-mm/car_dealership.git car_dealership
+          fi
           cd car_dealership
           git pull origin main
           cd backend
