@@ -33,10 +33,10 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_KEY }}
         script: |
-          cd /var/www/car_dealership_backend
+          cd /var/www/car_dealership_backend/backend
           sudo yum update
           sudo yum install python3-pip
           sudo pip3 install -r requirements.txt
           sudo python3 manage.py collectstatic --noinput
           sudo python3 manage.py migrate
-          sudo systemctl restart car_dealership_backend
+          sudo systemctl restart backend
