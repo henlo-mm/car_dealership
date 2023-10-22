@@ -38,6 +38,7 @@ jobs:
           git clone https://github.com/henlo-mm/car_dealership.git car_dealership
           cd car_dealership
           git pull origin main
+          cd backend
           sudo yum update
           sudo yum install python3-pip
           sudo pip3 install -r requirements.txt
