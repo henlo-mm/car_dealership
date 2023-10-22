@@ -3,7 +3,7 @@ from django.views import View
 from django.contrib.auth.hashers import make_password
 import json
 from ...models import User
-
+#comment
 class UserView(View):
 
     def post(self, request):
