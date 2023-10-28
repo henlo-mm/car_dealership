@@ -49,20 +49,20 @@ export const Sidebar = () => {
     },
     {
       label: 'Inventario',
-      key: '/admin/main',
+      key: '/client/main/management/inventory',
       icon: <MdCarRental />,
       children:  [
         {
           type: 'list',
           label: 'Repuestos',
           icon: <MdMiscellaneousServices />,
-          key: '/admin/main'
+          key: '/client/main/management/parts'
         },
         {
           type: 'list',
           label: 'Vehiculos',
           icon: <MdDirectionsCarFilled />,
-          key: '/admin/main'
+          key: '/client/main/management/vehicles'
       },
     ]
     }

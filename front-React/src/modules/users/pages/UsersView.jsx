@@ -80,12 +80,12 @@ export const UsersView = () => {
         <h5 className='card-title'>
           filtros de busqueda
         </h5>
-        <div className=' d-flex flex-md-column  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
+        <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
           <div className='col-lg-4 col-md-12 py-2'>
             <Search placeholder="Buscar usuarios" />
           </div>
           <div className='col-lg-6 col-md-12 py-2'>
-            <div className='d-flex flex-md-column flex-lg-row justify-content-end align-items-lg-center align-items-sm-start py-3'>
+            <div className='d-flex flex-column flex-sm-wrap flex-lg-row justify-content-end align-items-lg-center align-items-sm-start flex-wrap py-3'>
               <Button
                 className='m-1'
                 type="primary"
@@ -121,9 +121,10 @@ export const UsersView = () => {
 
       <Modal
         title="Agregar Usuario"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         onOk={handleOk}
+        
       // footer={null}
       >
         {/* Formulario para agregar usuario */}
