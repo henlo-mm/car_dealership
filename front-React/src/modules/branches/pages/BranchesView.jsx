@@ -15,7 +15,7 @@ export const BranchesView = () => {
 
     const handleCancel = () => {
         // todo: logica para cerrar el modal
-        console.log('se ejecuto el cancelar')
+        console.log('se ejecuto el cancelar');
         setIsModalVisible(false);
     };
     const handleOk = () => {
@@ -121,7 +121,7 @@ export const BranchesView = () => {
 
             <Modal
                 title="Agregar Usuario"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={handleCancel}
                 onOk={handleOk}
             // footer={null}

@@ -2,14 +2,21 @@ import React, { useState } from 'react';
 import { Layout, Row, Col, Button, Table, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { UsersModal } from '../modals/UsersModal';
 //import 'antd/dist/antd.css';
 
 const { Search } = Input;
 
 export const UsersView = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  // En este use State vamos a poner toda la data, para que setear los fields en el formulario para el caso de edicion.
+  const [userToEdit, setUserToEdit] = useState(null);
 
-  const handleAddUserClick = () => {
+  const handleAddUserClick = (values) => {
+    if (values) {
+      setUserToEdit(values)
+    }
+    console.log('se abre el modal?')
     setIsModalVisible(true);
   };
 
@@ -17,7 +24,9 @@ export const UsersView = () => {
     // todo: logica para cerrar el modal
     console.log('se ejecuto el cancelar')
     setIsModalVisible(false);
+    setUserToEdit(null);
   };
+
   const handleOk = () => {
     /**
      name = data.get('name')
@@ -33,6 +42,7 @@ export const UsersView = () => {
     // todo: logica para crear un usuario nuevo
     console.log('se ejecuto el ok')
     setIsModalVisible(false);
+    setUserToEdit(null);
   };
 
   const columns = [
@@ -54,9 +64,9 @@ export const UsersView = () => {
     {
       title: 'Acciones',
       key: 'actions',
-      render: (text, record) => (
+      render: (values) => (
         <div>
-          <Button type="link" icon={<EditOutlined />} />
+          <Button type="link" icon={<EditOutlined />} onClick={() => handleAddUserClick(values)} />
           <Button type="link" icon={<EyeOutlined />} />
         </div>
       ),
@@ -90,7 +100,7 @@ export const UsersView = () => {
                 className='m-1'
                 type="primary"
                 icon={<PlusCircleOutlined />}
-                onClick={handleAddUserClick}
+                onClick={() => { handleAddUserClick() }}
               >
                 Nuevo
               </Button>
@@ -118,21 +128,7 @@ export const UsersView = () => {
           </div>
         </div>
       </div>
-
-      <Modal
-        title="Agregar Usuario"
-        open={isModalVisible}
-        onCancel={handleCancel}
-        onOk={handleOk}
-        
-      // footer={null}
-      >
-        {/* Formulario para agregar usuario */}
-        <Form>
-          {/* Campos del formulario */}
-        </Form>
-      </Modal>
-
+      <UsersModal isVisible={isModalVisible} onConfirm={handleOk} onCancel={handleCancel} userData={userToEdit} />
     </div>
   );
 };
