@@ -1,12 +1,16 @@
+import { useEffect, useState } from 'react';
 import {
   DesktopOutlined,
   UserOutlined,
   TeamOutlined,
   FileOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined
 } from '@ant-design/icons';
-import { MdCarRepair, MdCarRental, MdMiscellaneousServices,MdDirectionsCarFilled, MdAccountCircle  } from "react-icons/md";
-import { Layout, Menu, Avatar } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { MdCarRepair, MdCarRental, MdMiscellaneousServices, MdDirectionsCarFilled, MdAccountCircle } from "react-icons/md";
+import { Layout, Menu, Avatar, Dropdown, Button, FloatButton } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useWindowResize } from '../../hooks/useWindowResize';
 
 
 
@@ -15,6 +19,23 @@ const { Sider } = Layout;
 export const Sidebar = () => {
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { isMdBreakpoint } = useWindowResize();
+
+  const [selectedKeysMenu, setSelectedKeysMenu] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
+
+  useEffect(() => {
+    if (location) {
+      setSelectedKeysMenu([location.pathname]);
+    }
+  }, [location]);
+
+  const toggleShowMenu = () => {
+    setShowMenu(!showMenu);
+  };
+
 
   let items = [
     {
@@ -49,47 +70,74 @@ export const Sidebar = () => {
     },
     {
       label: 'Inventario',
-      key: '/admin/main',
+      key: '/client/main/management/inventory',
       icon: <MdCarRental />,
-      children:  [
+      children: [
         {
           type: 'list',
           label: 'Repuestos',
           icon: <MdMiscellaneousServices />,
-          key: '/admin/main'
+          key: '/client/main/management/parts'
         },
         {
           type: 'list',
           label: 'Vehiculos',
           icon: <MdDirectionsCarFilled />,
-          key: '/admin/main'
-      },
-    ]
+          key: '/client/main/management/vehicles'
+        },
+      ]
     }
 
   ]
 
   return (
-    <Sider width={200} theme="dark" collapsible>
-      <div className="logo"> LOGO CARRITO </div>
-      <div className="user-info">
-        <Avatar size={32} icon={<UserOutlined />} />
-        <span>Nombre de Usuario</span>
-        <span>Rol</span>
-      </div>
-      {/* <Menu theme="dark" mode="vertical" >
-        <Menu.Item key="1" icon={ <DesktopOutlined />} />
-        <Menu.Item key="2" icon={<UserOutlined />} />
-        <Menu.Item key="3" icon={<TeamOutlined />} />
-        <Menu.Item key="4" icon={<FileOutlined />} />
-      </Menu> */}
-      <Menu 
-      theme="dark" 
-      mode="vertical" 
-      items={items.map(x => { return x })} 
-      onClick={(e) => navigate(e.key)}
-      />
-      
-    </Sider>
+    <>
+      {isMdBreakpoint ?
+        <div
+          style={{
+            zIndex: 10000,
+          }}
+          className="position-fixed"
+        >
+          <Dropdown
+            menu={{
+              onClick: (e) => navigate(e.key),
+              selectedKeys: selectedKeysMenu,
+              items: items,
+              theme: "dark"
+            }}
+          >
+            <FloatButton
+              type="primary"
+              onClick={toggleShowMenu}
+              className="m-0 d-flex justify-content-center align-items-center"
+              icon={showMenu ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            />
+          </Dropdown>
+        </div>
+        :
+        <Sider width={200} theme="dark" collapsible>
+          <div className="logo"> LOGO CARRITO </div>
+          <div className="user-info">
+            <Avatar size={32} icon={<UserOutlined />} />
+            <span>Nombre de Usuario</span>
+            <span>Rol</span>
+          </div>
+          {/* <Menu theme="dark" mode="vertical" >
+          <Menu.Item key="1" icon={ <DesktopOutlined />} />
+          <Menu.Item key="2" icon={<UserOutlined />} />
+          <Menu.Item key="3" icon={<TeamOutlined />} />
+          <Menu.Item key="4" icon={<FileOutlined />} />
+            </Menu> */}
+          <Menu
+            theme="dark"
+            mode="vertical"
+            items={items.map(x => { return x })}
+            onClick={(e) => navigate(e.key)}
+            selectedKeys={selectedKeysMenu}
+          />
+
+        </Sider>}
+    </>
   );
 };
