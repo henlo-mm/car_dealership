@@ -3,6 +3,8 @@ import { Layout, Row, Col, Button, Table, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { UsersModal } from '../modals/UsersModal';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { BiSolidEditAlt } from 'react-icons/bi';
 //import 'antd/dist/antd.css';
 
 const { Search } = Input;
@@ -91,8 +93,8 @@ export const UsersView = () => {
       key: 'actions',
       render: (values) => (
         <div>
-          <Button type="link" icon={<EditOutlined />} onClick={() => handleAddUserClick(values)} />
-          <Button type="link" icon={<EyeOutlined />} />
+          <Button type="link" icon={<BiSolidEditAlt size={20} />} onClick={() => handleAddUserClick(values)} />
+          <Button type="link" icon={<AiOutlineDelete size={20} />} />
         </div>
       ),
     },
