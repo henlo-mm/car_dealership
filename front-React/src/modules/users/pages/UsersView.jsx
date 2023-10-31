@@ -29,15 +29,15 @@ export const UsersView = () => {
 
   const handleOk = () => {
     /**
-     name = data.get('name')
+     name = data.get('name') ok
      address = data.get('address')
-     second_phone = data.get('second_phone')
-     lastname = data.get('lastname')
-     phone = data.get('phone')
-     email = data.get('email')
-     password = make_password(data.get('password'))
-     branch_id = data.get('branch_id')
-     role_id = data.get('role_id')
+     second_phone = data.get('second_phone') ok
+     lastname = data.get('lastname') ok
+     phone = data.get('phone') ok
+     email = data.get('email') ok
+     password = make_password(data.get('password')) 
+     branch_id = data.get('branch_id') ok
+     role_id = data.get('role_id') ok
      */
     // todo: logica para crear un usuario nuevo
     console.log('se ejecuto el ok')
@@ -52,9 +52,34 @@ export const UsersView = () => {
       key: 'name',
     },
     {
+      title: 'Apellido',
+      dataIndex: 'lastName',
+      key: 'lastName',
+    },
+    {
+      title: 'Documento',
+      dataIndex: 'document',
+      key: 'document',
+    },
+    {
       title: 'Correo Electrónico',
       dataIndex: 'email',
       key: 'email',
+    },
+    {
+      title: 'Telefono 1',
+      dataIndex: 'phone',
+      key: 'phone',
+    },
+    {
+      title: 'Telefono 2',
+      dataIndex: 'secondPhone',
+      key: 'secondPhone',
+    },
+    {
+      title: 'Rol usuario',
+      dataIndex: 'role',
+      key: 'role',
     },
     {
       title: 'Sucursal',
@@ -76,9 +101,36 @@ export const UsersView = () => {
   const data = [
     {
       key: '1',
-      name: 'Usuario 1',
+      name: 'Sebastian',
+      lastName: 'Rey',
+      document: '123456',
+      phone: '3126697856',
+      secondPhone: '32455643',
+      role: 'Vendedor',
       email: 'usuario1@example.com',
       branch: 'Sucursal A',
+    },
+    {
+      key: '2',
+      name: 'Alejandro',
+      lastName: 'Villamil',
+      document: '654321',
+      phone: '3126697856',
+      secondPhone: '32455643',
+      role: 'Tecnico',
+      email: 'usuario2@example.com',
+      branch: 'Sucursal B',
+    },
+    {
+      key: '3',
+      name: 'Esperanza',
+      lastName: 'Olivo',
+      document: '324561',
+      phone: '3126697856',
+      secondPhone: '32455643',
+      role: 'Vendedor',
+      email: 'usuario3@example.com',
+      branch: 'Sucursal C',
     },
     // Agrega más datos de usuarios aquí
   ];

@@ -121,7 +121,7 @@ export const WorkOrdersView = () => {
 
             <Modal
                 title="Agregar Usuario"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={handleCancel}
                 onOk={handleOk}
             // footer={null}
