@@ -67,10 +67,14 @@ export const BranchesView = () => {
         {
             key: '1',
             name: 'Usuario 1',
+            address: 'Calle 13 # 45b-16',
+            phone: '3126697853',
+            secondPhone: '31455748546',
             email: 'usuario1@example.com',
             branch: 'Sucursal A',
         },
-        // Agrega más datos de usuarios aquí
+        //   name = data.get('name')
+
     ];
 
     return (
