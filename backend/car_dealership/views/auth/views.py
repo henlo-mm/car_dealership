@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from ...models import User
 from django.contrib.auth.hashers import check_password
+from ...serializers import UserSerializer
 import json
 class AuthView(APIView):
 
@@ -24,7 +25,9 @@ class AuthView(APIView):
                 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
                 payload = jwt_payload_handler(user)
                 token = jwt_encode_handler(payload)
-                return Response({'token': token, 'user': user}, status=status.HTTP_200_OK)
+                user_serializer = UserSerializer(user)
+
+                return Response({'token': token, 'user': user_serializer.data}, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Credenciales incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
 
