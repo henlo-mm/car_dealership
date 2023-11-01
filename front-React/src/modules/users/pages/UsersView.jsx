@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, Button, Table, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { UsersModal } from '../modals/UsersModal';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
+import { getUsers, deleteUser } from '../../../services/user';
+
 //import 'antd/dist/antd.css';
 
 const { Search } = Input;
@@ -13,6 +15,31 @@ export const UsersView = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // En este use State vamos a poner toda la data, para que setear los fields en el formulario para el caso de edicion.
   const [userToEdit, setUserToEdit] = useState(null);
+  const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  const refreshTable = () => {
+    setRefreshKey((prevKey) => prevKey + 1);
+  };
+
+
+  const fetchUserData = async () => {
+    try {
+      const data = await getUsers();
+      setUserData(data);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally{
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [refreshKey]);
 
   const handleAddUserClick = (values) => {
     if (values) {
@@ -47,6 +74,29 @@ export const UsersView = () => {
     setUserToEdit(null);
   };
 
+
+  const showDeleteConfirmationModal = (user) => {
+    setUserToDelete(user.id);
+    setIsModalDeleteVisible(true);
+
+  };
+  
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser(userToDelete);
+      refreshTable();
+      setIsModalDeleteVisible(false); 
+    } catch (error) {
+      console.error('Error:', error);
+      setIsModalDeleteVisible(false); 
+    }
+  };
+  
+  const handleCancelDelete = () => {
+    setIsModalDeleteVisible(false); 
+  };
+  
+
   const columns = [
     {
       title: 'Nombre',
@@ -80,13 +130,13 @@ export const UsersView = () => {
     },
     {
       title: 'Rol usuario',
-      dataIndex: 'role',
-      key: 'role',
+      dataIndex: 'role_name',
+      key: 'role_name',
     },
     {
       title: 'Sucursal',
-      dataIndex: 'branch',
-      key: 'branch',
+      dataIndex: 'branch_name',
+      key: 'branch_name',
     },
     {
       title: 'Acciones',
@@ -94,13 +144,13 @@ export const UsersView = () => {
       render: (values) => (
         <div>
           <Button type="link" icon={<BiSolidEditAlt size={20} />} onClick={() => handleAddUserClick(values)} />
-          <Button type="link" icon={<AiOutlineDelete size={20} />} />
+          <Button type="link" icon={<AiOutlineDelete size={20} onClick={() => showDeleteConfirmationModal(values)}  />} />
         </div>
       ),
     },
   ];
 
-  const data = [
+/*   const data = [
     {
       key: '1',
       name: 'Sebastian',
@@ -135,7 +185,9 @@ export const UsersView = () => {
       branch: 'Sucursal C',
     },
     // Agrega más datos de usuarios aquí
-  ];
+  ]; */
+
+
 
   return (
 
@@ -178,11 +230,21 @@ export const UsersView = () => {
       <div className='card-body'>
         <div className='row'>
           <div className='mt-4 table-responsive'>
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={userData}  loading={loading} />
+
+            <Modal
+              title="Confirmar eliminación"
+              open={isModalDeleteVisible}
+              onOk={handleDeleteUser}
+              onCancel={handleCancelDelete}
+            >
+              ¿Está seguro(a) de eliminar este usuario?
+            </Modal>
+
           </div>
         </div>
       </div>
-      <UsersModal isVisible={isModalVisible} onConfirm={handleOk} onCancel={handleCancel} userData={userToEdit} />
+      <UsersModal isVisible={isModalVisible} onConfirm={handleOk} onCancel={handleCancel} userData={userToEdit} onUserUpdate={refreshTable} />
     </div>
   );
 };

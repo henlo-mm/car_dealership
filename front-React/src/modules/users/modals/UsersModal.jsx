@@ -1,8 +1,9 @@
 import { Modal, Form, Spin, Input, Button, notification, Select } from 'antd';
 import { useEffect, useState } from 'react';
+import { createUser, updateUser } from '../../../services/user';
 
 
-export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
+export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUpdate }) => {
 
     const [form] = Form.useForm();
 
@@ -31,7 +32,18 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
             // los values del form
             setLoading(true);
             //Hacer validaciones nezar peticiones httpcesarias
+
+            if (userData) {
+                await updateUser(userData.id, values);
+            } else {
+                await createUser(values);
+            }
+
+            onUserUpdate();
+            
             form.resetFields();
+
+
             if (onConfirm) {
                 onConfirm();
             } //todo
@@ -46,15 +58,15 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
 
     const optionsBranches = [
         {
-            id: '1',
+            id: 1,
             name: 'Sucursal A',
         },
         {
-            id: '2',
+            id: 2,
             name: 'Sucursal B',
         },
         {
-            id: '3',
+            id: 3,
             name: 'Sucursal C',
         },
         // Agrega más datos de usuarios aquí
@@ -62,16 +74,20 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
 
     const optionsRoles = [
         {
-            id: '1',
+            id: 1,
             name: 'Gerente',
         },
         {
-            id: '2',
+            id: 2,
             name: 'Vendedor',
         },
         {
-            id: '3',
-            name: 'jefe de taller',
+            id: 3,
+            name: 'Jefe de Taller',
+        },
+        {
+            id: 4,
+            name: 'Cliente',
         },
     ]
 
@@ -105,7 +121,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="name"
-                                    label={<label className="form-label"> nombre usuario  </label>}
+                                    label={<label className="form-label"> Nombre  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
@@ -117,7 +133,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="lastName"
-                                    label={<label className="form-label"> Apellido usuario  </label>}
+                                    label={<label className="form-label"> Apellido </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
@@ -129,7 +145,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="phone"
-                                    label={<label className="form-label"> Telefono 1  </label>}
+                                    label={<label className="form-label"> Teléfono 1  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
@@ -141,7 +157,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="secondPhone"
-                                    label={<label className="form-label"> Telefono 2  </label>}
+                                    label={<label className="form-label"> Teléfono 2  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
@@ -154,7 +170,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="email"
-                                    label={<label className="form-label"> Email </label>}
+                                    label={<label className="form-label"> Correo </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
@@ -179,7 +195,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData }) => {
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="role"
-                                    label={<label className="form-label"> Rol de usuario  </label>}
+                                    label={<label className="form-label"> Rol </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Select
