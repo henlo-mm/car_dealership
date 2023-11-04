@@ -132,7 +132,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = '/var/www/car_dealership_backend/static'
+STATIC_ROOT = '/var/www/car_dealership/backend/static'
 
 
 # Default primary key field type
