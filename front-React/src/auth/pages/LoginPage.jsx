@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 
       const response = await login(values);
 
+      console.log(response)
+
       localStorage.setItem('token', response.token);
 
       navigate('/client/main');

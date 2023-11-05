@@ -11,19 +11,21 @@ class UserView(View):
             data = json.loads(request.body.decode('utf-8'))
             name = data.get('name')
             address = data.get('address')
-            second_phone = data.get('second_phone')
-            lastname = data.get('lastname')
+            second_phone = data.get('secondPhone')
+            document = data.get('document')
+            lastname = data.get('lastName')
             phone = data.get('phone')
             email = data.get('email')
             password = make_password(data.get('password'))
-            branch_id = data.get('branch_id')
-            role_id = data.get('role_id')
+            branch_id = data.get('branch')
+            role_id = data.get('role')
 
             user = User.objects.create(
                 name=name,
                 address=address,
                 second_phone=second_phone,
                 lastname=lastname,
+                document=document,
                 phone=phone,
                 email=email,
                 password=password,
@@ -45,12 +47,13 @@ class UserView(View):
                     'id': user.id,
                     'name': user.name,
                     'address': user.address,
-                    'second_phone': user.second_phone,
-                    'lastname': user.lastname,
+                    'secondPhone': user.second_phone,
+                    'lastName': user.lastname,
                     'phone': user.phone,
+                    'document': user.document,
                     'email': user.email,
-                    'branch_id': user.branch_id,
-                    'role_id': user.role_id
+                    'branch': user.branch_id,
+                    'role': user.role_id
                 }
                 return JsonResponse(user_data)
             else:
@@ -63,12 +66,15 @@ class UserView(View):
                         'id': user.id,
                         'name': user.name,
                         'address': user.address,
-                        'second_phone': user.second_phone,
-                        'lastname': user.lastname,
+                        'secondPhone': user.second_phone,
+                        'lastName': user.lastname,
                         'phone': user.phone,
+                        'document': user.document,
                         'email': user.email,
-                        'branch_id': user.branch_id,
-                        'role_id': user.role_id
+                        'branch': user.branch_id,
+                        'branch_name':  user.branch.name,
+                        'role': user.role_id,
+                        'role_name': user.role.name
                     }
                     user_data_list.append(user_data)
 
@@ -84,12 +90,13 @@ class UserView(View):
             data = json.loads(request.body.decode('utf-8'))
             user.name = data.get('name', user.name)
             user.address = data.get('address')
-            user.second_phone = data.get('second_phone')
-            user.lastname = data.get('lastname', user.lastname)
+            user.second_phone = data.get('secondPhone')
+            user.lastname = data.get('lastName', user.lastname)
             user.phone = data.get('phone', user.phone)
+            user.document = data.get('document', user.document)
             user.email = data.get('email', user.email)
-            user.branch_id = data.get('branch_id', user.branch_id)
-            user.role_id = data.get('role_id', user.role_id)
+            user.branch_id = data.get('branch', user.branch_id)
+            user.role_id = data.get('role', user.role_id)
             user.save()
 
             return JsonResponse({'message': 'Usuario actualizado correctamente'})

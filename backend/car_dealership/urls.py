@@ -47,4 +47,7 @@ urlpatterns = [
     # All routers
 
     path('', include(router.urls)),
+
+    # Debug
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
