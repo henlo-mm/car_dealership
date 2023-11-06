@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'car_dealership',
     'rest_framework',
     'rest_framework.authtoken',
-    'debug_toolbar'
+    'debug_toolbar',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+SWAGGER_SETTINGS = {
+    'USE_DEFAULT_DOCS': True,
+}
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

@@ -88,6 +88,7 @@ class Quote(models.Model):
     id = models.AutoField(primary_key=True)
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_quotes')
+    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='client_quotes')
     validity = models.IntegerField(null=False)
     description = models.TextField(null=False)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
@@ -131,7 +132,7 @@ class WorkOrderStatus(models.Model):
 class WorkOrder(models.Model):
     id = models.AutoField(primary_key=True)
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-    customer= models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_work_orders')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_work_orders')
     workshop_manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workshop_manager_work_orders')
     description = models.CharField(max_length=255, null=False)
     comments = models.TextField(null=True)
