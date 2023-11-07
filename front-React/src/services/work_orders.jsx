@@ -31,7 +31,7 @@ export const getWorkOrder = async (workOrderId) => {
   
 export const updateWorkOrder = async (workOrderId, workOrderData) => {
     try {
-        const response = await api.patch(`/work_orders/${workOrderId}`, workOrderData);
+        const response = await api.patch(`/work_orders/${workOrderId}/`, workOrderData);
         return response.data;
     } catch (error) {
       console.error('Error al actualizar la orden de trabajo:', error);

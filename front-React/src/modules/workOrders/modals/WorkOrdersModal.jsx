@@ -1,20 +1,20 @@
 import { Modal, Form, Spin, Input, Button, notification, Select } from 'antd';
 import { useEffect, useState } from 'react';
-import { createUser, updateUser } from '../../../services/user';
+import { createWorkOrder, updateWorkOrder } from '../../../services/work_orders';
 
 
-export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUpdate }) => {
+export const UsersModal = ({ isVisible, onConfirm, onCancel, workOrderData,  onWorkOrderUpdate }) => {
 
     const [form] = Form.useForm();
 
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (userData && isVisible) {
+        if (workOrderData && isVisible) {
             //Si hay data entonces configure la data
-            form.setFieldsValue(userData)
+            form.setFieldsValue(workOrderData)
         }
-    }, [userData])
+    }, [workOrderData])
 
 
     const onClose = () => {
@@ -28,19 +28,18 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
 
     const onSubmit = async (values) => {
         try {
-            console.log(values)
             //todo
             // los values del form
             setLoading(true);
             //Hacer validaciones nezar peticiones httpcesarias
 
-            if (userData) {
-                await updateUser(userData.id, values);
+            if (workOrderData) {
+                await updateWorkOrder(workOrderData.id, values);
             } else {
-                await createUser(values);
+                await createWorkOrder(values);
             }
 
-            onUserUpdate();
+            onWorkOrderUpdate();
             
             form.resetFields();
 
@@ -94,7 +93,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
 
     return (
         <Modal
-            title={userData ? "Editar usuario" : "Crear usuario"}
+            title={workOrderData ? "Editar usuario" : "Crear usuario"}
             open={isVisible}
             onCancel={onClose}
             // onOk={() => {validateForm}}
@@ -121,117 +120,98 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                         <div className="row">
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="name"
-                                    label={<label className="form-label"> Nombre  </label>}
+                                    name="vehicle"
+                                    label={<label className="form-label"> Vehiculo  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
                                         className='form-control'
-                                        placeholder='nombre'
+                                        placeholder='Vehiculo'
                                     />
                                 </Form.Item>
                             </div>
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="lastName"
-                                    label={<label className="form-label"> Apellido </label>}
+                                    name="customer"
+                                    label={<label className="form-label"> Cliente </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
                                         className='form-control'
-                                        placeholder='Apellidos'
+                                        placeholder='Cliente'
                                     />
                                 </Form.Item>
                             </div>
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="phone"
-                                    label={<label className="form-label"> Teléfono 1  </label>}
+                                    name="workshop_manager"
+                                    label={<label className="form-label"> Gerente de la orden </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
                                         className='form-control'
-                                        placeholder='Telefono 1'
+                                        placeholder='Gerente de la orden'
                                     />
                                 </Form.Item>
                             </div>
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="secondPhone"
-                                    label={<label className="form-label"> Teléfono 2  </label>}
+                                    name="description"
+                                    label={<label className="form-label"> Descripción  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
                                         className='form-control'
-                                        placeholder='Telefono 2'
+                                        placeholder='Descripción'
                                     />
                                 </Form.Item>
                             </div>
                            
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="email"
-                                    label={<label className="form-label"> Correo </label>}
+                                    name="comments"
+                                    label={<label className="form-label"> Comentarios </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
                                         className='form-control'
-                                        placeholder='Correo Electronico'
+                                        placeholder='Comentarios'
                                     />
                                 </Form.Item>
                             </div>
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="document"
-                                    label={<label className="form-label"> Documento  </label>}
+                                    name="start_date"
+                                    label={<label className="form-label"> Fecha de inicio  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
                                         className='form-control'
-                                        placeholder='Documento de identidad'
+                                        placeholder='Fecha de inicio'
                                     />
                                 </Form.Item>
-                            </div>
-                             {/* nuevos campos */}
+                            </div>    
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="role"
-                                    label={<label className="form-label"> Rol </label>}
+                                    name="status"
+                                    label={<label className="form-label"> Estado </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
-                                    <Select
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                        options={
-                                            optionsRoles &&
-                                            optionsRoles?.map((v) => ({
-                                            value: v.id,
-                                            label: `${v.name}`,
-                                            })
-                                            )
-                                        }
+                                    <Input
+                                        className='form-control'
+                                        placeholder='Estado'
                                     />
                                 </Form.Item>
                             </div>
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="branch"
-                                    label={<label className="form-label"> Sucursal  </label>}
+                                    name="is_available"
+                                    label={<label className="form-label"> Está disponible  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
-                                    <Select
-                                     style={{
-                                        width: '100%',
-                                    }}
-                                    options={
-                                        optionsBranches &&
-                                        optionsBranches?.map((v) => ({
-                                        value: v.id,
-                                        label: `${v.name}`,
-                                        })
-                                        )
-                                    }
+                                    <Input
+                                        className='form-control'
+                                        placeholder='true / false'
                                     />
                                 </Form.Item>
                             </div>
