@@ -49,6 +49,11 @@ schema_view = get_schema_view(
 urlpatterns = [
 
     # Users
+    path('users/', UserView.as_view(), name='index'),
+    path('users/create', UserView.as_view(), name='create_user'),
+    path('users/get/<int:user_id>', UserView.as_view(), name='get_user'),
+    path('users/update/<int:user_id>', UserView.as_view(), name='update_user'),
+    path('users/delete/<int:user_id>', UserView.as_view(), name='delete_user'),
 
 
     # Auth
