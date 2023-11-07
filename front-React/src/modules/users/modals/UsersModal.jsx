@@ -38,7 +38,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
             } else {
                 await createUser(values);
             }
-
+            
             onUserUpdate();
             
             form.resetFields();
