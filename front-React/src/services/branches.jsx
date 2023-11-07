@@ -31,7 +31,7 @@ export const getBranch = async (branchId) => {
   
 export const updateBranch = async (branchId, branchData) => {
     try {
-        const response = await api.patch(`/branches/${branchId}`, branchData);
+        const response = await api.patch(`/branches/${branchId}/`, branchData);
         return response.data;
     } catch (error) {
       console.error('Error al actualizar la sucursal:', error);

@@ -8,6 +8,7 @@ export const AppRouter = () => {
     <Routes>
          {/* Logon y registro de usuarios */}
          <Route path='/auth/*' element={<AuthRoute />} />
+         <Route path='/' element={<AuthRoute />} />
          {/*  Auto Hous Routes */}
          {/*  Auto HousRoute:Client */}
          <Route path='/client/*' element={<Mainroute />} />
