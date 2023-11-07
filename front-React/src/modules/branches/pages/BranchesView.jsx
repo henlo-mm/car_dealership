@@ -1,15 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Table, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { BiSolidEditAlt } from 'react-icons/bi';
+import { getBranches } from '../../../services/branches';
+import { BranchesModal } from '../modals/BranchesModal';
 //import 'antd/dist/antd.css';
 
 const { Search } = Input;
 
 export const BranchesView = () => {
-    const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const handleAddUserClick = () => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    // En este use State vamos a poner toda la data, para que setear los fields en el formulario para el caso de edicion.
+    const [branchToEdit, setBranchToEdit] = useState(null);
+    const [branchData, setBranchData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
+    const [branchToDelete, setBranchToDelete] = useState(null);
+
+    const refreshTable = () => {
+        setRefreshKey((prevKey) => prevKey + 1);
+    };
+
+    const fetchBranchData = async () => {
+        try {
+            const data = await getBranches();
+            setBranchData(data);
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchBranchData();
+    }, [refreshKey]);
+
+    const handleAddBranchClick = (values) => {
+        if (values) {
+            setBranchToEdit(values)
+        }
+        console.log('se abre el modal de branches?')
         setIsModalVisible(true);
     };
 
@@ -17,64 +52,59 @@ export const BranchesView = () => {
         // todo: logica para cerrar el modal
         console.log('se ejecuto el cancelar');
         setIsModalVisible(false);
+        setBranchToEdit(null);
     };
     const handleOk = () => {
-        /**
-         name = data.get('name')
-         address = data.get('address')
-         second_phone = data.get('second_phone')
-         lastname = data.get('lastname')
-         phone = data.get('phone')
-         email = data.get('email')
-         password = make_password(data.get('password'))
-         branch_id = data.get('branch_id')
-         role_id = data.get('role_id')
-         */
-        // todo: logica para crear un usuario nuevo
+        // id = models.AutoField(primary_key=True)
+        // name = models.CharField(max_length=200, null=False)
+        // address = models.CharField(max_length=255, null=False)
+        // contact_name = models.CharField(max_length=200, null=False)
+        // phone = models.CharField(max_length=20, null=False)
+        // email = models.CharField(max_length=255, null=False)
+        // created_at = models.DateTimeField(auto_now_add=True)
+        // updated_at = models.DateTimeField(auto_now=True)
+        // todo: logica para crear una branch nueva
         console.log('se ejecuto el ok')
         setIsModalVisible(false);
+        setBranchToEdit(null);
     };
 
     const columns = [
         {
-            title: 'Nombre',
+            title: 'Nombre de Sucursal',
             dataIndex: 'name',
             key: 'name',
         },
         {
-            title: 'Correo Electrónico',
+            title: 'Direccion',
+            dataIndex: 'address',
+            key: 'address',
+        },
+        {
+            title: 'Persona encargada',
+            dataIndex: 'contact_name',
+            key: 'contact_name',
+        },
+        {
+            title: 'Telefono de sucursal',
+            dataIndex: 'phone',
+            key: 'phone',
+        },
+        {
+            title: 'Correo electronico',
             dataIndex: 'email',
             key: 'email',
         },
         {
-            title: 'Sucursal',
-            dataIndex: 'branch',
-            key: 'branch',
-        },
-        {
             title: 'Acciones',
             key: 'actions',
-            render: (text, record) => (
+            render: (values) => (
                 <div>
-                    <Button type="link" icon={<EditOutlined />} />
-                    <Button type="link" icon={<EyeOutlined />} />
+                    <Button type="link" icon={<BiSolidEditAlt />} size={20} onClick={() => handleAddBranchClick(values)} />
+                    <Button type="link" size={20} icon={<AiOutlineDelete />} onClick={() => { console.log('se abre el modal de delete') }} />
                 </div>
             ),
         },
-    ];
-
-    const data = [
-        {
-            key: '1',
-            name: 'Usuario 1',
-            address: 'Calle 13 # 45b-16',
-            phone: '3126697853',
-            secondPhone: '31455748546',
-            email: 'usuario1@example.com',
-            branch: 'Sucursal A',
-        },
-        //   name = data.get('name')
-
     ];
 
     return (
@@ -94,7 +124,7 @@ export const BranchesView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
-                                onClick={handleAddUserClick}
+                                onClick={() => { handleAddBranchClick() }}
                             >
                                 Nuevo
                             </Button>
@@ -118,23 +148,22 @@ export const BranchesView = () => {
             <div className='card-body'>
                 <div className='row'>
                     <div className='mt-4 table-responsive'>
-                        <Table columns={columns} dataSource={data} />
+                        <Table
+                            columns={columns}
+                            dataSource={branchData}
+                            loading={loading}
+                        />
                     </div>
                 </div>
             </div>
 
-            <Modal
-                title="Agregar Usuario"
-                open={isModalVisible}
+            <BranchesModal
+                isVisible={isModalVisible}
+                onConfirm={handleOk}
                 onCancel={handleCancel}
-                onOk={handleOk}
-            // footer={null}
-            >
-                {/* Formulario para agregar usuario */}
-                <Form>
-                    {/* Campos del formulario */}
-                </Form>
-            </Modal>
+                branchData={branchToEdit}
+                onBranchUpdate={refreshTable}
+            />
 
         </div>
     );
