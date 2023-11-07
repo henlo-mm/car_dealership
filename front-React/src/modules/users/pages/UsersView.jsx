@@ -32,7 +32,7 @@ export const UsersView = () => {
       setUserData(data);
     } catch (error) {
       console.error('Error:', error);
-    } finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -78,24 +78,23 @@ export const UsersView = () => {
   const showDeleteConfirmationModal = (user) => {
     setUserToDelete(user.id);
     setIsModalDeleteVisible(true);
-
   };
-  
+
   const handleDeleteUser = async () => {
     try {
       await deleteUser(userToDelete);
       refreshTable();
-      setIsModalDeleteVisible(false); 
+      setIsModalDeleteVisible(false);
     } catch (error) {
       console.error('Error:', error);
-      setIsModalDeleteVisible(false); 
+      setIsModalDeleteVisible(false);
     }
   };
-  
+
   const handleCancelDelete = () => {
-    setIsModalDeleteVisible(false); 
+    setIsModalDeleteVisible(false);
   };
-  
+
 
   const columns = [
     {
@@ -144,48 +143,48 @@ export const UsersView = () => {
       render: (values) => (
         <div>
           <Button type="link" icon={<BiSolidEditAlt size={20} />} onClick={() => handleAddUserClick(values)} />
-          <Button type="link" icon={<AiOutlineDelete size={20} onClick={() => showDeleteConfirmationModal(values)}  />} />
+          <Button type="link" icon={<AiOutlineDelete size={20} onClick={() => showDeleteConfirmationModal(values)} />} />
         </div>
       ),
     },
   ];
 
-/*   const data = [
-    {
-      key: '1',
-      name: 'Sebastian',
-      lastName: 'Rey',
-      document: '123456',
-      phone: '3126697856',
-      secondPhone: '32455643',
-      role: 'Vendedor',
-      email: 'usuario1@example.com',
-      branch: 'Sucursal A',
-    },
-    {
-      key: '2',
-      name: 'Alejandro',
-      lastName: 'Villamil',
-      document: '654321',
-      phone: '3126697856',
-      secondPhone: '32455643',
-      role: 'Tecnico',
-      email: 'usuario2@example.com',
-      branch: 'Sucursal B',
-    },
-    {
-      key: '3',
-      name: 'Esperanza',
-      lastName: 'Olivo',
-      document: '324561',
-      phone: '3126697856',
-      secondPhone: '32455643',
-      role: 'Vendedor',
-      email: 'usuario3@example.com',
-      branch: 'Sucursal C',
-    },
-    // Agrega más datos de usuarios aquí
-  ]; */
+  /*   const data = [
+      {
+        key: '1',
+        name: 'Sebastian',
+        lastName: 'Rey',
+        document: '123456',
+        phone: '3126697856',
+        secondPhone: '32455643',
+        role: 'Vendedor',
+        email: 'usuario1@example.com',
+        branch: 'Sucursal A',
+      },
+      {
+        key: '2',
+        name: 'Alejandro',
+        lastName: 'Villamil',
+        document: '654321',
+        phone: '3126697856',
+        secondPhone: '32455643',
+        role: 'Tecnico',
+        email: 'usuario2@example.com',
+        branch: 'Sucursal B',
+      },
+      {
+        key: '3',
+        name: 'Esperanza',
+        lastName: 'Olivo',
+        document: '324561',
+        phone: '3126697856',
+        secondPhone: '32455643',
+        role: 'Vendedor',
+        email: 'usuario3@example.com',
+        branch: 'Sucursal C',
+      },
+      // Agrega más datos de usuarios aquí
+    ]; */
 
 
 
@@ -230,7 +229,7 @@ export const UsersView = () => {
       <div className='card-body'>
         <div className='row'>
           <div className='mt-4 table-responsive'>
-            <Table columns={columns} dataSource={userData}  loading={loading} />
+            <Table columns={columns} dataSource={userData} loading={loading} />
 
             <Modal
               title="Confirmar eliminación"
