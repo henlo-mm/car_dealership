@@ -7,7 +7,7 @@ class Role(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'roles'
 
 class Branch(models.Model):
@@ -21,7 +21,7 @@ class Branch(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'branches'
 class User(models.Model):
     name = models.CharField(max_length=255)
@@ -33,19 +33,20 @@ class User(models.Model):
     address = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=128)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, default=1)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'users'
 
 class Vehicle(models.Model):
     id = models.AutoField(primary_key=True)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, default=1)
     model = models.CharField(max_length=200, null=False)
+    image = models.CharField(max_length=200)
     make = models.CharField(max_length=200, null=False)
     color = models.CharField(max_length=200, null=False)
     year = models.IntegerField(null=False)
@@ -54,41 +55,40 @@ class Vehicle(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'vehicles'
     
 class Part(models.Model):
     id = models.AutoField(primary_key=True)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     code = models.CharField(max_length=20, null=False)
+    name = models.CharField(max_length=200, null=False)
     image = models.CharField(max_length=200, null=False)
     quantity = models.IntegerField(null=False)
     description = models.CharField(max_length=255, null=False)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     class Meta:
-        managed = False
+        managed = True
         db_table = 'parts'
 
 class BranchesParts(models.Model):
     id = models.AutoField(primary_key=True)
-    part = models.ForeignKey(Part, on_delete=models.CASCADE)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    part = models.ForeignKey(Part, on_delete=models.CASCADE, default=1)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, default=1)
     quantity = models.IntegerField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'branches_parts'
 
 class Quote(models.Model):
     id = models.AutoField(primary_key=True)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_quotes')
-    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='client_quotes')
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, default=1)
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_quotes', default=1)
+    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='client_quotes', default=1)
     validity = models.IntegerField(null=False)
     description = models.TextField(null=False)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
@@ -103,20 +103,20 @@ class Quote(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'quotes'
 
 class Sale(models.Model):
     id = models.AutoField(primary_key=True)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_sales')
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, default=1)
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_sales', default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     sale_date = models.DateTimeField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'sales'
     
 class WorkOrderStatus(models.Model):
@@ -126,23 +126,23 @@ class WorkOrderStatus(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'work_orders_statuses'
 
 class WorkOrder(models.Model):
     id = models.AutoField(primary_key=True)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_work_orders')
-    workshop_manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workshop_manager_work_orders')
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, default=1)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_work_orders', default=1)
+    workshop_manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workshop_manager_work_orders', default=1)
     description = models.CharField(max_length=255, null=False)
     comments = models.TextField(null=True)
     start_date = models.DateTimeField(null=False)
-    status = models.ForeignKey(WorkOrderStatus, on_delete=models.CASCADE)
+    status = models.ForeignKey(WorkOrderStatus, on_delete=models.CASCADE, default=1)
     is_available = models.BooleanField(null=False)
     completion_date = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'work_orders'
