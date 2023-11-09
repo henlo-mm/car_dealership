@@ -137,7 +137,6 @@ export const BranchesView = () => {
             title: 'Acciones',
             key: 'actions',
             render: (values) => (
-            render: (values) => (
                 <div>
                     <Button type="link" icon={<BiSolidEditAlt />} size={20} onClick={() => handleAddBranchClick(values)} />
                     <Button type="link" size={20} icon={<AiOutlineDelete />} onClick={() => { showDeleteBranchModal(values) }} />
@@ -163,7 +162,6 @@ export const BranchesView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
-                                onClick={() => { handleAddBranchClick() }}
                                 onClick={() => { handleAddBranchClick() }}
                             >
                                 Nuevo
@@ -202,9 +200,7 @@ export const BranchesView = () => {
                 </div>
             </div>
 
-            <BranchesModal
-                isVisible={isModalVisible}
-                onConfirm={handleOk}
+          
             <BranchesModal
                 isVisible={isModalVisible}
                 onConfirm={handleOk}

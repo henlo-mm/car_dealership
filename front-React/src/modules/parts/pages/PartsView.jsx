@@ -126,7 +126,7 @@ export const PartsView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
-                                onClick={handleAddPartClick}
+                                onClick={() => { handleAddPartClick(); }}
                             >
                                 Nuevo
                             </Button>

@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Modal, Spin, Upload, message } from 'antd'
+import { Button, Form, Input, InputNumber, Modal, Spin, Upload, message, notification } from 'antd'
 import { useEffect, useState } from 'react'
 import { createPart, updatePart } from '../../../services/parts';
 import { UploadOutlined } from '@ant-design/icons';
@@ -26,32 +26,34 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
 
     console.log(values);
 
-    // try {
-    //   setLoading(true);
+    try {
+      setLoading(true);
+      values.file
+     
+      if (partData) {
+        await updatePart(partData.id, values);
+      } else {
+        await createPart(values);
+      }
 
-    //   if (partData) {
-    //     await updatePart(partData.id, values);
-    //   } else {
-    //     await createPart(values);
-    //   }
+      onPartUpdate();
 
-    //   onPartUpdate();
+      if (onConfirm) {
+        onConfirm();
+      }
 
-    //   if (onConfirm) {
-    //     onConfirm();
-    //   }
+      notification.success({
+        message: 'Operacion exitosa',
+        description: 'El repuesto ha sido creado',
+      });
+      form.resetFields();
 
-    //   notification.success({
-    //     message: 'Operacion exitosa',
-    //     description: 'El repuesto ha sido creado',
-    //   });
-
-    // } catch (error) {
-    //   notification.error({
-    //     message: 'Error',
-    //     description: error.message,
-    //   });
-    // }
+    } catch (error) {
+      notification.error({
+        message: 'Error',
+        description: error.message,
+      });
+    }
     setLoading(false);
   }
 
@@ -82,9 +84,22 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
             <div className='row'>
               <div className='col-12 col-md-6'>
                 <Form.Item
+                  name="name"
+                  label={<label className="form-label"> Nombre de pieza </label>}
+                  rules={[{ required: true, message: 'campo obligatorio' }]}
+                >
+                  <Input
+                    maxLength={200}
+                    className='form-control'
+                    placeholder='Nombre'
+                  />
+                </Form.Item>
+              </div>
+              <div className='col-12 col-md-6'>
+                <Form.Item
                   name="code"
-                  label={<label className="form-label"> Código </label>}
-                  rules={[{ required: false, message: 'campo obligatorio' }]}
+                  label={<label className="form-label"> Codigo de pieza </label>}
+                  rules={[{ required: true, message: 'campo obligatorio' }]}
                 >
                   <Input
                     maxLength={20}
@@ -97,10 +112,10 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                 <Form.Item
                   name="quantity"
                   label={<label className="form-label"> Cantidad </label>}
-                  rules={[{ required: false, message: 'campo obligatorio' }]}
+                  rules={[{ required: true, message: 'campo obligatorio' }]}
                 >
                   <Input
-                    type="number"
+                    type='number'
                     className='form-control'
                     placeholder='Cantidad'
                   />
@@ -110,10 +125,9 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                 <Form.Item
                   name="price"
                   label={<label className="form-label"> Precio </label>}
-                  rules={[{ required: false, message: 'campo obligatorio' }]}
+                  rules={[{ required: true, message: 'campo obligatorio' }]}
                 >
                   <Input
-                    type="text"
                     className='form-control'
                     placeholder='Precio'
                   />
@@ -172,10 +186,11 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                       })
                     }}
           
-
+                    listType='picture'
+                    action={"http://localhost:5173"}
                     // action to custom request
                     customRequest={(info) => { 
-                      setimgData(['info'])
+                      setimgData([info])
                     }}
                     
                   >
