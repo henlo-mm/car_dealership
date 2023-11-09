@@ -79,6 +79,7 @@ export const UsersView = () => {
         message: 'Error',
         description: error.message,
       });
+
     }
   };
 
@@ -141,6 +142,7 @@ export const UsersView = () => {
   ];
 
 
+
   return (
 
     <div className='card card-body'>
@@ -183,8 +185,6 @@ export const UsersView = () => {
         <div className='row'>
           <div className='mt-4 table-responsive'>
             <Table columns={columns} dataSource={userData} loading={loading} />
-
-
 
           </div>
         </div>

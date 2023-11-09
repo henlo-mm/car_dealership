@@ -13,6 +13,7 @@ const { Search } = Input;
 
 export const BranchesView = () => {
 
+
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     // En este use State vamos a poner toda la data, para que setear los fields en el formulario para el caso de edicion.
@@ -51,6 +52,7 @@ export const BranchesView = () => {
     const handleCancel = () => {
        
         setIsModalVisible(false);
+        setBranchToEdit(null);
         setBranchToEdit(null);
     };
 
@@ -91,10 +93,27 @@ export const BranchesView = () => {
     const columns = [
         {
             title: 'Nombre de Sucursal',
+            title: 'Nombre de Sucursal',
             dataIndex: 'name',
             key: 'name',
         },
         {
+            title: 'Direccion',
+            dataIndex: 'address',
+            key: 'address',
+        },
+        {
+            title: 'Persona encargada',
+            dataIndex: 'contact_name',
+            key: 'contact_name',
+        },
+        {
+            title: 'Telefono de sucursal',
+            dataIndex: 'phone',
+            key: 'phone',
+        },
+        {
+            title: 'Correo electronico',
             title: 'Direccion',
             dataIndex: 'address',
             key: 'address',
@@ -117,6 +136,7 @@ export const BranchesView = () => {
         {
             title: 'Acciones',
             key: 'actions',
+            render: (values) => (
             render: (values) => (
                 <div>
                     <Button type="link" icon={<BiSolidEditAlt />} size={20} onClick={() => handleAddBranchClick(values)} />
@@ -143,6 +163,7 @@ export const BranchesView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
+                                onClick={() => { handleAddBranchClick() }}
                                 onClick={() => { handleAddBranchClick() }}
                             >
                                 Nuevo
@@ -172,10 +193,18 @@ export const BranchesView = () => {
                             dataSource={branchData}
                             loading={loading}
                         />
+                        <Table
+                            columns={columns}
+                            dataSource={branchData}
+                            loading={loading}
+                        />
                     </div>
                 </div>
             </div>
 
+            <BranchesModal
+                isVisible={isModalVisible}
+                onConfirm={handleOk}
             <BranchesModal
                 isVisible={isModalVisible}
                 onConfirm={handleOk}
