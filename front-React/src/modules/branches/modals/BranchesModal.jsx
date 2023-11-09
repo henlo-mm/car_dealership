@@ -38,10 +38,17 @@ export const BranchesModal = ({ isVisible, onConfirm, onCancel, branchData, onBr
             if (onConfirm) {
                 onConfirm();
             }
-            notification.success('Registro e usuario con exito')
+            
+            notification.success({
+                message: 'Operacion exitosa',
+                description: 'La sucursal ha sido creada',
+            });
 
         } catch (error) {
-            notification.error('ocurrio un error', error.message)
+            notification.error({
+                message: 'Error',
+                description: error.message,
+            });
         }
         setLoading(false);
     }
