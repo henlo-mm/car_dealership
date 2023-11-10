@@ -2,7 +2,11 @@ import api from '../api/config'
 
 export const createPart = async (data) => {
   try {
-    const response = await api.post('/parts/', data);
+    const response = await api.post('/parts/', data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error al crear un nuevo repuesto:', error);

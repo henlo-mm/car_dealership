@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Table, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { VehiclesModal } from '../modals/VehiclesModal';
 //import 'antd/dist/antd.css';
 
 const { Search } = Input;
@@ -54,7 +55,7 @@ export const VehiclesView = () => {
         {
             title: 'Acciones',
             key: 'actions',
-            render: (text, record) => (
+            render: (values) => (
                 <div>
                     <Button type="link" icon={<EditOutlined />} />
                     <Button type="link" icon={<EyeOutlined />} />
@@ -114,23 +115,18 @@ export const VehiclesView = () => {
             <div className='card-body'>
                 <div className='row'>
                     <div className='mt-4 table-responsive'>
-                        <Table columns={columns} dataSource={data} />
+                        <Table
+                            columns={columns}
+                            dataSource={data}
+                        />
                     </div>
                 </div>
             </div>
 
-            <Modal
-                title="Agregar Usuario"
-                open={isModalVisible}
+            <VehiclesModal
+                isvisible={isModalVisible}
                 onCancel={handleCancel}
-                onOk={handleOk}
-            // footer={null}
-            >
-                {/* Formulario para agregar usuario */}
-                <Form>
-                    {/* Campos del formulario */}
-                </Form>
-            </Modal>
+            />
 
         </div>
     );
