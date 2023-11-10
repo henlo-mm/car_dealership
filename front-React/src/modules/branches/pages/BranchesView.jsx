@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, Modal, Form, Input } from 'antd';
-import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { Button, Table, Input } from 'antd';
+import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
-import { getBranches } from '../../../services/branches';
+import { deleteBranch, getBranches } from '../../../services/branches';
 import { BranchesModal } from '../modals/BranchesModal';
-//import 'antd/dist/antd.css';
+import { DeleteModal } from '../../../core/modals/DeleteModal';
+
 
 const { Search } = Input;
 
 export const BranchesView = () => {
 
+
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     // En este use State vamos a poner toda la data, para que setear los fields en el formulario para el caso de edicion.
     const [branchToEdit, setBranchToEdit] = useState(null);
     const [branchData, setBranchData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
     const [branchToDelete, setBranchToDelete] = useState(null);
 
     const refreshTable = () => {
@@ -44,38 +46,74 @@ export const BranchesView = () => {
         if (values) {
             setBranchToEdit(values)
         }
-        console.log('se abre el modal de branches?')
         setIsModalVisible(true);
     };
 
     const handleCancel = () => {
-        // todo: logica para cerrar el modal
-        console.log('se ejecuto el cancelar');
+       
         setIsModalVisible(false);
         setBranchToEdit(null);
+        setBranchToEdit(null);
     };
+
     const handleOk = () => {
-        // id = models.AutoField(primary_key=True)
-        // name = models.CharField(max_length=200, null=False)
-        // address = models.CharField(max_length=255, null=False)
-        // contact_name = models.CharField(max_length=200, null=False)
-        // phone = models.CharField(max_length=20, null=False)
-        // email = models.CharField(max_length=255, null=False)
-        // created_at = models.DateTimeField(auto_now_add=True)
-        // updated_at = models.DateTimeField(auto_now=True)
-        // todo: logica para crear una branch nueva
         console.log('se ejecuto el ok')
         setIsModalVisible(false);
         setBranchToEdit(null);
     };
 
+    const showDeleteBranchModal = (branch) => {
+        setBranchToDelete(branch.id);
+        setIsDeleteModalVisible(true);
+    };
+
+    const handleDeleteBranch = async () => {
+        try {
+            await deleteBranch(branchToDelete);
+            refreshTable();
+            setIsDeleteModalVisible(false);
+            notification.success({
+                message: 'Operacion exitosa',
+                description: 'La sucursal ha sido eliminada',
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            setIsDeleteModalVisible(false);
+            notification.error({
+                message: 'Error',
+                description: error.message,
+            });
+        }
+    };
+
+    const handleCancelDeleteBranch = () => {
+        setIsDeleteModalVisible(false);
+    };
+
     const columns = [
         {
+            title: 'Nombre de Sucursal',
             title: 'Nombre de Sucursal',
             dataIndex: 'name',
             key: 'name',
         },
         {
+            title: 'Direccion',
+            dataIndex: 'address',
+            key: 'address',
+        },
+        {
+            title: 'Persona encargada',
+            dataIndex: 'contact_name',
+            key: 'contact_name',
+        },
+        {
+            title: 'Telefono de sucursal',
+            dataIndex: 'phone',
+            key: 'phone',
+        },
+        {
+            title: 'Correo electronico',
             title: 'Direccion',
             dataIndex: 'address',
             key: 'address',
@@ -101,7 +139,7 @@ export const BranchesView = () => {
             render: (values) => (
                 <div>
                     <Button type="link" icon={<BiSolidEditAlt />} size={20} onClick={() => handleAddBranchClick(values)} />
-                    <Button type="link" size={20} icon={<AiOutlineDelete />} onClick={() => { console.log('se abre el modal de delete') }} />
+                    <Button type="link" size={20} icon={<AiOutlineDelete />} onClick={() => { showDeleteBranchModal(values) }} />
                 </div>
             ),
         },
@@ -153,10 +191,16 @@ export const BranchesView = () => {
                             dataSource={branchData}
                             loading={loading}
                         />
+                        <Table
+                            columns={columns}
+                            dataSource={branchData}
+                            loading={loading}
+                        />
                     </div>
                 </div>
             </div>
 
+          
             <BranchesModal
                 isVisible={isModalVisible}
                 onConfirm={handleOk}
@@ -165,6 +209,13 @@ export const BranchesView = () => {
                 onBranchUpdate={refreshTable}
             />
 
+            <DeleteModal
+                isVisible={isDeleteModalVisible}
+                onConfirm={handleDeleteBranch}
+                onCancel={handleCancelDeleteBranch}
+                title={"Eliminar Sucursal"}
+                message={"¿Está seguro(a) de eliminar esta sucursal?"}
+            />
         </div>
     );
 };

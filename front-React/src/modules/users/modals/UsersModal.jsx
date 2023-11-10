@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { createUser, updateUser } from '../../../services/user';
 
 
-export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUpdate }) => {
+export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpdate }) => {
 
     const [form] = Form.useForm();
 
@@ -41,16 +41,22 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
             }
             
             onUserUpdate();
-            
+
             form.resetFields();
 
 
             if (onConfirm) {
                 onConfirm();
-            } //todo
-            notification.success('Registro e usuario con exito')
+            } 
+            notification.success({
+                message: 'Operacion exitosa',
+                description: 'El usuario ha sido creado',
+            });
         } catch (error) {
-            notification.error('ocurrio un error', error.message)
+            notification.error({
+                message: 'Error',
+                description: error.message,
+            });
         }
         setLoading(false);
     }
@@ -167,7 +173,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                     />
                                 </Form.Item>
                             </div>
-                           
+
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="email"
@@ -192,7 +198,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                     />
                                 </Form.Item>
                             </div>
-                             {/* nuevos campos */}
+                            {/* nuevos campos */}
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="role"
@@ -206,8 +212,8 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                         options={
                                             optionsRoles &&
                                             optionsRoles?.map((v) => ({
-                                            value: v.id,
-                                            label: `${v.name}`,
+                                                value: v.id,
+                                                label: `${v.name}`,
                                             })
                                             )
                                         }
@@ -221,17 +227,17 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Select
-                                     style={{
-                                        width: '100%',
-                                    }}
-                                    options={
-                                        optionsBranches &&
-                                        optionsBranches?.map((v) => ({
-                                        value: v.id,
-                                        label: `${v.name}`,
-                                        })
-                                        )
-                                    }
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        options={
+                                            optionsBranches &&
+                                            optionsBranches?.map((v) => ({
+                                                value: v.id,
+                                                label: `${v.name}`,
+                                            })
+                                            )
+                                        }
                                     />
                                 </Form.Item>
                             </div>

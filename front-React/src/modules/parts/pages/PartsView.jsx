@@ -1,60 +1,105 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Table, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { getParts } from '../../../services/parts';
+import { PartsModal } from '../modals/PartsModal';
 //import 'antd/dist/antd.css';
 
 const { Search } = Input;
 
 export const PartsView = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [partToEdit, setPartToEdit] = useState(null);
+    const [partsData, setPartsData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const [partToDelete, setPartToDelete] = useState(null);
 
-    const handleAddUserClick = () => {
+
+    const refreshTable = () => {
+        setRefreshKey((prevKey) => prevKey + 1);
+    };
+
+
+    const fetchPartsData = async () => {
+        try {
+            const data = await getParts();
+            setPartsData(data);
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPartsData();
+    }, [refreshKey]);
+
+    const handleAddPartClick = (values) => {
+        if (values) {
+            setPartToEdit(values)
+        }
         setIsModalVisible(true);
     };
 
     const handleCancel = () => {
-        // todo: logica para cerrar el modal
-        console.log('se ejecuto el cancelar')
+
         setIsModalVisible(false);
+        setPartToEdit(null);
     };
+
+
     const handleOk = () => {
         /**
-         name = data.get('name')
-         address = data.get('address')
-         second_phone = data.get('second_phone')
-         lastname = data.get('lastname')
-         phone = data.get('phone')
-         email = data.get('email')
-         password = make_password(data.get('password'))
-         branch_id = data.get('branch_id')
-         role_id = data.get('role_id')
+        vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+        code = models.CharField(max_length=20, null=False)
+        image = models.CharField(max_length=200, null=False)
+        quantity = models.IntegerField(null=False)
+        description = models.CharField(max_length=255, null=False)
+        price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
          */
         // todo: logica para crear un usuario nuevo
-        console.log('se ejecuto el ok')
         setIsModalVisible(false);
+        setPartToEdit(null);
+    };
+
+    const handleCancelDeletePart = () => {
+        setIsDeleteModalVisible(false);
     };
 
     const columns = [
         {
-            title: 'Nombre',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'image',
+            dataIndex: 'image',
+            key: 'image',
         },
         {
-            title: 'Correo Electrónico',
-            dataIndex: 'email',
-            key: 'email',
+            title: 'Codigo',
+            dataIndex: 'code',
+            key: 'code',
         },
         {
-            title: 'Sucursal',
-            dataIndex: 'branch',
-            key: 'branch',
+            title: 'description',
+            dataIndex: 'description',
+            key: 'description',
+        },
+        {
+            title: 'quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        },
+        {
+            title: 'price',
+            dataIndex: 'price',
+            key: 'price',
         },
         {
             title: 'Acciones',
             key: 'actions',
-            render: (text, record) => (
+            render: (values) => (
                 <div>
                     <Button type="link" icon={<EditOutlined />} />
                     <Button type="link" icon={<EyeOutlined />} />
@@ -63,15 +108,6 @@ export const PartsView = () => {
         },
     ];
 
-    const data = [
-        {
-            key: '1',
-            name: 'Usuario 1',
-            email: 'usuario1@example.com',
-            branch: 'Sucursal A',
-        },
-        // Agrega más datos de usuarios aquí
-    ];
 
     return (
 
@@ -90,7 +126,7 @@ export const PartsView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
-                                onClick={handleAddUserClick}
+                                onClick={() => { handleAddPartClick(); }}
                             >
                                 Nuevo
                             </Button>
@@ -114,23 +150,20 @@ export const PartsView = () => {
             <div className='card-body'>
                 <div className='row'>
                     <div className='mt-4 table-responsive'>
-                        <Table columns={columns} dataSource={data} />
+                        <Table 
+                        columns={columns} 
+                        dataSource={partsData} />
                     </div>
                 </div>
             </div>
 
-            <Modal
-                title="Agregar Usuario"
-                visible={isModalVisible}
-                onCancel={handleCancel}
-                onOk={handleOk}
-            // footer={null}
-            >
-                {/* Formulario para agregar usuario */}
-                <Form>
-                    {/* Campos del formulario */}
-                </Form>
-            </Modal>
+            <PartsModal
+               isVisible={isModalVisible}
+               onConfirm={handleOk}
+               onCancel={handleCancel}
+               partData={partToEdit}
+               onPartUpdate={refreshTable}
+            />
 
         </div>
     );
