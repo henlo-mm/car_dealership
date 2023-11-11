@@ -93,7 +93,6 @@ export const BranchesView = () => {
     const columns = [
         {
             title: 'Nombre de Sucursal',
-            title: 'Nombre de Sucursal',
             dataIndex: 'name',
             key: 'name',
         },
@@ -113,7 +112,7 @@ export const BranchesView = () => {
             key: 'phone',
         },
         {
-            title: 'Correo electronico',
+            
             title: 'Direccion',
             dataIndex: 'address',
             key: 'address',
@@ -186,11 +185,6 @@ export const BranchesView = () => {
             <div className='card-body'>
                 <div className='row'>
                     <div className='mt-4 table-responsive'>
-                        <Table
-                            columns={columns}
-                            dataSource={branchData}
-                            loading={loading}
-                        />
                         <Table
                             columns={columns}
                             dataSource={branchData}

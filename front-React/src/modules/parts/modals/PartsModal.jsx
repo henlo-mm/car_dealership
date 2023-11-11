@@ -29,11 +29,24 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
     try {
       setLoading(true);
       values.file
-     
+
       if (partData) {
         await updatePart(partData.id, values);
       } else {
-        await createPart(values);
+        const formData = new FormData();
+        formData.append("code", values.code);
+        formData.append("name", values.name);
+        formData.append("quantity", values.quantity);
+        formData.append("description", values.description);
+        formData.append("price", values.price);
+        formData.append("image", imgData);
+
+        // Imprimir los datos en la consola
+        for (const pair of formData.entries()) {
+          console.log(pair[0], pair[1]);
+        }
+       
+        await createPart(formData);
       }
 
       onPartUpdate();
@@ -185,21 +198,21 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                         }
                       })
                     }}
-          
+
                     listType='picture'
                     action={"http://localhost:5173"}
                     // action to custom request
-                    customRequest={(info) => { 
+                    customRequest={(info) => {
                       setimgData([info])
                     }}
-                    
+
                   >
                     <Button
                       icon={<UploadOutlined />}
                     >Cargar Foto
                     </Button>
-                    <br/>
-                    
+                    <br />
+
                   </Upload>
 
                 </Form.Item>

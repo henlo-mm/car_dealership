@@ -2,7 +2,11 @@ import api from '../api/config'
 
 export const createPart = async (data) => {
   try {
-    const response = await api.post('/parts/', data);
+    const response = await api.post('/parts/', data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error al crear un nuevo repuesto:', error);
@@ -32,7 +36,11 @@ export const getPart = async (partId) => {
 
 export const updatePart = async (partId, partData) => {
   try {
-    const response = await api.put(`/parts/update/${partId}`, partData);
+    const response = await api.put(`/parts/update/${partId}`, partData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error al actualizar el repuesto:', error);
