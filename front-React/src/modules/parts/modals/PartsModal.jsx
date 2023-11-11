@@ -22,6 +22,9 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
     form.resetFields();
   }
 
+
+
+
   const onSubmit = async (values) => {
 
     console.log(values);
@@ -33,6 +36,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
       if (partData) {
         await updatePart(partData.id, values);
       } else {
+        console.log(imgData);
         const formData = new FormData();
         formData.append("code", values.code);
         formData.append("name", values.name);
@@ -45,7 +49,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
         for (const pair of formData.entries()) {
           console.log(pair[0], pair[1]);
         }
-       
+
         await createPart(formData);
       }
 
@@ -171,21 +175,33 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                       required: false,
                       message: 'campo obligatorio'
                     },
-                    {
-                      validator(_, fileList) {
-                        return new Promise((resolve, rejected) => {
-                          if (fileList[0].size > 500000) {
-                            rejected('imagen demasiado pesada');
-                          } else {
-                            resolve('carga exitosa');
-                          }
-                        })
-                      }
-                    }
+                    // {
+                    //   validator(_, fileList) {
+                    //     return new Promise((resolve, rejected) => {
+                    //       if (fileList[0].size > 500000) {
+                    //         rejected('imagen demasiado pesada');
+                    //       } else {
+                    //         resolve('carga exitosa');
+                    //       }
+                    //     })
+                    //   }
+                    // }
                   ]}
                 >
 
-                  <Upload
+                  <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/png, image/jpeg"
+                    onChange={(e) => {
+                      var reader = new FileReader();
+                     
+                      reader.readAsDataURL(e.target.files[0]);
+                    }}
+                  />
+
+                  {/* <Upload
                     maxCount={1}
                     beforeUpload={(file) => {
                       return new Promise((resolve, rejected) => {
@@ -213,7 +229,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                     </Button>
                     <br />
 
-                  </Upload>
+                  </Upload> */}
 
                 </Form.Item>
               </div>
