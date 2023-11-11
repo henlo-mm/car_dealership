@@ -1,13 +1,30 @@
 import { Modal, Form, Spin, Input, Button, notification, Select } from 'antd';
 import { useEffect, useState } from 'react';
 import { createUser, updateUser } from '../../../services/user';
+import { getBranches } from '../../../services/branches';
 
 
-export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUpdate }) => {
+export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpdate }) => {
 
     const [form] = Form.useForm();
 
     const [loading, setLoading] = useState(false);
+    const [branchList, setBranchList] = useState([]);
+
+    const fetchBranchData = async () => {
+        try {
+            const data = await getBranches();
+            setBranchList(data);
+        } catch (error) {
+            console.error('Error branch list:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchBranchData();
+    }, []);
 
     useEffect(() => {
         if (userData && isVisible) {
@@ -41,37 +58,27 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
             }
             
             onUserUpdate();
-            
+
             form.resetFields();
 
 
             if (onConfirm) {
                 onConfirm();
-            } //todo
-            notification.success('Registro e usuario con exito')
+            } 
+            notification.success({
+                message: 'Operacion exitosa',
+                description: 'El usuario ha sido creado',
+            });
         } catch (error) {
-            notification.error('ocurrio un error', error.message)
+            notification.error({
+                message: 'Error',
+                description: error.message,
+            });
         }
         setLoading(false);
     }
 
     // Objetos representativos que se deben de obtener de las peticiones http de Django
-
-    const optionsBranches = [
-        {
-            id: 1,
-            name: 'Sucursal A',
-        },
-        {
-            id: 2,
-            name: 'Sucursal B',
-        },
-        {
-            id: 3,
-            name: 'Sucursal C',
-        },
-        // Agrega más datos de usuarios aquí
-    ];
 
     const optionsRoles = [
         {
@@ -159,7 +166,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                 <Form.Item
                                     name="secondPhone"
                                     label={<label className="form-label"> Teléfono 2  </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <Input
                                         className='form-control'
@@ -167,7 +174,19 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                     />
                                 </Form.Item>
                             </div>
-                           
+                            <div className='col-12 col-md-6'>
+                                <Form.Item
+                                    name="address"
+                                    label={<label className="form-label"> Dirección  </label>}
+                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                >
+                                    <Input
+                                        className='form-control'
+                                        placeholder='Dirección'
+                                    />
+                                </Form.Item>
+                            </div>
+
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="email"
@@ -192,7 +211,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                     />
                                 </Form.Item>
                             </div>
-                             {/* nuevos campos */}
+                            {/* nuevos campos */}
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="role"
@@ -206,8 +225,8 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                         options={
                                             optionsRoles &&
                                             optionsRoles?.map((v) => ({
-                                            value: v.id,
-                                            label: `${v.name}`,
+                                                value: v.id,
+                                                label: `${v.name}`,
                                             })
                                             )
                                         }
@@ -221,17 +240,17 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData,  onUserUp
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Select
-                                     style={{
-                                        width: '100%',
-                                    }}
-                                    options={
-                                        optionsBranches &&
-                                        optionsBranches?.map((v) => ({
-                                        value: v.id,
-                                        label: `${v.name}`,
-                                        })
-                                        )
-                                    }
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        options={
+                                            branchList &&
+                                            branchList?.map((v) => ({
+                                                value: v.id,
+                                                label: `${v.name}`,
+                                            })
+                                            )
+                                        }
                                     />
                                 </Form.Item>
                             </div>

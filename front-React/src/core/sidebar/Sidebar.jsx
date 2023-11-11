@@ -50,7 +50,7 @@ export const Sidebar = () => {
     },
     {
       label: 'Ventas',
-      key: '/client/main/management/sells',
+      key: '/client/main/management/sales',
       icon: <TeamOutlined />
     },
     {
