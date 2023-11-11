@@ -1,25 +1,27 @@
 import React from 'react';
-import { Row, Col, Card, Form, Input, Button } from 'antd';
+import { Row, Col, Card, Form, Input, Button, notification } from 'antd';
 import { login } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
 
- export const LoginPage = () => {
+export const LoginPage = () => {
   const navigate = useNavigate();
-  
-  const onFinish = async (values) => {
+
+  const onFinish = async (values) => { 
 
     try {
 
       const response = await login(values);
 
-      console.log(response)
-
       localStorage.setItem('token', response.token);
 
-      navigate('/client/main');
+      navigate('/client/main/management/dashboard');
 
     } catch (error) {
       console.error('Error:', error);
+      notification.error({
+        message: 'Error en autenticación',
+        description: error.message,
+      });
     }
   };
 

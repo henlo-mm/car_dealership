@@ -1,7 +1,9 @@
-import { Button, Form, Input, InputNumber, Modal, Spin, Upload, message, notification } from 'antd'
+import { Button, Flex, Form, Input, InputNumber, Modal, Spin, Upload, message, notification } from 'antd'
 import { useEffect, useState } from 'react'
 import { createPart, updatePart } from '../../../services/parts';
 import { UploadOutlined } from '@ant-design/icons';
+import { CiImageOn } from 'react-icons/ci';
+
 
 export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpdate }) => {
 
@@ -21,9 +23,6 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
     }
     form.resetFields();
   }
-
-
-
 
   const onSubmit = async (values) => {
 
@@ -176,6 +175,11 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                   getValueFromEvent={(e) => e && e.fileList}
                 >
                   <Upload
+                    listType="picture"
+                    iconRender={() => {
+                      return <CiImageOn size={25} />
+                    }}
+                    accept='.png, .jpg, .jpge'
                     maxCount={1}
                     beforeUpload={(file) => {
                       return new Promise((resolve, reject) => {
@@ -187,15 +191,14 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                         }
                       });
                     }}
-                    listType="picture"
-                    // action={"http://localhost:5173"}
-                    // action to custom request
                     customRequest={(info) => {
                       setimgData([info.file]);
                     }}
+
                   >
                     <Button icon={<UploadOutlined />}>Cargar Foto</Button>
                   </Upload>
+
                 </Form.Item>
               </div>
             </div>

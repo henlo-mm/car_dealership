@@ -15,3 +15,7 @@
   .user-info span {
     margin-top: 4px;
   }
+
+  .ant-upload-list-item-thumbnail {
+    height: 0 !important;
+  }
