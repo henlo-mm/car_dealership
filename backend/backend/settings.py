@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import django
 from django.utils.translation import gettext
 django.utils.translation.ugettext = gettext
-
+import os
 from pathlib import Path
 import environ
 
@@ -156,7 +156,20 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = '/var/www/car_dealership/backend/static'
+STATIC_ROOT = '/var/www/car_dealership_backend/static'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+
+# S3
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_ACCESS_KEY_ID = env('AWS_S3_USER')
+AWS_SECRET_ACCESS_KEY = env('AWS_S3_PASS')
+AWS_STORAGE_BUCKET_NAME = env('AWS_BUCKET')
+AWS_REGION = env('AWS_REGION')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

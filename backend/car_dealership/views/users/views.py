@@ -3,22 +3,35 @@ from django.views import View
 from django.contrib.auth.hashers import make_password
 import json
 from ...models import User
+from ...utils import upload_to_s3
+from rest_framework import status
+from django.db import transaction
+from django.core.files.base import ContentFile
+
 #comment
 class UserView(View):
 
     def post(self, request):
         try:
-            data = json.loads(request.body.decode('utf-8'))
-            name = data.get('name')
-            address = data.get('address')
-            second_phone = data.get('secondPhone')
-            document = data.get('document')
-            lastname = data.get('lastName')
-            phone = data.get('phone')
-            email = data.get('email')
-            password = make_password(data.get('password'))
-            branch_id = data.get('branch')
-            role_id = data.get('role')
+
+            name = request.POST.get('name')
+            address = request.POST.get('address')
+            second_phone = request.POST.get('secondPhone')
+            document = request.POST.get('document')
+            lastname = request.POST.get('lastName')
+            phone = request.POST.get('phone')
+            email = request.POST.get('email')
+            password = make_password(request.POST.get('document'))
+            branch_id = request.POST.get('branch')
+            role_id = request.POST.get('role')
+
+            image_data = request.FILES.get('avatar')
+            if image_data:
+                folder = "avatars"
+                image_url = upload_to_s3(image_data, folder)
+                image = image_url
+            else:
+                image = None
 
             user = User.objects.create(
                 name=name,
@@ -28,6 +41,7 @@ class UserView(View):
                 document=document,
                 phone=phone,
                 email=email,
+                avatar=image,
                 password=password,
                 branch_id=branch_id,
                 role_id=role_id
@@ -52,6 +66,7 @@ class UserView(View):
                     'phone': user.phone,
                     'document': user.document,
                     'email': user.email,
+                    'avatar': user.avatar,
                     'branch': user.branch_id,
                     'role': user.role_id
                 }
@@ -71,6 +86,7 @@ class UserView(View):
                         'phone': user.phone,
                         'document': user.document,
                         'email': user.email,
+                        'avatar': user.avatar,
                         'branch': user.branch_id,
                         'branch_name':  user.branch.name,
                         'role': user.role_id,
@@ -87,16 +103,31 @@ class UserView(View):
     def put(self, request, user_id):
         try:
             user = User.objects.get(id=user_id)
-            data = json.loads(request.body.decode('utf-8'))
-            user.name = data.get('name', user.name)
-            user.address = data.get('address')
-            user.second_phone = data.get('secondPhone')
-            user.lastname = data.get('lastName', user.lastname)
-            user.phone = data.get('phone', user.phone)
-            user.document = data.get('document', user.document)
-            user.email = data.get('email', user.email)
-            user.branch_id = data.get('branch', user.branch_id)
-            user.role_id = data.get('role', user.role_id)
+            
+            user.name = request.POST.get('name', user.name)
+            user.address = request.POST.get('address')
+            user.second_phone = request.POST.get('secondPhone')
+            user.lastname = request.POST.get('lastName', user.lastname)
+            user.phone = request.POST.get('phone', user.phone)
+            user.document = request.POST.get('document', user.document)
+            user.password = request.POST.get('document', user.password)
+            user.email = request.POST.get('email', user.email)
+           
+            user.branch_id = request.POST.get('branch', user.branch_id)
+            user.role_id = request.POST.get('role', user.role_id)
+
+
+            image_data = request.FILES.get('avatar', user.avatar)
+
+            if image_data:
+                image_formatted = ContentFile(image_data.read(), name=image_data.name)
+                folder = "avatars"
+
+                image_url = upload_to_s3(image_formatted, folder)
+
+                user.avatar = image_url
+            
+
             user.save()
 
             return JsonResponse({'message': 'Usuario actualizado correctamente'})

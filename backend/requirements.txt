@@ -11,3 +11,17 @@ typing_extensions==4.7.1
 tzdata==2023.3
 django-debug-toolbar==4.2.0
 drf-yasg==1.21.7
+
+boto3==1.28.84
+botocore==1.31.84
+django-storages==1.14.2
+
+inflection==0.5.1
+jmespath==1.0.1
+packaging==23.2
+Pillow==10.1.0
+python-dateutil==2.8.2
+s3transfer==0.7.0
+six==1.16.0
+uritemplat==4.1.1
+urllib3==2.0.7

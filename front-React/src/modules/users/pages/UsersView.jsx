@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Row, Col, Button, Table, Modal, Form, Input } from 'antd';
-import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { Button, Table, Input } from 'antd';
+import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { UsersModal } from '../modals/UsersModal';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
 import { getUsers, deleteUser } from '../../../services/user';
-
-//import 'antd/dist/antd.css';
+import { DeleteModal } from '../../../core/modals/DeleteModal';
 
 const { Search } = Input;
 
@@ -30,6 +29,7 @@ export const UsersView = () => {
     try {
       const data = await getUsers();
       setUserData(data);
+      console.log(userData)
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -45,31 +45,15 @@ export const UsersView = () => {
     if (values) {
       setUserToEdit(values)
     }
-    console.log('se abre el modal?')
     setIsModalVisible(true);
   };
 
   const handleCancel = () => {
-    // todo: logica para cerrar el modal
-    console.log('se ejecuto el cancelar')
     setIsModalVisible(false);
     setUserToEdit(null);
   };
 
   const handleOk = () => {
-    /**
-     name = data.get('name') ok
-     address = data.get('address')
-     second_phone = data.get('second_phone') ok
-     lastname = data.get('lastname') ok
-     phone = data.get('phone') ok
-     email = data.get('email') ok
-     password = make_password(data.get('password')) 
-     branch_id = data.get('branch_id') ok
-     role_id = data.get('role_id') ok
-     */
-    // todo: logica para crear un usuario nuevo
-    console.log('se ejecuto el ok')
     setIsModalVisible(false);
     setUserToEdit(null);
   };
@@ -85,9 +69,18 @@ export const UsersView = () => {
       await deleteUser(userToDelete);
       refreshTable();
       setIsModalDeleteVisible(false);
+      notification.success({
+        message: 'Operacion exitosa',
+        description: 'El usuario ha sido eliminado',
+      });
     } catch (error) {
       console.error('Error:', error);
       setIsModalDeleteVisible(false);
+      notification.error({
+        message: 'Error',
+        description: error.message,
+      });
+
     }
   };
 
@@ -128,6 +121,11 @@ export const UsersView = () => {
       key: 'secondPhone',
     },
     {
+      title: 'Direccion',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
       title: 'Rol usuario',
       dataIndex: 'role_name',
       key: 'role_name',
@@ -148,43 +146,6 @@ export const UsersView = () => {
       ),
     },
   ];
-
-  /*   const data = [
-      {
-        key: '1',
-        name: 'Sebastian',
-        lastName: 'Rey',
-        document: '123456',
-        phone: '3126697856',
-        secondPhone: '32455643',
-        role: 'Vendedor',
-        email: 'usuario1@example.com',
-        branch: 'Sucursal A',
-      },
-      {
-        key: '2',
-        name: 'Alejandro',
-        lastName: 'Villamil',
-        document: '654321',
-        phone: '3126697856',
-        secondPhone: '32455643',
-        role: 'Tecnico',
-        email: 'usuario2@example.com',
-        branch: 'Sucursal B',
-      },
-      {
-        key: '3',
-        name: 'Esperanza',
-        lastName: 'Olivo',
-        document: '324561',
-        phone: '3126697856',
-        secondPhone: '32455643',
-        role: 'Vendedor',
-        email: 'usuario3@example.com',
-        branch: 'Sucursal C',
-      },
-      // Agrega más datos de usuarios aquí
-    ]; */
 
 
 
@@ -229,21 +190,32 @@ export const UsersView = () => {
       <div className='card-body'>
         <div className='row'>
           <div className='mt-4 table-responsive'>
-            <Table columns={columns} dataSource={userData} loading={loading} />
+            <Table
+              columns={columns}
+              dataSource={userData}
+              key={userData.id} loading={loading}
 
-            <Modal
-              title="Confirmar eliminación"
-              open={isModalDeleteVisible}
-              onOk={handleDeleteUser}
-              onCancel={handleCancelDelete}
-            >
-              ¿Está seguro(a) de eliminar este usuario?
-            </Modal>
+            />
 
           </div>
         </div>
       </div>
-      <UsersModal isVisible={isModalVisible} onConfirm={handleOk} onCancel={handleCancel} userData={userToEdit} onUserUpdate={refreshTable} />
+
+      <DeleteModal
+        isVisible={isModalDeleteVisible}
+        onConfirm={handleDeleteUser}
+        onCancel={handleCancelDelete}
+        title={"Eliminar Usuario"}
+        message={"¿Está seguro(a) de eliminar este usuario?"}
+      />
+
+      <UsersModal
+        isVisible={isModalVisible}
+        onConfirm={handleOk}
+        onCancel={handleCancel}
+        userData={userToEdit}
+        onUserUpdate={refreshTable}
+      />
     </div>
   );
 };
