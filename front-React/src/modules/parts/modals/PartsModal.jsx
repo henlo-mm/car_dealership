@@ -22,6 +22,9 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
     form.resetFields();
   }
 
+
+
+
   const onSubmit = async (values) => {
 
     console.log(values);
@@ -33,19 +36,20 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
       if (partData) {
         await updatePart(partData.id, values);
       } else {
+        console.log(imgData[0]);
         const formData = new FormData();
         formData.append("code", values.code);
         formData.append("name", values.name);
         formData.append("quantity", values.quantity);
         formData.append("description", values.description);
         formData.append("price", values.price);
-        formData.append("image", imgData);
+        formData.append("image", imgData[0]);
 
         // Imprimir los datos en la consola
         for (const pair of formData.entries()) {
           console.log(pair[0], pair[1]);
         }
-       
+
         await createPart(formData);
       }
 
@@ -162,59 +166,36 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                 <Form.Item
                   name="image"
                   label={<label className="form-label"> Foto </label>}
-                  valuePropName='fileList'
-                  getValueFromEvent={(event) => {
-                    return event?.fileList
-                  }}
                   rules={[
                     {
                       required: false,
-                      message: 'campo obligatorio'
+                      message: 'campo obligatorio',
                     },
-                    {
-                      validator(_, fileList) {
-                        return new Promise((resolve, rejected) => {
-                          if (fileList[0].size > 500000) {
-                            rejected('imagen demasiado pesada');
-                          } else {
-                            resolve('carga exitosa');
-                          }
-                        })
-                      }
-                    }
                   ]}
+                  valuePropName="fileList"
+                  getValueFromEvent={(e) => e && e.fileList}
                 >
-
                   <Upload
                     maxCount={1}
                     beforeUpload={(file) => {
-                      return new Promise((resolve, rejected) => {
+                      return new Promise((resolve, reject) => {
                         if (file.size > 500000) {
-                          rejected('imagen demasiado pesada');
-                          message.error('imagen demasiado pesada')
+                          reject('imagen demasiado pesada');
+                          message.error('imagen demasiado pesada');
                         } else {
-                          resolve('carga exitosa');
-                          file.status = "done";
+                          resolve(file);
                         }
-                      })
+                      });
                     }}
-
-                    listType='picture'
-                    action={"http://localhost:5173"}
+                    listType="picture"
+                    // action={"http://localhost:5173"}
                     // action to custom request
                     customRequest={(info) => {
-                      setimgData([info])
+                      setimgData([info.file]);
                     }}
-
                   >
-                    <Button
-                      icon={<UploadOutlined />}
-                    >Cargar Foto
-                    </Button>
-                    <br />
-
+                    <Button icon={<UploadOutlined />}>Cargar Foto</Button>
                   </Upload>
-
                 </Form.Item>
               </div>
             </div>
