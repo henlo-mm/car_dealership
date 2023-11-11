@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Table, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { UsersModal } from '../modals/WorkOrdersModal';
+import { WorkOrdersModal } from '../modals/WorkOrdersModal'
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
 import { getWorkOrders, deleteWorkOrder } from '../../../services/work_orders';
@@ -19,7 +19,7 @@ export const WorkOrdersView = () => {
     const [refreshKey, setRefreshKey] = useState(0);
     const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
-    
+
 
     const refreshTable = () => {
         setRefreshKey((prevKey) => prevKey + 1);
@@ -27,19 +27,19 @@ export const WorkOrdersView = () => {
 
     const fetchWorkOrderData = async () => {
         try {
-          const data = await getWorkOrders();
-          
-          setWorkOrderData(data);
+            const data = await getWorkOrders();
+            setWorkOrderData(data);
+            console.log(workOrderData);
         } catch (error) {
-          console.error('Error:', error);
-        } finally{
-          setLoading(false);
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchWorkOrderData();
-      }, [refreshKey]);
+    }, [refreshKey]);
 
     const handleAddWorkOrderClick = (values) => {
         if (values) {
@@ -47,7 +47,7 @@ export const WorkOrdersView = () => {
         }
         console.log('se abre el modal?')
         setIsModalVisible(true);
-      };
+    };
 
     const handleCancel = () => {
         // todo: logica para cerrar el modal
@@ -77,26 +77,26 @@ export const WorkOrdersView = () => {
     const showDeleteConfirmationModal = (user) => {
         setUserToDelete(user.id);
         setIsModalDeleteVisible(true);
-    
-      };
 
-      const handleDeleteWorkOrder = async () => {
+    };
+
+    const handleDeleteWorkOrder = async () => {
         try {
-          await deleteWorkOrder(userToDelete);
-          refreshTable();
-          setIsModalDeleteVisible(false); 
+            await deleteWorkOrder(userToDelete);
+            refreshTable();
+            setIsModalDeleteVisible(false);
         } catch (error) {
-          console.error('Error:', error);
-          setIsModalDeleteVisible(false); 
+            console.error('Error:', error);
+            setIsModalDeleteVisible(false);
         }
-      };
-      
-      const handleCancelDelete = () => {
-        setIsModalDeleteVisible(false); 
-      };
+    };
+
+    const handleCancelDelete = () => {
+        setIsModalDeleteVisible(false);
+    };
 
 
-      //const userName = getUser()
+    //const userName = getUser()
     const columns = [
         {
             title: 'Vehiculo',
@@ -107,7 +107,7 @@ export const WorkOrdersView = () => {
             title: 'Cliente',
             dataIndex: 'customer',
             key: 'customer',
-            
+
         },
         {
             title: 'Gerente de la orden',
@@ -125,7 +125,7 @@ export const WorkOrdersView = () => {
             render: (values) => (
                 <div>
                     <Button type="link" icon={<BiSolidEditAlt size={20} />} onClick={() => handleAddWorkOrderClick(values)} />
-                    <Button type="link" icon={<AiOutlineDelete size={20} onClick={() => showDeleteConfirmationModal(values)}  />} />
+                    <Button type="link" icon={<AiOutlineDelete size={20} onClick={() => showDeleteConfirmationModal(values)} />} />
                 </div>
             ),
         },
@@ -140,7 +140,7 @@ export const WorkOrdersView = () => {
         },
         // Agrega más datos de usuarios aquí
     ];*/
-    
+
     return (
 
         <div className='card card-body'>
@@ -184,17 +184,17 @@ export const WorkOrdersView = () => {
                     <div className='mt-4 table-responsive'>
                         <Table columns={columns} dataSource={workOrderData} loading={loading} />
                         <Modal
-                        title="Confirmar eliminación"
-                        open={isModalDeleteVisible}
-                        onOk={handleDeleteWorkOrder}
-                        onCancel={handleCancelDelete}
+                            title="Confirmar eliminación"
+                            open={isModalDeleteVisible}
+                            onOk={handleDeleteWorkOrder}
+                            onCancel={handleCancelDelete}
                         >
-                        ¿Está seguro(a) de eliminar este usuario?
+                            ¿Está seguro(a) de eliminar este usuario?
                         </Modal>
                     </div>
                 </div>
             </div>
-            <UsersModal isVisible={isModalVisible} onConfirm={handleOk} onCancel={handleCancel} workOrderData={workOrderToEdit} onWorkOrderUpdate={refreshTable} />
+            <WorkOrdersModal isVisible={isModalVisible} onConfirm={handleOk} onCancel={handleCancel} workOrderData={workOrderToEdit} onWorkOrderUpdate={refreshTable} />
         </div>
     );
 };

@@ -1,13 +1,34 @@
 import { Modal, Form, Spin, Input, Button, notification, Select } from 'antd';
 import { useEffect, useState } from 'react';
 import { createWorkOrder, updateWorkOrder } from '../../../services/work_orders';
+import { getvehicles } from '../../../services/vehicles';
 
 
-export const UsersModal = ({ isVisible, onConfirm, onCancel, workOrderData,  onWorkOrderUpdate }) => {
+export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData, onWorkOrderUpdate }) => {
 
     const [form] = Form.useForm();
 
     const [loading, setLoading] = useState(false);
+    const [vehiclesList, setVehiclesList] = useState([]);
+
+
+    const fetchData = async () => {
+        try {
+            const vehicles = await getvehicles();
+            const vehiclesForWorkOrders = vehicles.filter((car) => car.is_for_sale == false )
+            console.log({vehiclesForWorkOrders});
+            setVehiclesList(vehiclesForWorkOrders);
+        } catch (error) {
+            console.error('Error branch list:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
 
     useEffect(() => {
         if (workOrderData && isVisible) {
@@ -40,7 +61,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, workOrderData,  onW
             }
 
             onWorkOrderUpdate();
-            
+
             form.resetFields();
 
 
@@ -124,9 +145,18 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, workOrderData,  onW
                                     label={<label className="form-label"> Vehiculo  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
-                                    <Input
-                                        className='form-control'
-                                        placeholder='Vehiculo'
+                                    <Select
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        options={
+                                            vehiclesList &&
+                                            vehiclesList?.map((v) => ({
+                                                value: v.id,
+                                                label: `${v.model}`,
+                                            })
+                                            )
+                                        }
                                     />
                                 </Form.Item>
                             </div>
@@ -166,7 +196,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, workOrderData,  onW
                                     />
                                 </Form.Item>
                             </div>
-                           
+
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="comments"
@@ -190,7 +220,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, workOrderData,  onW
                                         placeholder='Fecha de inicio'
                                     />
                                 </Form.Item>
-                            </div>    
+                            </div>
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="status"

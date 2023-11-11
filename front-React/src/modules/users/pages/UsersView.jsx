@@ -29,6 +29,7 @@ export const UsersView = () => {
     try {
       const data = await getUsers();
       setUserData(data);
+      console.log(userData)
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -120,6 +121,11 @@ export const UsersView = () => {
       key: 'secondPhone',
     },
     {
+      title: 'Direccion',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
       title: 'Rol usuario',
       dataIndex: 'role_name',
       key: 'role_name',
@@ -184,7 +190,12 @@ export const UsersView = () => {
       <div className='card-body'>
         <div className='row'>
           <div className='mt-4 table-responsive'>
-            <Table columns={columns} dataSource={userData} loading={loading} />
+            <Table
+              columns={columns}
+              dataSource={userData}
+              key={userData.id} loading={loading}
+
+            />
 
           </div>
         </div>

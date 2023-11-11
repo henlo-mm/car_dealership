@@ -1,18 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Table, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { VehiclesModal } from '../modals/VehiclesModal';
+import { getvehicles } from '../../../services/vehicles';
 //import 'antd/dist/antd.css';
 
 const { Search } = Input;
 
 export const VehiclesView = () => {
+    const [loading, setLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const [vehiclesData, setVehiclesData] = useState([]);
+
+    const refreshTable = () => {
+        setRefreshKey((prevKey) => prevKey + 1);
+    };
+
+    const fetchVehiclesData = async () => {
+        try {
+            const data = await getvehicles();
+            setVehiclesData(data);
+            console.log(vehiclesData);
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchVehiclesData();
+    }, [refreshKey]);
 
     const handleAddUserClick = () => {
         setIsModalVisible(true);
     };
+
 
     const handleCancel = () => {
         // todo: logica para cerrar el modal
@@ -36,21 +61,38 @@ export const VehiclesView = () => {
         setIsModalVisible(false);
     };
 
+    const data = []
+
     const columns = [
         {
-            title: 'Nombre',
-            dataIndex: 'name',
-            key: 'name',
+            title: '',
+            dataIndex: 'image',
+            key: 'image',
         },
         {
-            title: 'Correo Electrónico',
-            dataIndex: 'email',
-            key: 'email',
+            title: 'codigo',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
-            title: 'Sucursal',
-            dataIndex: 'branch',
-            key: 'branch',
+            title: 'Modelo',
+            dataIndex: 'model',
+            key: 'model',
+        },
+        {
+            title: 'Año',
+            dataIndex: 'year',
+            key: 'year',
+        },
+        {
+            title: 'Color',
+            dataIndex: 'color',
+            key: 'color',
+        },
+        {
+            title: 'Estado',
+            dataIndex: 'is_for_sale',
+            key: 'is_for_sale',
         },
         {
             title: 'Acciones',
@@ -64,15 +106,6 @@ export const VehiclesView = () => {
         },
     ];
 
-    const data = [
-        {
-            key: '1',
-            name: 'Usuario 1',
-            email: 'usuario1@example.com',
-            branch: 'Sucursal A',
-        },
-        // Agrega más datos de usuarios aquí
-    ];
 
     return (
 
@@ -117,7 +150,8 @@ export const VehiclesView = () => {
                     <div className='mt-4 table-responsive'>
                         <Table
                             columns={columns}
-                            dataSource={data}
+                            dataSource={vehiclesData}
+                            loading={loading}
                         />
                     </div>
                 </div>

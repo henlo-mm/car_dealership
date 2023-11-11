@@ -1,9 +1,10 @@
-import { Button, DatePicker, Form, Input, Modal, Select, Spin } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, Radio, Select, Spin, Switch, Upload } from 'antd'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment';
 import { getBranches } from '../../../services/branches';
 import { carBrands } from '../.config/carbrands'
 import { colorList } from '../.config/colorsList'
+import { UploadOutlined } from '@ant-design/icons';
 
 export const VehiclesModal = ({ isvisible, onCancel }) => {
 
@@ -14,6 +15,7 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
     const [branchList, setBranchList] = useState([]);
     const [carsList, setCarsList] = useState(carBrands);
     const [colorsList, setColorsList] = useState(colorList);
+    const [imgData, setImgData] = useState([]);
 
     const fetchBranchData = async () => {
         try {
@@ -39,9 +41,7 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
     }
 
 
-    const handleChange = (value) => {
-        console.log(`selected ${value}`);
-    }
+
 
     const onSubmit = async (values) => {
         try {
@@ -111,7 +111,7 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="year"
-                                    label={<label className="form-label"> Year  </label>}
+                                    label={<label className="form-label"> Modelo  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <DatePicker
@@ -169,8 +169,7 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Select
-                                        mode="multiple"
-                                        onChange={handleChange}
+
                                         style={{
                                             width: '100%',
                                         }}
@@ -186,7 +185,74 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
                                 </Form.Item>
                             </div>
 
+                            <div className='col-12 col-md-6 d-flex'>
+                                <Form.Item
+                                    name="is_for_sale"
+                                    label={<label className="form-label"> Habilitado para vender  </label>}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
+                                >
+                                    <Switch
 
+                                    />
+                                </Form.Item>
+                            </div>
+                            <div className='col-12'>
+                                <Form.Item
+                                    name="image"
+                                    label={<label className="form-label"> Foto </label>}
+                                    valuePropName='fileList'
+                                    getValueFromEvent={(event) => {
+                                        return event?.fileList
+                                    }}
+                                    rules={[
+                                        {
+                                            required: false,
+                                            message: 'campo obligatorio'
+                                        },
+                                        {
+                                            validator(_, fileList) {
+                                                return new Promise((resolve, rejected) => {
+                                                    if (fileList[0].size > 500000) {
+                                                        rejected('imagen demasiado pesada');
+                                                    } else {
+                                                        resolve('carga exitosa');
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    ]}
+                                >
+
+                                    <Upload
+                                        maxCount={1}
+                                        beforeUpload={(file) => {
+                                            return new Promise((resolve, rejected) => {
+                                                if (file.size > 500000) {
+                                                    rejected('imagen demasiado pesada');
+                                                    message.error('imagen demasiado pesada')
+                                                } else {
+                                                    resolve('carga exitosa');
+                                                    file.status = "done";
+                                                }
+                                            })
+                                        }}
+
+                                        listType='picture'
+                                       
+                                        // action to custom request
+                                        customRequest={(info) => {
+                                            setImgData([info])
+                                        }}
+
+                                    >
+                                        <Button
+                                            icon={<UploadOutlined />}
+                                        >Cargar Foto
+                                        </Button>
+                                        
+                                    </Upload>
+                                </Form.Item>
+                            </div>
                         </div>
                     </Form>
 
