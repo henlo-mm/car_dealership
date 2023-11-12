@@ -36,6 +36,8 @@ class BranchesPartsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuoteSerializer(serializers.ModelSerializer):
+
+    valid_date = serializers.DateField(format="%d-%m-%Y")
     class Meta:
         model = Quote
         fields = '__all__'

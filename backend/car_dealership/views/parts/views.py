@@ -6,9 +6,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.core.files.base import ContentFile
+
 class PartViewSet(ModelViewSet):
     queryset = Part.objects.all()
     serializer_class = PartSerializer
+
+    def list(self, request):
+        parts = Part.objects.all().order_by('id')
+        serializer = self.get_serializer(parts, many=True)
+        return Response(serializer.data)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):

@@ -3,11 +3,17 @@ from rest_framework.viewsets import ModelViewSet
 from ...models import Quote
 from ...serializers import QuoteSerializer, UserSerializer
 from rest_framework.response import Response
-
+from rest_framework.decorators import action
 
 class QuoteViewSet(ModelViewSet):
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
+
+    def list(self, request):
+        quotes = Quote.objects.prefetch_related('seller', 'client').all().order_by('id')
+
+        serializer = self.get_serializer(quotes, many=True)
+        return Response(serializer.data)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -23,7 +29,8 @@ class QuoteViewSet(ModelViewSet):
         else:
             return Response(user_serializer.errors, status=400)
 
-        quote_data['seller'] =  request.data.get('user_id')
+        quote_data['seller'] =  request.data.get('seller_id')
+
         quote_serializer = QuoteSerializer(data=quote_data)
 
         if quote_serializer.is_valid():

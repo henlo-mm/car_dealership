@@ -7,25 +7,29 @@ from ...utils import upload_to_s3
 from rest_framework import status
 from django.db import transaction
 from django.core.files.base import ContentFile
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 #comment
-class UserView(View):
+class UserView(APIView):
 
     def post(self, request):
         try:
 
-            name = request.POST.get('name')
-            address = request.POST.get('address')
-            second_phone = request.POST.get('secondPhone')
-            document = request.POST.get('document')
-            lastname = request.POST.get('lastName')
-            phone = request.POST.get('phone')
-            email = request.POST.get('email')
-            password = make_password(request.POST.get('document'))
-            branch_id = request.POST.get('branch')
-            role_id = request.POST.get('role')
+            data = request.data
 
-            image_data = request.FILES.get('avatar')
+            name = data.get('name')
+            address = data.get('address')
+            second_phone = data.get('secondPhone')
+            document = data.get('document')
+            lastname = data.get('lastName')
+            phone = data.get('phone')
+            email = data.get('email')
+            password = make_password(data.get('document'))
+            branch_id = data.get('branch')
+            role_id = data.get('role')
+
+            image_data = data.get('avatar')
             if image_data:
                 folder = "avatars"
                 image_url = upload_to_s3(image_data, folder)
@@ -73,7 +77,7 @@ class UserView(View):
                 return JsonResponse(user_data)
             else:
                 # Obtener todos los usuarios
-                users = User.objects.all()
+                users = User.objects.all().order_by('id')
                 user_data_list = []
 
                 for user in users:
@@ -103,21 +107,24 @@ class UserView(View):
     def put(self, request, user_id):
         try:
             user = User.objects.get(id=user_id)
+
+            data = request.data
+
             
-            user.name = request.POST.get('name', user.name)
-            user.address = request.POST.get('address')
-            user.second_phone = request.POST.get('secondPhone')
-            user.lastname = request.POST.get('lastName', user.lastname)
-            user.phone = request.POST.get('phone', user.phone)
-            user.document = request.POST.get('document', user.document)
-            user.password = request.POST.get('document', user.password)
-            user.email = request.POST.get('email', user.email)
+            user.name = data.get('name', user.name)
+            user.address = data.get('address')
+            user.second_phone = data.get('secondPhone')
+            user.lastname = data.get('lastName', user.lastname)
+            user.phone = data.get('phone', user.phone)
+            user.document = data.get('document', user.document)
+            user.password = data.get('document', user.password)
+            user.email = data.get('email', user.email)
            
-            user.branch_id = request.POST.get('branch', user.branch_id)
-            user.role_id = request.POST.get('role', user.role_id)
+            user.branch_id = data.get('branch', user.branch_id)
+            user.role_id = data.get('role', user.role_id)
 
 
-            image_data = request.FILES.get('avatar', user.avatar)
+            image_data = data.get('avatar', user.avatar)
 
             if image_data:
                 image_formatted = ContentFile(image_data.read(), name=image_data.name)
