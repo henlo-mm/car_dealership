@@ -6,10 +6,14 @@ from ...utils import upload_to_s3
 from rest_framework import status
 from django.db import transaction
 from django.core.files.base import ContentFile
-
 class VehicleViewSet(ModelViewSet):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
+
+    def list(self, request):
+        vehicles = Vehicle.objects.all().order_by('id')
+        serializer = self.get_serializer(vehicles, many=True)
+        return Response(serializer.data)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):

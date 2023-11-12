@@ -5,10 +5,14 @@ from ...models import WorkOrder
 from ...serializers import WorkOrderSerializer
 from rest_framework.response import Response
 
-
 class WorkOrderViewSet(ModelViewSet):
     queryset = WorkOrder.objects.all()
     serializer_class = WorkOrderSerializer
+
+    def list(self, request):
+        work_orders = WorkOrder.objects.all().order_by('id')
+        serializer = self.get_serializer(work_orders, many=True)
+        return Response(serializer.data)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
