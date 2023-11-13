@@ -6,15 +6,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.core.files.base import ContentFile
-
 class PartViewSet(ModelViewSet):
     queryset = Part.objects.all()
     serializer_class = PartSerializer
-
-    def list(self, request):
-        parts = Part.objects.all().order_by('id')
-        serializer = self.get_serializer(parts, many=True)
-        return Response(serializer.data)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -43,26 +37,26 @@ class PartViewSet(ModelViewSet):
            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
     def update(self, request, *args, **kwargs):
-       partial = kwargs.pop('partial', False)
-       instance = self.get_object()
-       data = request.data
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        data = request.data
 
-       if 'image' in data:
-           image = ContentFile(data['image'].read(), name=data['image'].name)
-           folder = "parts"
+        if isinstance(data['image'], str): 
+            image = data['image']
+        else:
+            image = ContentFile(data['image'].read(), name=data['image'].name)
+            folder = "parts"
+            image_url = upload_to_s3(image, folder)
+            data['image'] = image_url
 
-           image_url = upload_to_s3(image, folder)
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
 
-           data['image'] = image_url
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
 
-       serializer = self.get_serializer(instance, data=data, partial=partial)
-       serializer.is_valid(raise_exception=True)
-       self.perform_update(serializer)
-
-       if getattr(instance, '_prefetched_objects_cache', None):
-           instance._prefetched_objects_cache = {}
-
-       return Response(serializer.data)
+        return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
