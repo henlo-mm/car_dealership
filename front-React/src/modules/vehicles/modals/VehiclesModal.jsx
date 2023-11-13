@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, Modal, Radio, Select, Spin, Switch, Upload } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, Radio, Select, Spin, Switch, Upload, notification } from 'antd'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment';
 import { getBranches } from '../../../services/branches';
@@ -6,7 +6,7 @@ import { carBrands } from '../.config/carbrands'
 import { colorList } from '../.config/colorsList'
 import { UploadOutlined } from '@ant-design/icons';
 
-export const VehiclesModal = ({ isvisible, onCancel }) => {
+export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onVehicleUpdate }) => {
 
     const [form] = Form.useForm();
 
@@ -32,6 +32,12 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
         fetchBranchData();
     }, []);
 
+    useEffect(() => {
+        if (vehicleData && isVisible) {
+            form.setFieldsValue(vehicleData);
+        }
+    }, [vehicleData])
+
     const onClose = () => {
         if (onCancel) {
             onCancel();
@@ -46,22 +52,50 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
     const onSubmit = async (values) => {
         try {
 
+            setLoading(true);
+
             const year = moment(values.date).year();
             const formData = new FormData();
             formData.append("name", values.name);
             formData.append("year", year);
+            // formData.append("year", year);
+            // formData.append("year", year);
+            // formData.append("year", year);
+
+            // if (imgData[0] == undefined) {
+            //     formData.append("image", vehicleData.image);
+            // } else {
+            //     formData.append("image", imgData[0]);
+            // }
+
             console.log('Año enviado al backend:', year);
             console.log(formData);
-            console.log(values)
+            console.log(values);
 
             // Imprimir los datos en la consola
             for (const pair of formData.entries()) {
                 console.log(pair[0], pair[1]);
             }
+            onVehicleUpdate();
+
+            form.resetFields();
+
+            if (onConfirm) {
+                onConfirm();
+            }
+            notification.success({
+                message: 'Operacion exitosa',
+                description: 'El vehiculo ha sido creado',
+            });
 
         } catch (error) {
-            console.log(error);
+            notification.error({
+                message: 'Error',
+                description: error.message,
+            });
         }
+
+        setLoading(false);
     }
 
     return (
@@ -94,6 +128,7 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
                         form={form}
                         layout='vertical'
                         onFinish={onSubmit}
+                        initialValues={{is_for_sale: false}}
                     >
                         <div className='row'>
                             <div className='col-12 col-md-6'>
@@ -190,9 +225,10 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
                                     name="is_for_sale"
                                     label={<label className="form-label"> Habilitado para vender  </label>}
                                     rules={[{ required: false, message: 'campo obligatorio' }]}
+                                    valuePropName="checked"
                                 >
                                     <Switch
-
+                                        defaultChecked={false}
                                     />
                                 </Form.Item>
                             </div>
@@ -238,7 +274,7 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
                                         }}
 
                                         listType='picture'
-                                       
+
                                         // action to custom request
                                         customRequest={(info) => {
                                             setImgData([info])
@@ -249,7 +285,7 @@ export const VehiclesModal = ({ isvisible, onCancel }) => {
                                             icon={<UploadOutlined />}
                                         >Cargar Foto
                                         </Button>
-                                        
+
                                     </Upload>
                                 </Form.Item>
                             </div>

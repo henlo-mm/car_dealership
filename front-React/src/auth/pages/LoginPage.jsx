@@ -1,21 +1,16 @@
 import React from 'react';
 import { Row, Col, Card, Form, Input, Button, notification } from 'antd';
-import { login } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onFinish = async (values) => { 
 
     try {
-
-      const response = await login(values);
-
-      localStorage.setItem('token', response.token);
-
-      navigate('/client/main/management/dashboard');
-
+      await login(values)
     } catch (error) {
       console.error('Error:', error);
       notification.error({

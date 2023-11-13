@@ -36,7 +36,7 @@ export const getPart = async (partId) => {
 
 export const updatePart = async (partId, partData) => {
   try {
-    const response = await api.put(`/parts/update/${partId}`, partData, {
+    const response = await api.put(`/parts/${partId}/`, partData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -50,7 +50,7 @@ export const updatePart = async (partId, partData) => {
 
 export const deletePart = async (partId) => {
   try {
-    const response = await api.delete(`/parts/delete/${partId}`);
+    const response = await api.delete(`/parts/${partId}/`);
     return response.data;
   } catch (error) {
     console.error('Error al eliminar el repuesto:', error);
