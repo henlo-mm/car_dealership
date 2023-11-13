@@ -126,14 +126,16 @@ class UserView(APIView):
 
             image_data = data.get('avatar', user.avatar)
 
-            if image_data:
+            if isinstance(image_data, str):
+                user.avatar = image_data
+            else:
+            
                 image_formatted = ContentFile(image_data.read(), name=image_data.name)
                 folder = "avatars"
 
                 image_url = upload_to_s3(image_formatted, folder)
 
                 user.avatar = image_url
-            
 
             user.save()
 

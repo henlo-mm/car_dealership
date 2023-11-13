@@ -46,13 +46,14 @@ class VehicleViewSet(ModelViewSet):
         instance = self.get_object()
         data = request.data
 
-        if 'image' in data:
+        if isinstance(data['image'], str): 
+            image = data['image']
+        else:
             image = ContentFile(data['image'].read(), name=data['image'].name)
-            folder = "vehicles"
-
+            folder = "parts"
             image_url = upload_to_s3(image, folder)
-
             data['image'] = image_url
+
 
         serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
