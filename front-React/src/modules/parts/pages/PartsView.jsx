@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, Modal, Form, Input } from 'antd';
+import { Button, Table, Modal, Form, Input, notification, Image } from 'antd';
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getParts } from '../../../services/parts';
+import { deletePart, getParts } from '../../../services/parts';
 import { PartsModal } from '../modals/PartsModal';
+import { DeleteModal } from '../../../core/modals/DeleteModal';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { BiSolidEditAlt } from 'react-icons/bi';
+import { IoMdRefresh } from 'react-icons/io';
+
 //import 'antd/dist/antd.css';
 
 const { Search } = Input;
@@ -27,6 +32,7 @@ export const PartsView = () => {
         try {
             const data = await getParts();
             setPartsData(data);
+            console.log(partsData);
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -40,7 +46,8 @@ export const PartsView = () => {
 
     const handleAddPartClick = (values) => {
         if (values) {
-            setPartToEdit(values)
+            setPartToEdit(values);
+            console.log({ partToEdit })
         }
         setIsModalVisible(true);
     };
@@ -53,18 +60,36 @@ export const PartsView = () => {
 
 
     const handleOk = () => {
-        /**
-        vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-        code = models.CharField(max_length=20, null=False)
-        image = models.CharField(max_length=200, null=False)
-        quantity = models.IntegerField(null=False)
-        description = models.CharField(max_length=255, null=False)
-        price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
-         */
-        // todo: logica para crear un usuario nuevo
         setIsModalVisible(false);
         setPartToEdit(null);
     };
+
+
+    const showDeleteConfirmationModal = (part) => {
+        setPartToDelete(part.id);
+        setIsDeleteModalVisible(true);
+    };
+
+    const handleDeletePart = async () => {
+        try {
+            await deletePart(partToDelete);
+            refreshTable();
+            setIsDeleteModalVisible(false);
+            notification.success({
+                message: 'Operacion exitosa',
+                description: 'El repuesto ha sido eliminado',
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            setIsDeleteModalVisible(false);
+            notification.error({
+                message: 'Error',
+                description: error.message,
+            });
+
+        }
+    };
+
 
     const handleCancelDeletePart = () => {
         setIsDeleteModalVisible(false);
@@ -72,9 +97,28 @@ export const PartsView = () => {
 
     const columns = [
         {
-            title: 'image',
-            dataIndex: 'image',
+            title: '',
+            // dataIndex: 'image',
             key: 'image',
+            with: 150,
+            render: (values) => (
+                <Image
+                    width={100}
+                    src={values.image}
+                    placeholder={
+                        <Image
+                            preview={false}
+                            src={values.image}
+                            width={50}
+                        />
+                    }
+                />
+            ),
+        },
+        {
+            title: 'Nombre',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
             title: 'Codigo',
@@ -101,8 +145,8 @@ export const PartsView = () => {
             key: 'actions',
             render: (values) => (
                 <div>
-                    <Button type="link" icon={<EditOutlined />} />
-                    <Button type="link" icon={<EyeOutlined />} />
+                    <Button type="link" icon={<BiSolidEditAlt size={20} />} onClick={() => { handleAddPartClick(values); }} />
+                    <Button type="link" icon={<AiOutlineDelete size={20} />} onClick={() => showDeleteConfirmationModal(values)} />
                 </div>
             ),
         },
@@ -133,6 +177,12 @@ export const PartsView = () => {
                             <Button
                                 className='m-1'
                                 type="default"
+                                icon={<IoMdRefresh />}>
+
+                            </Button>
+                            <Button
+                                className='m-1'
+                                type="default"
                                 icon={<FilterOutlined />}>
                                 Sucursal
                             </Button>
@@ -150,19 +200,29 @@ export const PartsView = () => {
             <div className='card-body'>
                 <div className='row'>
                     <div className='mt-4 table-responsive'>
-                        <Table 
-                        columns={columns} 
-                        dataSource={partsData} />
+                        <Table
+                            loading={loading}
+                            columns={columns}
+                            dataSource={partsData}
+                        />
                     </div>
                 </div>
             </div>
 
+            <DeleteModal
+                isVisible={isDeleteModalVisible}
+                onConfirm={handleDeletePart}
+                onCancel={handleCancelDeletePart}
+                title={"Eliminar repuesto"}
+                message={"¿Está seguro(a) de eliminar este repuesto?"}
+            />
+
             <PartsModal
-               isVisible={isModalVisible}
-               onConfirm={handleOk}
-               onCancel={handleCancel}
-               partData={partToEdit}
-               onPartUpdate={refreshTable}
+                isVisible={isModalVisible}
+                onConfirm={handleOk}
+                onCancel={handleCancel}
+                partData={partToEdit}
+                onPartUpdate={refreshTable}
             />
 
         </div>

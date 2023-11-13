@@ -7,12 +7,14 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined
 } from '@ant-design/icons';
+import { BsFillBuildingsFill } from 'react-icons/bs';
 import { MdCarRepair, MdCarRental, MdMiscellaneousServices, MdDirectionsCarFilled, MdAccountCircle } from "react-icons/md";
+import { MdRequestQuote } from "react-icons/md";
+
 import { Layout, Menu, Avatar, Dropdown, Button, FloatButton } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useWindowResize } from '../../hooks/useWindowResize';
-
-
+import useAuth from 'auth';
 
 const { Sider } = Layout;
 
@@ -20,6 +22,7 @@ export const Sidebar = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   const { isMdBreakpoint } = useWindowResize();
 
@@ -56,7 +59,7 @@ export const Sidebar = () => {
     {
       label: 'Cotizaciones',
       key: '/client/main/management/quotations',
-      icon: <FileOutlined />
+      icon: <MdRequestQuote />
     },
     {
       label: 'Taller',
@@ -66,7 +69,7 @@ export const Sidebar = () => {
     {
       label: 'Sucursales',
       key: '/client/main/management/branches',
-      icon: <FileOutlined />
+      icon: <BsFillBuildingsFill />
     },
     {
       label: 'Inventario',
@@ -120,8 +123,9 @@ export const Sidebar = () => {
           <div className="logo"> LOGO CARRITO </div>
           <div className="user-info">
             <Avatar size={32} icon={<UserOutlined />} />
-            <span>Nombre de Usuario</span>
-            <span>Rol</span>
+            <span>{user?.name + ' ' + user?.lastname}</span>
+            <span>{user?.role}</span>
+            <button onClick={() => logout()}>log out</button>
           </div>
           {/* <Menu theme="dark" mode="vertical" >
           <Menu.Item key="1" icon={ <DesktopOutlined />} />

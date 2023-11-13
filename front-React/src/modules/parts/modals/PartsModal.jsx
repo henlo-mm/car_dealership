@@ -13,7 +13,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
 
   useEffect(() => {
     if (partData && isVisible) {
-      form.setFieldsValue(partData);
+      form.setFieldsValue({ ...partData, image: [] });
     }
   }, [partData])
 
@@ -26,16 +26,33 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
 
   const onSubmit = async (values) => {
 
-    console.log(values);
-
     try {
+
       setLoading(true);
-      values.file
 
       if (partData) {
-        await updatePart(partData.id, values);
+
+        const formData = new FormData();
+        formData.append("code", values.code);
+        formData.append("name", values.name);
+        formData.append("quantity", values.quantity);
+        formData.append("description", values.description);
+        formData.append("price", values.price);
+        if (imgData[0] == undefined) {
+          formData.append("image", partData.image);
+        } else {
+          formData.append("image", imgData[0]);
+        }
+
+        // Imprimir los datos en la consola
+        for (const pair of formData.entries()) {
+          console.log(pair[0], pair[1]);
+        }
+
+        await updatePart(partData.id, formData);
+
       } else {
-        console.log(imgData[0]);
+
         const formData = new FormData();
         formData.append("code", values.code);
         formData.append("name", values.name);
@@ -170,6 +187,18 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                       required: false,
                       message: 'campo obligatorio',
                     },
+                    {
+                      validator(_, fileList) {
+                        return new Promise((resolve, reject) => {
+                          if (fileList[0] && fileList[0].size > 500000) {
+                            reject('imagen demasiado pesada');
+                            message.error('imagen demasiado pesada');
+                          } else {
+                            resolve(fileList[0]);
+                          }
+                        });
+                      }
+                    }
                   ]}
                   valuePropName="fileList"
                   getValueFromEvent={(e) => e && e.fileList}
@@ -183,8 +212,8 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                     maxCount={1}
                     beforeUpload={(file) => {
                       return new Promise((resolve, reject) => {
-                        if (file.size > 500000) {
-                          reject('imagen demasiado pesada');
+                        if (file && file.size > 500000) {
+                          reject(['imagen demasiado pesada']);
                           message.error('imagen demasiado pesada');
                         } else {
                           resolve(file);
@@ -194,7 +223,18 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                     customRequest={(info) => {
                       setimgData([info.file]);
                     }}
-
+                    // onChange={(event) => {
+                    //   if(event){
+                    //     setimgData([event]);
+                    //   }
+                    // }}
+                    onRemove={(event) => {
+                      if (event) {
+                        console.log('ejecutamos el on remove', event);
+                        setimgData([]);
+                        console.log(imgData)
+                      }
+                    }}
                   >
                     <Button icon={<UploadOutlined />}>Cargar Foto</Button>
                   </Upload>

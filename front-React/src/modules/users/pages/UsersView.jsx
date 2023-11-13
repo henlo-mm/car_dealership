@@ -205,7 +205,7 @@ export const UsersView = () => {
         isVisible={isModalDeleteVisible}
         onConfirm={handleDeleteUser}
         onCancel={handleCancelDelete}
-        title={"Eliminar Usuario"}
+        title={"Eliminar usuario"}
         message={"¿Está seguro(a) de eliminar este usuario?"}
       />
 
