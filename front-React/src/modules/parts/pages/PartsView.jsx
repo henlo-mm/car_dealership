@@ -11,7 +11,6 @@ import { IoMdRefresh } from 'react-icons/io';
 
 //import 'antd/dist/antd.css';
 
-const { Search } = Input;
 
 export const PartsView = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -21,6 +20,7 @@ export const PartsView = () => {
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
     const [partToDelete, setPartToDelete] = useState(null);
+    const [searchText, setSearchText] = useState("");
 
 
     const refreshTable = () => {
@@ -119,6 +119,12 @@ export const PartsView = () => {
             title: 'Nombre',
             dataIndex: 'name',
             key: 'name',
+            filteredValue: [searchText],
+            onFilter: (value, record) => {
+                return String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.code).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.description).toLowerCase().includes(value.toLowerCase())
+            }
         },
         {
             title: 'Codigo',
@@ -134,11 +140,13 @@ export const PartsView = () => {
             title: 'quantity',
             dataIndex: 'quantity',
             key: 'quantity',
+            sorter: (a, b) => a.quantity - b.quantity,
         },
         {
             title: 'price',
             dataIndex: 'price',
             key: 'price',
+            sorter: (a, b) => a.quantity - b.quantity,
         },
         {
             title: 'Acciones',
@@ -162,7 +170,14 @@ export const PartsView = () => {
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>
-                        <Search placeholder="Buscar usuarios" />
+                    <Input.Search
+                            placeholder="Buscar"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            onSearch={(value) => {
+                                setSearchText(value)
+                            }}
+                        />
                     </div>
                     <div className='col-lg-6 col-md-12 py-2'>
                         <div className='d-flex flex-column flex-sm-wrap flex-lg-row justify-content-end align-items-lg-center align-items-sm-start flex-wrap py-3'>
@@ -178,19 +193,6 @@ export const PartsView = () => {
                                 className='m-1'
                                 type="default"
                                 icon={<IoMdRefresh />}>
-
-                            </Button>
-                            <Button
-                                className='m-1'
-                                type="default"
-                                icon={<FilterOutlined />}>
-                                Sucursal
-                            </Button>
-                            <Button
-                                className='m-1'
-                                type="default"
-                                icon={<FilterOutlined />}>
-                                tipo de usuario
                             </Button>
                         </div>
 

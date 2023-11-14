@@ -122,7 +122,7 @@ export const Sidebar = () => {
         <Sider width={200} theme="dark" collapsible>
           <div className="logo"> LOGO CARRITO </div>
           <div className="user-info">
-            <Avatar size={32} icon={<UserOutlined />} />
+            <Avatar src={user?.avatar} size={32}  />
             <span>{user?.name + ' ' + user?.lastname}</span>
             <span>{user?.role}</span>
             <button onClick={() => logout()}>log out</button>

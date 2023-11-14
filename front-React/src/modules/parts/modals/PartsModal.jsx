@@ -94,7 +94,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
     <Modal
       title={partData ? "Editar repuesto" : "Crear repuesto"}
       open={isVisible}
-      onCancel={onclose}
+      onCancel={onClose}
       width={800}
       footer={[
         <Button key="cancel" onClick={onClose}>
@@ -161,6 +161,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                   rules={[{ required: true, message: 'campo obligatorio' }]}
                 >
                   <Input
+                    maxLength={200}
                     className='form-control'
                     placeholder='Precio'
                   />
@@ -170,7 +171,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                 <Form.Item
                   name="description"
                   label={<label className="form-label"> Descripción </label>}
-                  rules={[{ required: false, message: 'campo obligatorio' }]}
+                  rules={[{ required: true, message: 'campo obligatorio' }]}
                 >
                   <Input.TextArea
                     className='form-control'
