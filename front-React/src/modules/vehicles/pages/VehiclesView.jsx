@@ -3,21 +3,23 @@ import { Button, Table, Modal, Form, Input, Select, notification, Image, Tag } f
 import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined, ExclamationCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { VehiclesModal } from '../modals/VehiclesModal';
-import { getvehicles } from '../../../services/vehicles';
+import { deleteVehicle, getvehicles } from '../../../services/vehicles';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
 import { IoMdRefresh } from 'react-icons/io';
 import { getBranches } from '../../../services/branches';
+import { DeleteModal } from '../../../core/modals/DeleteModal';
 //import 'antd/dist/antd.css';
 
-const { Search } = Input;
 
 export const VehiclesView = () => {
     const [loading, setLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
     const [vehiclesData, setVehiclesData] = useState([]);
     const [vehicleToEdit, setVehicleToEdit] = useState(null);
+    const [vehicleToDelete, setVehicleToDelete] = useState(null);
     const [branchList, setBranchList] = useState([]);
     const [searchText, setSearchText] = useState("");
 
@@ -83,17 +85,6 @@ export const VehiclesView = () => {
         setIsModalVisible(false);
     };
     const handleOk = () => {
-        /**
-         name = data.get('name')
-         address = data.get('address')
-         second_phone = data.get('second_phone')
-         lastname = data.get('lastname')
-         phone = data.get('phone')
-         email = data.get('email')
-         password = make_password(data.get('password'))
-         branch_id = data.get('branch_id')
-         role_id = data.get('role_id')
-         */
         // todo: logica para crear un usuario nuevo
         console.log('se ejecuto el ok')
         setIsModalVisible(false);
@@ -106,6 +97,34 @@ export const VehiclesView = () => {
     };
 
 
+    const showDeleteConfirmationModal = (vehicle) => {
+        setVehicleToDelete(vehicle.id);
+        setIsDeleteModalVisible(true);
+    };
+
+    const handleDeleteVehicle = async () => {
+        try {
+            await deleteVehicle(vehicleToDelete);
+            refreshTable();
+            setIsDeleteModalVisible(false);
+            notification.success({
+                message: 'Operacion exitosa',
+                description: 'El vehiculo ha sido eliminado',
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            setIsDeleteModalVisible(false);
+            notification.error({
+                message: 'Error',
+                description: error.message,
+            });
+
+        }
+    };
+
+    const handleCancelVehicle = () => {
+        setIsDeleteModalVisible(false);
+    };
 
     const columns = [
         {
@@ -134,7 +153,7 @@ export const VehiclesView = () => {
             filteredValue: [searchText],
             onFilter: (value, record) => {
                 return String(record.model).toLowerCase().includes(value.toLowerCase()) ||
-                      String(record.make).toLowerCase().includes(value.toLowerCase())
+                    String(record.make).toLowerCase().includes(value.toLowerCase())
             }
         },
         {
@@ -158,31 +177,36 @@ export const VehiclesView = () => {
             // dataIndex: 'branch',
             key: 'branch',
             render: (values) => {
-                console.log(branchList)
-                return <p> { findNameById(values.branch,branchList) } </p>
+                return <p> {findNameById(values.branch, branchList)} </p>
             }
         },
         {
             title: 'Estado',
-            // dataIndex: 'is_for_sale',
+            dataIndex: 'is_for_sale',
             key: 'is_for_sale',
-            render: payload => {
+            render: (is_for_sale) => {
                 return <Tag
-                    icon={payload.is_for_sale ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
-                    color={payload.is_for_sale ? 'success' : 'processing'}
+                    icon={is_for_sale ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
+                    color={is_for_sale ? 'success' : 'processing'}
                 >
-                    {payload.is_for_sale ? 'para la venta' : 'no se vende'}
+                    {is_for_sale ? 'para la venta' : 'no se vende'}
                 </Tag>
-            }
+            },
+
         },
         {
             title: 'Acciones',
             key: 'actions',
             render: (values) => (
                 <div>
-                    <Button type="link" icon={<BiSolidEditAlt size={20} />}
+                    <Button
+                        type="link"
+                        icon={<BiSolidEditAlt size={20} />}
                     />
-                    <Button type="link" icon={<AiOutlineDelete size={20} />}
+                    <Button
+                        type="link"
+                        icon={<AiOutlineDelete size={20} />}
+                        onClick={() => showDeleteConfirmationModal(values)}
                     />
                 </div>
             ),
@@ -262,6 +286,14 @@ export const VehiclesView = () => {
                     </div>
                 </div>
             </div>
+
+            <DeleteModal
+                isVisible={isDeleteModalVisible}
+                onConfirm={handleDeleteVehicle}
+                onCancel={handleCancelVehicle}
+                title={"Eliminar Vehiculo"}
+                message={"¿Está seguro(a) de eliminar este vehiculo?"}
+            />
 
             <VehiclesModal
                 isvisible={isModalVisible}
