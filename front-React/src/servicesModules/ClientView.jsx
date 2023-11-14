@@ -1,29 +1,18 @@
 import React from 'react';
-import { Row, Col, Card, Form, Input, Button, notification } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
-import './../../styles/login.css';
-import { Footer } from '../../core/footer/Footer';
-import { Header } from '../../core/header/Header';
+import { Layout } from 'antd';
+import { Sidebar } from '../core/sidebar/Sidebar';
+
+import './../styles/sidebar.css'
+import { Footer } from '../core/footer/Footer';
+import { Header } from '../core/header/Header';
+
+import { Row, Col, Card, Form, Input, Button } from 'antd';
+import { Content } from 'antd/es/layout/layout';
+import { Route, Routes } from 'react-router-dom';
+import { ManagementRoute } from '../auth/routes/ManagementRoute';
 
 
-export const LoginPage = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-
-  const onFinish = async (values) => { 
-
-    try {
-      await login(values)
-    } catch (error) {
-      console.error('Error:', error);
-      notification.error({
-        message: 'Error en autenticación',
-        description: error.message,
-      });
-    }
-  };
-
+export const Clientview = () => {
   return (
     <div>
       <Header />
@@ -33,7 +22,6 @@ export const LoginPage = () => {
             
             <Form
               name="loginForm"
-              onFinish={onFinish}
               layout="vertical"
               initialValues={{ remember: true }}
             >
@@ -71,4 +59,4 @@ export const LoginPage = () => {
       <Footer />
     </div>
   );
-};
+}
