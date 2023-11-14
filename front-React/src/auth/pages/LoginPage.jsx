@@ -5,7 +5,7 @@ import useAuth from '../../hooks/useAuth';
 import './../../styles/login.css';
 import { Footer } from '../../core/footer/Footer';
 import { Header } from '../../core/header/Header';
-
+import useAuth from '../../hooks/useAuth';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -72,3 +72,5 @@ export const LoginPage = () => {
     </div>
   );
 };
+
+
