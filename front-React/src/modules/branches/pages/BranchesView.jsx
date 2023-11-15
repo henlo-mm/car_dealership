@@ -4,12 +4,12 @@ import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
+import { IoMdRefresh } from 'react-icons/io';
 import { deleteBranch, getBranches } from '../../../services/branches';
 import { BranchesModal } from '../modals/BranchesModal';
 import { DeleteModal } from '../../../core/modals/DeleteModal';
 
 
-const { Search } = Input;
 
 export const BranchesView = () => {
 
@@ -22,6 +22,7 @@ export const BranchesView = () => {
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
     const [branchToDelete, setBranchToDelete] = useState(null);
+    const [searchText, setSearchText] = useState("");
 
     const refreshTable = () => {
         setRefreshKey((prevKey) => prevKey + 1);
@@ -50,7 +51,7 @@ export const BranchesView = () => {
     };
 
     const handleCancel = () => {
-       
+
         setIsModalVisible(false);
         setBranchToEdit(null);
         setBranchToEdit(null);
@@ -95,6 +96,13 @@ export const BranchesView = () => {
             title: 'Nombre de Sucursal',
             dataIndex: 'name',
             key: 'name',
+            filteredValue: [searchText],
+            onFilter: (value, record) => {
+                return String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.address).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.contact_name).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.email).toLowerCase().includes(value.toLowerCase())
+            }
         },
         {
             title: 'Direccion',
@@ -110,17 +118,6 @@ export const BranchesView = () => {
             title: 'Telefono de sucursal',
             dataIndex: 'phone',
             key: 'phone',
-        },
-        {
-            
-            title: 'Direccion',
-            dataIndex: 'address',
-            key: 'address',
-        },
-        {
-            title: 'Persona encargada',
-            dataIndex: 'contact_name',
-            key: 'contact_name',
         },
         {
             title: 'Telefono de sucursal',
@@ -153,7 +150,14 @@ export const BranchesView = () => {
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>
-                        <Search placeholder="Buscar usuarios" />
+                        <Input.Search
+                            placeholder="Buscar"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            onSearch={(value) => {
+                                setSearchText(value)
+                            }}
+                        />
                     </div>
                     <div className='col-lg-6 col-md-12 py-2'>
                         <div className='d-flex flex-column flex-sm-wrap flex-lg-row justify-content-end align-items-lg-center align-items-sm-start flex-wrap py-3'>
@@ -168,8 +172,9 @@ export const BranchesView = () => {
                             <Button
                                 className='m-1'
                                 type="default"
-                                icon={<FilterOutlined />}>
-                                Sucursal
+                                icon={<IoMdRefresh />}
+                                onClick={refreshTable}
+                            >
                             </Button>
                             <Button
                                 className='m-1'
@@ -194,7 +199,7 @@ export const BranchesView = () => {
                 </div>
             </div>
 
-          
+
             <BranchesModal
                 isVisible={isModalVisible}
                 onConfirm={handleOk}

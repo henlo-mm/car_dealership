@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Input } from 'antd';
+import { Button, Table, Input, Select, notification, Avatar } from 'antd';
 import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { UsersModal } from '../modals/UsersModal';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
+import { IoMdRefresh } from 'react-icons/io';
 import { getUsers, deleteUser } from '../../../services/user';
 import { DeleteModal } from '../../../core/modals/DeleteModal';
+import { getBranches } from '../../../services/branches';
 
-const { Search } = Input;
+
 
 export const UsersView = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // En este use State vamos a poner toda la data, para que setear los fields en el formulario para el caso de edicion.
   const [userToEdit, setUserToEdit] = useState(null);
   const [userData, setUserData] = useState([]);
+  const [branchList, setBranchList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
   const refreshTable = () => {
     setRefreshKey((prevKey) => prevKey + 1);
@@ -29,7 +33,8 @@ export const UsersView = () => {
     try {
       const data = await getUsers();
       setUserData(data);
-      console.log(userData)
+      const listBranchs = await getBranches();
+      setBranchList(listBranchs);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -40,6 +45,22 @@ export const UsersView = () => {
   useEffect(() => {
     fetchUserData();
   }, [refreshKey]);
+
+  const filterBranchData = async (id) => {
+
+    setLoading(true);
+
+    try {
+      let usersList = await getUsers();
+      setUserData(usersList.filter((user) => user.branch == id))
+      setLoading(false);
+    } catch (error) {
+      notification.error({
+        message: 'Error',
+        description: error.message,
+      });
+    }
+  }
 
   const handleAddUserClick = (values) => {
     if (values) {
@@ -91,9 +112,24 @@ export const UsersView = () => {
 
   const columns = [
     {
+      title: '',
+      dataIndex: 'avatar',
+      key: 'avatar',
+      render:(avatar) => {
+       return  <Avatar src={avatar} size={50}  />
+      }
+    },
+    {
       title: 'Nombre',
       dataIndex: 'name',
       key: 'name',
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.lastName).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.document).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.email).toLowerCase().includes(value.toLowerCase())
+      }
     },
     {
       title: 'Apellido',
@@ -158,7 +194,14 @@ export const UsersView = () => {
         </h5>
         <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
           <div className='col-lg-4 col-md-12 py-2'>
-            <Search placeholder="Buscar usuarios" />
+            <Input.Search
+              placeholder="Buscar partes"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onSearch={(value) => {
+                setSearchText(value)
+              }}
+            />
           </div>
           <div className='col-lg-6 col-md-12 py-2'>
             <div className='d-flex flex-column flex-sm-wrap flex-lg-row justify-content-end align-items-lg-center align-items-sm-start flex-wrap py-3'>
@@ -173,9 +216,29 @@ export const UsersView = () => {
               <Button
                 className='m-1'
                 type="default"
-                icon={<FilterOutlined />}>
-                Sucursal
+                icon={<IoMdRefresh />}
+                onClick={refreshTable}
+              >
               </Button>
+              <Select
+                placeholder="Sucursal"
+                style={{
+                  width: '25%',
+                }}
+                suffixIcon={<FilterOutlined />}
+                onChange={
+                  (id) => filterBranchData(id)
+                }
+                autoClearSearchValue={true}
+                options={
+                  branchList &&
+                  branchList?.map((v) => ({
+                    value: v.id,
+                    label: `${v.name}`,
+                  })
+                  )
+                }
+              />
               <Button
                 className='m-1'
                 type="default"
