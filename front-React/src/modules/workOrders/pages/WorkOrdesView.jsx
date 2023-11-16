@@ -25,7 +25,7 @@ export const WorkOrdersView = () => {
         setRefreshKey((prevKey) => prevKey + 1);
     };
 
-    const fetchWorkOrderData = async () => {
+    const fetchData = async () => {
         try {
             const data = await getWorkOrders();
             setWorkOrderData(data);
@@ -38,7 +38,7 @@ export const WorkOrdersView = () => {
     };
 
     useEffect(() => {
-        fetchWorkOrderData();
+        fetchData();
     }, [refreshKey]);
 
     const handleAddWorkOrderClick = (values) => {
@@ -115,9 +115,37 @@ export const WorkOrdersView = () => {
             key: 'workshop_manager',
         },
         {
+            title: 'Descripción',
+            dataIndex: 'description',
+            key: 'description',
+        },
+        {
             title: 'Comentarios',
             dataIndex: 'comments',
             key: 'comments',
+        },
+        {
+            title: 'status',
+            dataIndex: 'status',
+            key: 'status',
+        },
+        {
+            title: 'start_date',
+            dataIndex: 'start_date',
+            key: 'start_date',
+        },
+        {
+            title: 'completion_date',
+            dataIndex: 'completion_date',
+            key: 'completion_date',
+        },
+        {
+            title: 'is_available',
+            dataIndex: 'is_available',
+            key: 'is_available',
+            render: (is_available) => {
+                return <div> {is_available ? "true" : "false"}</div>
+            }
         },
         {
             title: 'Acciones',
@@ -183,18 +211,26 @@ export const WorkOrdersView = () => {
                 <div className='row'>
                     <div className='mt-4 table-responsive'>
                         <Table columns={columns} dataSource={workOrderData} loading={loading} />
-                        <Modal
-                            title="Confirmar eliminación"
-                            open={isModalDeleteVisible}
-                            onOk={handleDeleteWorkOrder}
-                            onCancel={handleCancelDelete}
-                        >
-                            ¿Está seguro(a) de eliminar este usuario?
-                        </Modal>
+
                     </div>
                 </div>
             </div>
-            <WorkOrdersModal isVisible={isModalVisible} onConfirm={handleOk} onCancel={handleCancel} workOrderData={workOrderToEdit} onWorkOrderUpdate={refreshTable} />
+
+            <Modal
+                title="Confirmar eliminación"
+                open={isModalDeleteVisible}
+                onOk={handleDeleteWorkOrder}
+                onCancel={handleCancelDelete}
+            >
+                ¿Está seguro(a) de eliminar este usuario?
+            </Modal>
+            <WorkOrdersModal
+                isVisible={isModalVisible}
+                onConfirm={handleOk}
+                onCancel={handleCancel}
+                workOrderData={workOrderToEdit}
+                onWorkOrderUpdate={refreshTable}
+            />
         </div>
     );
 };
