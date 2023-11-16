@@ -63,7 +63,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
         });
 
         form.resetFields();
-        
+
       } else {
 
         const formData = new FormData();
@@ -80,19 +80,20 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
         }
 
         await createPart(formData);
+
+        onPartUpdate();
+
+        if (onConfirm) {
+          onConfirm();
+        }
+
+        notification.success({
+          message: 'Operacion exitosa',
+          description: 'El repuesto ha sido creado',
+        });
+        
+        form.resetFields();
       }
-
-      onPartUpdate();
-
-      if (onConfirm) {
-        onConfirm();
-      }
-
-      notification.success({
-        message: 'Operacion exitosa',
-        description: 'El repuesto ha sido creado',
-      });
-      form.resetFields();
 
     } catch (error) {
       notification.error({
@@ -236,10 +237,10 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                     }}
                     customRequest={(info) => {
                       setimgData([info.file]);
-                      
+
                     }}
                     onChange={(event) => {
-                      if(event){
+                      if (event) {
                         setimgData([event]);
                         console.log(imgData);
                       }
