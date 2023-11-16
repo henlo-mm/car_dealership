@@ -146,7 +146,7 @@ export const PartsView = () => {
             title: 'price',
             dataIndex: 'price',
             key: 'price',
-            sorter: (a, b) => a.quantity - b.quantity,
+            sorter: (a, b) => a.price - b.price,
         },
         {
             title: 'Acciones',
