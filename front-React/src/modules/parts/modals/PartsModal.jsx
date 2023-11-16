@@ -51,6 +51,19 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
 
         await updatePart(partData.id, formData);
 
+        onPartUpdate();
+
+        if (onConfirm) {
+          onConfirm();
+        }
+
+        notification.success({
+          message: 'Operacion exitosa',
+          description: 'El repuesto ha sido Actualizado',
+        });
+
+        form.resetFields();
+        
       } else {
 
         const formData = new FormData();
@@ -223,17 +236,19 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                     }}
                     customRequest={(info) => {
                       setimgData([info.file]);
+                      
                     }}
-                    // onChange={(event) => {
-                    //   if(event){
-                    //     setimgData([event]);
-                    //   }
-                    // }}
+                    onChange={(event) => {
+                      if(event){
+                        setimgData([event]);
+                        console.log(imgData);
+                      }
+                    }}
                     onRemove={(event) => {
                       if (event) {
-                        console.log('ejecutamos el on remove', event);
+                        // console.log('ejecutamos el on remove', event);
                         setimgData([]);
-                        console.log(imgData)
+                        // console.log(imgData)
                       }
                     }}
                   >

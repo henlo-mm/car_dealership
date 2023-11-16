@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
         if (route) {
             navigate(route);
         } else {
+            console.log("se salio en: ROLES_ROUTES[rol] ")
             logout()
         }
     }
@@ -57,15 +58,18 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem("token");
             const userData = localStorage.getItem("userData");
             if (!token || !userData) {
+                console.log("se salio en: !token || !userData ")
                 logout()
                 return;
             }
 
             try {
                 changeLoading();
-                setUser({ ...JSON.parse(userData) })
-                !location.pathname?.includes(ROLES_ROUTES[role]) && navigateTo(role)
+                const value = JSON.parse(userData);
+                setUser(value)
+                !location.pathname?.includes(ROLES_ROUTES[value.role]) && navigateTo(value.role)
             } catch (e) {
+                console.log("se salio en: catch (e)", e)
                 logout();
             }
         })()

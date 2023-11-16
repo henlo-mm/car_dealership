@@ -58,7 +58,13 @@ export const VehiclesView = () => {
         fetchBranchData();
     }, [refreshKey]);
 
-    const handleAddUserClick = () => {
+    const handleAddVehicleClick = (values) => {
+
+        if (values) {
+            setVehicleToEdit(values)
+            console.log({ vehicleToEdit })
+        }
+
         setIsModalVisible(true);
     };
 
@@ -202,6 +208,7 @@ export const VehiclesView = () => {
                     <Button
                         type="link"
                         icon={<BiSolidEditAlt size={20} />}
+                        onClick={() => handleAddVehicleClick(values)}
                     />
                     <Button
                         type="link"
@@ -214,6 +221,7 @@ export const VehiclesView = () => {
     ];
 
 
+    console.log({ vehiclesData })
     return (
 
         <div className='card card-body'>
@@ -238,7 +246,7 @@ export const VehiclesView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
-                                onClick={handleAddUserClick}
+                                onClick={() => { handleAddVehicleClick(); }}
                             >
                                 Nuevo
                             </Button>
@@ -296,7 +304,7 @@ export const VehiclesView = () => {
             />
 
             <VehiclesModal
-                isvisible={isModalVisible}
+                isVisible={isModalVisible}
                 onConfirm={handleOk}
                 onCancel={handleCancel}
                 vehicleData={vehicleToEdit}

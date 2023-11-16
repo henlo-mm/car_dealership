@@ -1,12 +1,15 @@
 import { Button, DatePicker, Form, Input, Modal, Radio, Select, Spin, Switch, Upload, notification } from 'antd'
 import React, { useEffect, useState } from 'react'
-import moment from 'moment';
 import { getBranches } from '../../../services/branches';
 import { carBrands } from '../.config/carbrands'
 import { colorList } from '../.config/colorsList'
 import { UploadOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import dayjs from 'dayjs';
+import { createVehicle, updateVehicle } from '../../../services/vehicles';
+import { CiImageOn } from 'react-icons/ci';
 
-export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onVehicleUpdate }) => {
+export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onVehicleUpdate }) => {
 
     const [form] = Form.useForm();
 
@@ -15,7 +18,7 @@ export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onV
     const [branchList, setBranchList] = useState([]);
     const [carsList, setCarsList] = useState(carBrands);
     const [colorsList, setColorsList] = useState(colorList);
-    const [imgData, setImgData] = useState([]);
+    const [imgData, setimgData] = useState([]);
 
     const fetchBranchData = async () => {
         try {
@@ -34,7 +37,11 @@ export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onV
 
     useEffect(() => {
         if (vehicleData && isVisible) {
-            form.setFieldsValue(vehicleData);
+            form.setFieldsValue({
+                ...vehicleData,
+                year: dayjs().set('year', vehicleData.year),
+                image: []
+            });
         }
     }, [vehicleData])
 
@@ -50,43 +57,96 @@ export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onV
 
 
     const onSubmit = async (values) => {
+
         try {
 
             setLoading(true);
+            console.log("vehicleData", vehicleData);
 
-            const year = moment(values.date).year();
-            const formData = new FormData();
-            formData.append("name", values.name);
-            formData.append("year", year);
-            // formData.append("year", year);
-            // formData.append("year", year);
-            // formData.append("year", year);
+            if (vehicleData) {
 
-            // if (imgData[0] == undefined) {
-            //     formData.append("image", vehicleData.image);
-            // } else {
-            //     formData.append("image", imgData[0]);
-            // }
+                console.log("actualización de vehiculo")
+                const year = parseInt(values.year.format('YYYY'));
+                const formData = new FormData();
+                formData.append("make", values.make);
+                formData.append("year", year);
+                formData.append("model", values.model);
+                formData.append("branch", values.branch);
+                formData.append("color", values.color);
+                formData.append("is_for_sale", values.is_for_sale);
 
-            console.log('Año enviado al backend:', year);
-            console.log(formData);
-            console.log(values);
+                if (imgData[0] == undefined) {
+                    formData.append("image", vehicleData.image);
+                } else {
+                    formData.append("image", imgData[0]);
+                }
+                console.log({ values });
 
-            // Imprimir los datos en la consola
-            for (const pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
+
+                // console.log('Año enviado al backend:', year);
+                // console.log(formData);
+                // console.log(values);
+
+                // Imprimir los datos en la consola
+                for (const pair of formData.entries()) {
+                    console.log(pair[0], pair[1]);
+                }
+
+                await updateVehicle(vehicleData.id,formData);
+
+                onVehicleUpdate();
+
+                form.resetFields();
+
+                if (onConfirm) {
+                    onConfirm();
+                }
+                notification.success({
+                    message: 'Operacion exitosa',
+                    description: 'El vehiculo ha sido actualizado',
+                });
+
+            } else {
+
+                console.log("creacion de vehiculo",)
+                const year = parseInt(values.year.format('YYYY'));
+                const formData = new FormData();
+                formData.append("make", values.make);
+                formData.append("year", year);
+                formData.append("model", values.model);
+                formData.append("branch", values.branch);
+                formData.append("color", values.color);
+                formData.append("is_for_sale", values.is_for_sale);
+
+                if (imgData[0] == undefined) {
+                    formData.append("image", vehicleData.image);
+                } else {
+                    formData.append("image", imgData[0]);
+                }
+
+                console.log({ values });
+
+                // Imprimir los datos en la consola
+                for (const pair of formData.entries()) {
+                    console.log(pair[0], pair[1]);
+                }
+
+                await createVehicle(formData);
+
+                onVehicleUpdate();
+
+                if (onConfirm) {
+                    onConfirm();
+                }
+
+                form.resetFields();
+
+                notification.success({
+                    message: 'Operacion exitosa',
+                    description: 'El vehiculo ha sido creado',
+                });
+
             }
-            onVehicleUpdate();
-
-            form.resetFields();
-
-            if (onConfirm) {
-                onConfirm();
-            }
-            notification.success({
-                message: 'Operacion exitosa',
-                description: 'El vehiculo ha sido creado',
-            });
 
         } catch (error) {
             notification.error({
@@ -101,7 +161,7 @@ export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onV
     return (
         <Modal
             title={"creacion de vehiculo"}
-            open={isvisible}
+            open={isVisible}
             onCancel={onClose}
             width={800}
             footer={[
@@ -128,18 +188,18 @@ export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onV
                         form={form}
                         layout='vertical'
                         onFinish={onSubmit}
-                        initialValues={{is_for_sale: false}}
+                        initialValues={{ is_for_sale: false }}
                     >
                         <div className='row'>
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="name"
+                                    name="model"
                                     label={<label className="form-label"> Nombre  </label>}
                                     rules={[{ required: true, message: 'campo obligatorio' }]}
                                 >
                                     <Input
                                         className='form-control'
-                                        placeholder='nombre'
+                                        placeholder='Nombre'
                                     />
                                 </Form.Item>
                             </div>
@@ -151,7 +211,7 @@ export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onV
                                 >
                                     <DatePicker
                                         picker="year"
-                                        onChange={(date, dateString) => setSelectedYear(dateString)}
+                                    //onChange={(date, dateString) => setSelectedYear(dateString)}
                                     />
                                 </Form.Item>
                             </div>
@@ -247,39 +307,53 @@ export const VehiclesModal = ({ isvisible, onConfirm, onCancel, vehicleData, onV
                                         },
                                         {
                                             validator(_, fileList) {
-                                                return new Promise((resolve, rejected) => {
-                                                    if (fileList[0].size > 500000) {
-                                                        rejected('imagen demasiado pesada');
+                                                return new Promise((resolve, reject) => {
+                                                    if (fileList[0] && fileList[0].size > 500000) {
+                                                        reject('imagen demasiado pesada');
+                                                        message.error('imagen demasiado pesada');
                                                     } else {
-                                                        resolve('carga exitosa');
+                                                        resolve(fileList[0]);
                                                     }
-                                                })
+                                                });
                                             }
                                         }
                                     ]}
                                 >
 
                                     <Upload
+                                        listType="picture"
+                                        iconRender={() => {
+                                            return <CiImageOn size={25} />
+                                        }}
+                                        accept='.png, .jpg, .jpge'
                                         maxCount={1}
                                         beforeUpload={(file) => {
-                                            return new Promise((resolve, rejected) => {
-                                                if (file.size > 500000) {
-                                                    rejected('imagen demasiado pesada');
-                                                    message.error('imagen demasiado pesada')
+                                            return new Promise((resolve, reject) => {
+                                                if (file && file.size > 700000) {
+                                                    reject(['imagen demasiado pesada']);
+                                                    message.error('imagen demasiado pesada');
                                                 } else {
-                                                    resolve('carga exitosa');
-                                                    file.status = "done";
+                                                    resolve(file);
                                                 }
-                                            })
+                                            });
                                         }}
-
-                                        listType='picture'
-
-                                        // action to custom request
                                         customRequest={(info) => {
-                                            setImgData([info])
-                                        }}
+                                            setimgData([info.file]);
 
+                                        }}
+                                        onChange={(event) => {
+                                            if (event) {
+                                                setimgData([event]);
+                                                console.log(imgData);
+                                            }
+                                        }}
+                                        onRemove={(event) => {
+                                            if (event) {
+                                                // console.log('ejecutamos el on remove', event);
+                                                setimgData([]);
+                                                // console.log(imgData)
+                                            }
+                                        }}
                                     >
                                         <Button
                                             icon={<UploadOutlined />}
