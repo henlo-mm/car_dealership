@@ -11,7 +11,7 @@ export const createVehicle = async (data) => {
     return response.data;
 
   } catch (error) {
-    console.error('Error al crear una sucursal:', error);
+    console.error('Error al crear un vehiculo:', error);
   }
 };
 
@@ -20,7 +20,7 @@ export const getvehicles = async () => {
     const response = await api.get('/vehicles/');
     return response.data;
   } catch (error) {
-    console.error('Error al obtener las sucursales:', error);
+    console.error('Error al obtener los vehiculos', error);
   }
 };
 
@@ -35,7 +35,11 @@ export const getVehicle = async (vehicleId) => {
 
 export const updateVehicle = async (vehicleId, vehicleData) => {
   try {
-    const response = await api.patch(`/vehicles/${vehicleId}`, vehicleData);
+    const response = await api.put(`/vehicles/${vehicleId}/`, vehicleData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error al actualizar el vehículo:', error);
