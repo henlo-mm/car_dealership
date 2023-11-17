@@ -11,7 +11,7 @@ export const LoginPage = () => {
   const { login } = useAuth();
 
   const onFinish = async (values) => { 
-
+    console.log("entrar")
     try {
       await login(values)
     } catch (error) {
@@ -28,7 +28,7 @@ export const LoginPage = () => {
       <Header />
       <Row justify="center" align="middle" style={{ minHeight: '90vh' }} className="back-byw">
         <Col xs={24} sm={16} md={12} lg={10} >
-          <Card title="Bienvenido de nuevo" extra={"Inicia sesión para seguir"}>
+          <Card title="Bienvenido de nuevo Login" extra={"Inicia sesión para seguir"}>
             
             <Form
               name="loginForm"

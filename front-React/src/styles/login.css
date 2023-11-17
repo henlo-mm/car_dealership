@@ -22,6 +22,28 @@ header{
     position: absolute;
     top: 20px;
     left: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 95%;
+    padding: 0 3vw;
+
+}
+header button{
+    background: #A4B3B5;
+    border: 1px solid black;
+    width: auto;
+    height: auto;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #1E1E1E;
+    padding: 0.9rem 2rem;
+    border-radius: 30px;
+}
+header img{
+    min-width: 90px;
 }
 
 .ant-card-head-wrapper{
@@ -60,7 +82,7 @@ header{
     padding-top: 3rem !important;
 }
 
-#loginForm_email, .ant-input-password {
+#loginForm_email, .ant-input-password, .ant-input {
     background: transparent;
     border: 0.6px solid black !important;
     border-radius: 30px !important;

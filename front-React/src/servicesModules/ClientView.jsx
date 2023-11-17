@@ -1,27 +1,66 @@
 import React from 'react';
-import { Layout } from 'antd';
-import { Sidebar } from '../core/sidebar/Sidebar';
-
-import './../styles/sidebar.css'
+import { Row, Col, Card, Form, Input, Button, notification } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import '../styles/login.css';
 import { Footer } from '../core/footer/Footer';
 import { Header } from '../core/header/Header';
 
-import { Row, Col, Card, Form, Input, Button } from 'antd';
-import { Content } from 'antd/es/layout/layout';
-import { Route, Routes } from 'react-router-dom';
-import { ManagementRoute } from '../auth/routes/ManagementRoute';
-
-
 export const Clientview = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const onFinish = async (values) => { 
+    console.log("entrar")
+    try {
+      await login(values)
+    } catch (error) {
+      console.error('Error:', error);
+      notification.error({
+        message: 'Error en autenticación',
+        description: error.message,
+      });
+    }
+  };
+
   return (
     <div>
       <Header />
-      <Row justify="center" align="middle" style={{ minHeight: '90vh' }} className="back-byw">
-        <Col xs={24} sm={16} md={12} lg={10} >
-          <Card title="Bienvenido de nuevo" extra={"Inicia sesión para seguir"}>
+      <Row justify="space-around" align="middle" style={{ minHeight: '90vh' }} className="back-byw">
+        <Col xs={24} sm={16} md={12} lg={8} >
+          <Card title="Consulta tu Orden de trabajo" extra={"Ingresa la matricula del vehiculo"}>
             
             <Form
               name="loginForm"
+              onFinish={onFinish}
+              layout="vertical"
+              initialValues={{ remember: true }}
+            >
+              <Form.Item
+                name="matricula"
+                className='item_icon'
+                rules={[
+                  { required: true, message: 'Por favor ingresa la matricula del vehiculo' },
+                  { type: 'text', message: 'Por favor ingresa la matricula del vehiculo' },
+                ]}
+              >
+                <Input placeholder="AVC045" />
+              </Form.Item>
+              <Form.Item  className='btn_entrar'>
+                <Button type="primary" htmlType="submit" block>
+                  Entrar
+                </Button>
+              </Form.Item>
+            </Form>
+            
+          </Card>
+        </Col>
+        <Col xs={24} sm={16} md={12} lg={8} >
+          <Card title="Consulta tu cotización" extra={"Ingresa tu cedula"}>
+            
+            <Form
+              name="loginForm"
+              onFinish={onFinish}
               layout="vertical"
               initialValues={{ remember: true }}
             >
@@ -29,23 +68,14 @@ export const Clientview = () => {
                 name="email"
                 className='item_icon'
                 rules={[
-                  { required: true, message: 'Por favor ingresa tu correo electrónico' },
-                  { type: 'email', message: 'Ingresa un correo electrónico válido' },
+                  { required: true, message: 'Por favor ingresa tu cedula' },
+                  { type: 'email', message: 'Ingresa una cedula' },
                 ]}
               >
-                <Input placeholder="Correo@ejemplo.com" />
+                <Input placeholder="1193142564" />
               </Form.Item>
 
-              <Form.Item
-                name="password"
-                className='item_icon secure'
-                rules={[{ required: true, message: 'Por favor ingresa tu contraseña' }]}
-              >
-                <Input.Password placeholder="Contraseña" />
-              </Form.Item>
-              <div className='link_ext'>
-                <a href="#">Consultar servicios</a>
-              </div>
+              
               <Form.Item  className='btn_entrar'>
                 <Button type="primary" htmlType="submit" block>
                   Entrar
@@ -56,7 +86,10 @@ export const Clientview = () => {
           </Card>
         </Col>
       </Row>
+      
       <Footer />
     </div>
   );
-}
+};
+
+
