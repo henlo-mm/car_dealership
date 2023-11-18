@@ -1,18 +1,20 @@
 import { Modal, Form, Spin, Input, Button, notification, Select } from 'antd';
+import { Table } from 'antd';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { getWorkOrdersByUserDocumentOrCarPlate } from '../../services/work_orders';
 
 export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpdate }) => {
 
-
+    console.log(userData ,"hola")
     const [loading, setLoading] = useState(false);
     const [workOrder, setWorkOrder] = useState([]);
 
     const fetchOrderWorkData = async () => {
         try {
-            const data = await getWorkOrdersByUserDocumentOrCarPlate(userData);
+            const data = await getWorkOrdersByUserDocumentOrCarPlate({ userDocument: null, carPlate: userData});
             setWorkOrder(data);
-            console.log(data)
+            
         } catch (error) {
             console.error('Error branch list:', error);
         } finally {
@@ -32,48 +34,73 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
         }
     }
 
-    
 
-
-    // funcioinalidad, que al ejecutar un submit, nos permite enviar los datos en una peticion http y ejecutarlo. 
-
-    
-
-    // Objetos representativos que se deben de obtener de las peticiones http de Django
-
-    const optionsRoles = [
+    const columns = [
         {
-            id: 1,
-            name: 'Gerente',
+          title: 'ID',
+          dataIndex: 'id',
+          key: 'id',
         },
         {
-            id: 2,
-            name: 'Vendedor',
+          title: 'Comentarios',
+          dataIndex: 'comments',
+          key: 'comments',
         },
         {
-            id: 3,
-            name: 'Jefe de Taller',
+          title: 'Descripción',
+          dataIndex: 'description',
+          key: 'description',
         },
         {
-            id: 4,
-            name: 'Cliente',
+          title: 'Fecha de inicio',
+          dataIndex: 'start_date',
+          key: 'start_date',
+          render: (start_date) => dayjs(start_date).format('YYYY-MM-DD')
         },
-    ]
+        {
+          title: 'Fecha de finalización',
+          dataIndex: 'completion_date',
+          key: 'completion_date',
+          render: (completion_date) => dayjs(completion_date).format('YYYY-MM-DD')
+        },
+        {
+            title: 'Disponible',
+            dataIndex: 'is_available',
+            key: 'is_available',
+            render: isAvailable => (isAvailable ? 'Sí' : 'No'),
+          },
+        {
+          title: 'Estado',
+          dataIndex: ['status', 'name'],
+          key: 'status',
+        },
+        {
+          title: 'Cliente',
+          dataIndex: ['customer', 'name'],
+          key: 'customer',
+          render: (name, record) => `${name} ${record.customer.lastname}`,
+        },
+        {
+          title: 'Gerente del taller',
+          dataIndex: ['workshop_manager', 'name'],
+          key: 'workshop_manager',
+          render: (name, record) => `${name} ${record.workshop_manager.lastname}`,
+        },
+      ];
 
     return (
         <Modal
-            title={`Orden de trabajo ${userData}`}
+            title={`Ordenes de trabajo ${userData}`}
             open={isVisible}
             onCancel={onClose}
-            // onOk={() => {validateForm}}
-            width={800}
+            width={1400}
         >
             {/* Formulario para agregar/editar usuario */}
             <Spin
                 spinning={loading}
             >
                 <div className='card-body row'>
-                    <p>{userData}</p>
+                    <Table dataSource={workOrder} columns={columns} />
                 </div>
             </Spin>
         </Modal>

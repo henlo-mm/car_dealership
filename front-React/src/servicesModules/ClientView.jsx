@@ -54,7 +54,7 @@ export const Clientview = () => {
                   { type: 'text', message: 'Por favor ingresa la matricula del vehiculo' },
                 ]}
               >
-                <Input className='loginForm_matricula' placeholder="AVC045" />
+                <Input className='loginForm_matricula' placeholder="AVC-045" />
               </Form.Item>
               <Form.Item  className='btn_entrar'>
                 <Button type="primary" htmlType="submit" block>
