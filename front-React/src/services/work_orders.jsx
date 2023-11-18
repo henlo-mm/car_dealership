@@ -40,7 +40,7 @@ export const updateWorkOrder = async (workOrderId, workOrderData) => {
   
 export const deleteWorkOrder = async (workOrderId) => {
     try {
-        const response = await api.delete(`/work_orders/${workOrderId}`);
+        const response = await api.delete(`/work_orders/${workOrderId}/`);
         return response.data;
     } catch (error) {
       console.error('Error al eliminar la orden de trabajo:', error);
