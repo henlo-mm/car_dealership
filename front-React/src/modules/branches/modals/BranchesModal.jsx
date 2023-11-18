@@ -27,22 +27,34 @@ export const BranchesModal = ({ isVisible, onConfirm, onCancel, branchData, onBr
 
             if (branchData) {
                 await updateBranch(branchData.id, values);
+                onBranchUpdate();
+
+                form.resetFields();
+
+                if (onConfirm) {
+                    onConfirm();
+                }
+
+                notification.success({
+                    message: 'Operacion exitosa',
+                    description: 'La sucursal ha sido Actualizada',
+                });
+
             } else {
+
                 await createBranch(values);
+                
+                form.resetFields();
+                if (onConfirm) {
+                    onConfirm();
+                }
+
+                notification.success({
+                    message: 'Operacion exitosa',
+                    description: 'La sucursal ha sido creada ',
+                });
+
             }
-
-            onBranchUpdate();
-
-            form.resetFields();
-
-            if (onConfirm) {
-                onConfirm();
-            }
-            
-            notification.success({
-                message: 'Operacion exitosa',
-                description: 'La sucursal ha sido creada',
-            });
 
         } catch (error) {
             notification.error({

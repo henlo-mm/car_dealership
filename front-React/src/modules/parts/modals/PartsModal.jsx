@@ -51,6 +51,19 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
 
         await updatePart(partData.id, formData);
 
+        onPartUpdate();
+
+        if (onConfirm) {
+          onConfirm();
+        }
+
+        notification.success({
+          message: 'Operacion exitosa',
+          description: 'El repuesto ha sido Actualizado',
+        });
+
+        form.resetFields();
+
       } else {
 
         const formData = new FormData();
@@ -67,19 +80,20 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
         }
 
         await createPart(formData);
+
+        onPartUpdate();
+
+        if (onConfirm) {
+          onConfirm();
+        }
+
+        notification.success({
+          message: 'Operacion exitosa',
+          description: 'El repuesto ha sido creado',
+        });
+        
+        form.resetFields();
       }
-
-      onPartUpdate();
-
-      if (onConfirm) {
-        onConfirm();
-      }
-
-      notification.success({
-        message: 'Operacion exitosa',
-        description: 'El repuesto ha sido creado',
-      });
-      form.resetFields();
 
     } catch (error) {
       notification.error({
@@ -94,7 +108,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
     <Modal
       title={partData ? "Editar repuesto" : "Crear repuesto"}
       open={isVisible}
-      onCancel={onclose}
+      onCancel={onClose}
       width={800}
       footer={[
         <Button key="cancel" onClick={onClose}>
@@ -161,6 +175,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                   rules={[{ required: true, message: 'campo obligatorio' }]}
                 >
                   <Input
+                    maxLength={200}
                     className='form-control'
                     placeholder='Precio'
                   />
@@ -170,7 +185,7 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                 <Form.Item
                   name="description"
                   label={<label className="form-label"> Descripción </label>}
-                  rules={[{ required: false, message: 'campo obligatorio' }]}
+                  rules={[{ required: true, message: 'campo obligatorio' }]}
                 >
                   <Input.TextArea
                     className='form-control'
@@ -222,17 +237,20 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                     }}
                     customRequest={(info) => {
                       setimgData([info.file]);
+
                     }}
-                    // onChange={(event) => {
-                    //   if(event){
-                    //     setimgData([event]);
-                    //   }
-                    // }}
+      
+                    onChange={(event) => {
+                      if (event) {
+                        setimgData([event]);
+                        console.log(imgData);
+                      }
+                    }}
                     onRemove={(event) => {
                       if (event) {
-                        console.log('ejecutamos el on remove', event);
+                        // console.log('ejecutamos el on remove', event);
                         setimgData([]);
-                        console.log(imgData)
+                        // console.log(imgData)
                       }
                     }}
                   >

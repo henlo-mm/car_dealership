@@ -110,7 +110,6 @@ class UserView(APIView):
 
             data = request.data
 
-            
             user.name = data.get('name', user.name)
             user.address = data.get('address')
             user.second_phone = data.get('secondPhone')
@@ -123,19 +122,20 @@ class UserView(APIView):
             user.branch_id = data.get('branch', user.branch_id)
             user.role_id = data.get('role', user.role_id)
 
+            if (data.get('avatar')):
 
-            image_data = data.get('avatar', user.avatar)
+                image_data = data.get('avatar', user.avatar)
 
-            if isinstance(image_data, str):
-                user.avatar = image_data
-            else:
-            
-                image_formatted = ContentFile(image_data.read(), name=image_data.name)
-                folder = "avatars"
+                if isinstance(image_data, str):
+                    user.avatar = image_data
+                else:
+                
+                    image_formatted = ContentFile(image_data.read(), name=image_data.name)
+                    folder = "avatars"
 
-                image_url = upload_to_s3(image_formatted, folder)
+                    image_url = upload_to_s3(image_formatted, folder)
 
-                user.avatar = image_url
+                    user.avatar = image_url
 
             user.save()
 

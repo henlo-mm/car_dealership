@@ -1,35 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Modal, Form, Input } from 'antd';
-import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { Button, Table, Modal, Input, Tag } from 'antd';
+import { PlusCircleOutlined, ExclamationCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { IoMdRefresh } from 'react-icons/io';
 import { WorkOrdersModal } from '../modals/WorkOrdersModal'
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
 import { getWorkOrders, deleteWorkOrder } from '../../../services/work_orders';
-import { getUser } from '../../../services/user';
-
-
-const { Search } = Input;
+import { getUsers } from '../../../services/user';
+import { getvehicles } from '../../../services/vehicles';
+import { StatusWorkOrdersList } from '../.config/workOrdersStatusList'
+import dayjs from 'dayjs';
 
 export const WorkOrdersView = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [workOrderToEdit, setWorkOrderToEdit] = useState(null);
     const [workOrderData, setWorkOrderData] = useState([]);
+    const [usersData, setUsersData] = useState([]);
+    const [vehiclesData, setVehiclesData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
     const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
-    const [userToDelete, setUserToDelete] = useState(null);
+    const [workOrdeToDelete, setWorkOrdeToDelete] = useState(null);
+    const [searchText, setSearchText] = useState("");
 
 
     const refreshTable = () => {
         setRefreshKey((prevKey) => prevKey + 1);
     };
 
-    const fetchWorkOrderData = async () => {
+    const fetchData = async () => {
         try {
-            const data = await getWorkOrders();
-            setWorkOrderData(data);
-            console.log(workOrderData);
+            const dataWorkOrders = await getWorkOrders();
+            const dataUsers = await getUsers();
+            const dataVehicles = await getvehicles();
+            setWorkOrderData(dataWorkOrders);
+            setUsersData(dataUsers);
+            setVehiclesData(dataVehicles);
+
+            console.log(dataWorkOrders);
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -38,7 +47,7 @@ export const WorkOrdersView = () => {
     };
 
     useEffect(() => {
-        fetchWorkOrderData();
+        fetchData();
     }, [refreshKey]);
 
     const handleAddWorkOrderClick = (values) => {
@@ -96,28 +105,94 @@ export const WorkOrdersView = () => {
     };
 
 
+    const findStatusById = (idToFind, data) => {
+        const foundItem = data.find(item => item.id === idToFind);
+
+        return foundItem ? foundItem.name : null;
+    };
+
+
     //const userName = getUser()
     const columns = [
         {
             title: 'Vehiculo',
             dataIndex: 'vehicle',
             key: 'vehicle',
+            render: (vehicle) => {
+                return <p> {findVehicleById(vehicle, vehiclesData)} </p>
+            },
+            filteredValue: [searchText],
+            onFilter: (value, record) => {
+                return String(record.vehicle).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.customer).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.workshop_manager).toLowerCase().includes(value.toLowerCase())
+            }
         },
         {
             title: 'Cliente',
             dataIndex: 'customer',
             key: 'customer',
+            render: (customer) => {
+                return <p> {findUserById(customer, usersData)} </p>
+            }
 
         },
         {
             title: 'Gerente de la orden',
             dataIndex: 'workshop_manager',
             key: 'workshop_manager',
+            render: (workshop_manager) => {
+                return <p> {findUserById(workshop_manager, usersData)} </p>
+            }
+        },
+        {
+            title: 'Descripción',
+            dataIndex: 'description',
+            key: 'description',
+        },
+        {
+            title: 'Descripción',
+            dataIndex: 'description',
+            key: 'description',
         },
         {
             title: 'Comentarios',
             dataIndex: 'comments',
             key: 'comments',
+        },
+        {
+            title: 'status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => findStatusById(status, StatusWorkOrdersList)
+
+        },
+        {
+            title: 'start_date',
+            dataIndex: 'start_date',
+            key: 'start_date',
+
+            render: (start_date) => dayjs(start_date).format('YYYY-MM-DD')
+        },
+        {
+            title: 'completion_date',
+            dataIndex: 'completion_date',
+            key: 'completion_date',
+
+            render: (completion_date) => dayjs(completion_date).format('YYYY-MM-DD')
+        },
+        {
+            title: 'is_available',
+            dataIndex: 'is_available',
+            key: 'is_available',
+            render: (is_available) => {
+                return <Tag
+                    icon={is_available ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
+                    color={is_available ? 'success' : 'orange'}
+                >
+                    {is_available ? 'Terminado' : 'En proceso'}
+                </Tag>
+            }
         },
         {
             title: 'Acciones',
@@ -131,15 +206,18 @@ export const WorkOrdersView = () => {
         },
     ];
 
-    /*const data = [
-        {
-            key: '1',
-            name: 'Usuario 1',
-            email: 'usuario1@example.com',
-            branch: 'Sucursal A',
-        },
-        // Agrega más datos de usuarios aquí
-    ];*/
+
+    const findUserById = (idToFind, data) => {
+        const foundItem = data.find(item => item.id === idToFind);
+
+        return foundItem ? `${foundItem.name} ${foundItem.lastName}` : null;
+    };
+
+    const findVehicleById = (idToFind, data) => {
+        const foundItem = data.find(item => item.id === idToFind);
+
+        return foundItem ? foundItem.model : null;
+    };
 
     return (
 
@@ -150,7 +228,14 @@ export const WorkOrdersView = () => {
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>
-                        <Search placeholder="Buscar usuarios" />
+                        <Input.Search
+                            placeholder="Buscar"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            onSearch={(value) => {
+                                setSearchText(value)
+                            }}
+                        />
                     </div>
                     <div className='col-lg-6 col-md-12 py-2'>
                         <div className='d-flex flex-column flex-sm-wrap flex-lg-row justify-content-end align-items-lg-center align-items-sm-start flex-wrap py-3'>
@@ -165,14 +250,9 @@ export const WorkOrdersView = () => {
                             <Button
                                 className='m-1'
                                 type="default"
-                                icon={<FilterOutlined />}>
-                                Sucursal
-                            </Button>
-                            <Button
-                                className='m-1'
-                                type="default"
-                                icon={<FilterOutlined />}>
-                                tipo de usuario
+                                icon={<IoMdRefresh />}
+                                onClick={refreshTable}
+                            >
                             </Button>
                         </div>
 
@@ -183,18 +263,26 @@ export const WorkOrdersView = () => {
                 <div className='row'>
                     <div className='mt-4 table-responsive'>
                         <Table columns={columns} dataSource={workOrderData} loading={loading} />
-                        <Modal
-                            title="Confirmar eliminación"
-                            open={isModalDeleteVisible}
-                            onOk={handleDeleteWorkOrder}
-                            onCancel={handleCancelDelete}
-                        >
-                            ¿Está seguro(a) de eliminar este usuario?
-                        </Modal>
+
                     </div>
                 </div>
             </div>
-            <WorkOrdersModal isVisible={isModalVisible} onConfirm={handleOk} onCancel={handleCancel} workOrderData={workOrderToEdit} onWorkOrderUpdate={refreshTable} />
+
+            <Modal
+                title="Confirmar eliminación"
+                open={isModalDeleteVisible}
+                onOk={handleDeleteWorkOrder}
+                onCancel={handleCancelDelete}
+            >
+                ¿Está seguro(a) de eliminar este usuario?
+            </Modal>
+            <WorkOrdersModal
+                isVisible={isModalVisible}
+                onConfirm={handleOk}
+                onCancel={handleCancel}
+                workOrderData={workOrderToEdit}
+                onWorkOrderUpdate={refreshTable}
+            />
         </div>
     );
 };

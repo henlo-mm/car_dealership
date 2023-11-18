@@ -48,6 +48,7 @@ class Vehicle(models.Model):
     model = models.CharField(max_length=200, null=False)
     image = models.CharField(max_length=255)
     make = models.CharField(max_length=200, null=False)
+    car_plate = models.CharField(max_length=20, unique=True)
     color = models.CharField(max_length=200, null=False)
     year = models.IntegerField(null=False)
     is_for_sale = models.BooleanField(null=False)
