@@ -49,8 +49,6 @@ class QuoteViewSet(ModelViewSet):
 
         return JsonResponse(quote_data_list, safe=False) 
         
-        #return Response(serializer.data)
-
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         user_data = request.data.get('user_data')
