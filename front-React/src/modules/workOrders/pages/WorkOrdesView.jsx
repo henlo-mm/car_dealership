@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Modal, Form, Input, Tag } from 'antd';
-import { PlusCircleOutlined, FilterOutlined, EditOutlined, EyeOutlined, ExclamationCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Button, Table, Modal, Input, Tag } from 'antd';
+import { PlusCircleOutlined, ExclamationCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { IoMdRefresh } from 'react-icons/io';
 import { WorkOrdersModal } from '../modals/WorkOrdersModal'
@@ -9,7 +9,8 @@ import { BiSolidEditAlt } from 'react-icons/bi';
 import { getWorkOrders, deleteWorkOrder } from '../../../services/work_orders';
 import { getUsers } from '../../../services/user';
 import { getvehicles } from '../../../services/vehicles';
-
+import { StatusWorkOrdersList } from '../.config/workOrdersStatusList'
+import dayjs from 'dayjs';
 
 export const WorkOrdersView = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -104,6 +105,13 @@ export const WorkOrdersView = () => {
     };
 
 
+    const findStatusById = (idToFind, data) => {
+        const foundItem = data.find(item => item.id === idToFind);
+
+        return foundItem ? foundItem.name : null;
+    };
+
+
     //const userName = getUser()
     const columns = [
         {
@@ -151,16 +159,19 @@ export const WorkOrdersView = () => {
             title: 'status',
             dataIndex: 'status',
             key: 'status',
+            render: (status) => findStatusById(status, StatusWorkOrdersList)
         },
         {
             title: 'start_date',
             dataIndex: 'start_date',
             key: 'start_date',
+            render: (start_date) => dayjs(start_date).format('YYYY-MM-DD')
         },
         {
             title: 'completion_date',
             dataIndex: 'completion_date',
             key: 'completion_date',
+            render: (completion_date) => dayjs(completion_date).format('YYYY-MM-DD')
         },
         {
             title: 'is_available',

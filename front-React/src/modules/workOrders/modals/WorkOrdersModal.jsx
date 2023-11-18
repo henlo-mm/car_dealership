@@ -4,7 +4,7 @@ import { createWorkOrder, updateWorkOrder } from '../../../services/work_orders'
 import { getvehicles } from '../../../services/vehicles';
 import { StatusWorkOrdersList } from '../.config/workOrdersStatusList'
 import { getUsers } from '../../../services/user';
-
+import dayjs from 'dayjs';
 
 export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData, onWorkOrderUpdate }) => {
 
@@ -50,20 +50,23 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
         form.resetFields();
     }
 
-    // funcioinalidad, que al ejecutar un submit, nos permite enviar los datos en una peticion http y ejecutarlo. 
+
 
     const onSubmit = async (values) => {
-        try {
-            //todo
-            // los values del form
-            setLoading(true);
-            //Hacer validaciones nezar peticiones httpcesarias
 
-            if (workOrderData) {
-                await updateWorkOrder(workOrderData.id, values);
-            } else {
-                await createWorkOrder(values);
-            }
+        setLoading(true);
+
+        try {
+
+
+            // if (workOrderData) {
+            //     await updateWorkOrder(workOrderData.id, values);
+            // } else {
+            //     await createWorkOrder(values);
+            // }
+
+            console.log(values)
+
 
             onWorkOrderUpdate();
 
@@ -112,7 +115,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="vehicle"
                                     label={<label className="form-label"> Vehiculo  </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <Select
                                         style={{
@@ -133,7 +136,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="customer"
                                     label={<label className="form-label"> Cliente </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <Select
                                         style={{
@@ -154,7 +157,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="workshop_manager"
                                     label={<label className="form-label"> Gerente de la orden </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <Select
                                         style={{
@@ -175,7 +178,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="status"
                                     label={<label className="form-label"> Estado </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <Select
                                         style={{
@@ -197,11 +200,13 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="start_date"
                                     label={<label className="form-label"> Fecha de inicio  </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
+                                    valuePropName='dateElement'
+                                    normalize={(dateElement) => dayjs(dateElement).format('YYYY-MM-DD')}
                                 >
                                     <DatePicker
+                                        picker='date'
                                         className='form-control'
-                                     
                                     />
                                 </Form.Item>
                             </div>
@@ -209,11 +214,13 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="completion_date"
                                     label={<label className="form-label"> Fecha de entrega  </label>}
+                                    valuePropName='dateElement'
+                                    normalize={(dateElement) => dayjs(dateElement).format('YYYY-MM-DD')}
                                     rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <DatePicker
+                                        picker='date'
                                         className='form-control'
-                                       
                                     />
                                 </Form.Item>
                             </div>
@@ -233,7 +240,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="description"
                                     label={<label className="form-label"> Descripción  </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <Input.TextArea
                                         className='form-control'
