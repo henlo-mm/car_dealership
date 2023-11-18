@@ -1,31 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Column , Pie } from '@ant-design/charts';
+import { getUsers } from '../../../services/user';
+import { getWorkOrders } from '../../../services/work_orders';
 //import { Column } from '@ant-design/plots';
 import Card from '../templates/card';
 import DemoPie from '../templates/pie';
 import { Flex } from 'antd';
 
 export const DashboardView = () => {
-  
+  const [userData, setUserData] = useState([]);
+  const [workOrder, setWorkOrder] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  /*const dataColumn = [
-    { sucursal: 'Sucursal A', ventas: 3, cotizaciones: 7 },
-    { sucursal: 'Sucursal B', ventas: 5, cotizaciones: 3 },
-    { sucursal: 'Sucursal C', ventas: 7, cotizaciones: 1 },
-    { sucursal: 'Sucursal D', ventas: 2, cotizaciones: 5 },
-  ];*/
-  
+  const fetchUserData = async () => {
+    try {
+      const dataUsers = await getUsers();
+      const cantidadElementosUsers = Object.keys(dataUsers).length;
+      setUserData(cantidadElementosUsers);
 
-  /*const configColumn = {
-    dataColumn,
-    xField: 'sucursal',
-    yField: ['ventas', 'cotizaciones'],
-    seriesField: 'type',
-    isGroup: true,
-    columnStyle: {
-      radius: [20, 20, 0, 0],
-    },
-  };*/
+      const dataWorkOrders = await getWorkOrders();
+      const cantidadElementosWorkOrder = Object.keys(dataWorkOrders).length;
+      setWorkOrder(cantidadElementosWorkOrder);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [refreshKey]);
+
+  console.log(userData)
+
+  const info_cards = {
+    clientes: { titulo: "Clientes", cantidad: userData },
+    ventas: { titulo: "Ventas", cantidad: 5 },
+    cotizaciones: { titulo: "Cotizaciones", cantidad: 3 },
+    ordenes: { titulo: "Ordenes de trabajo", cantidad: workOrder }
+  };
+
 const data = [
 {
   name: 'Ventas',
@@ -101,64 +116,6 @@ label: {
 },
 };
 
-
-
-  const dataPie = [
-    {
-      type: '分类一',
-      value: 27,
-    },
-    {
-      type: '分类二',
-      value: 25,
-    },
-    {
-      type: '分类三',
-      value: 18,
-    },
-    {
-      type: '分类四',
-      value: 15,
-    },
-    {
-      type: '分类五',
-      value: 10,
-    },
-    {
-      type: '其他',
-      value: 5,
-    },
-  ];
-  const configPie = {
-    appendPadding: 10,
-    dataPie,
-    angleField: 'value',
-    colorField: 'type',
-    radius: 0.9,
-    label: {
-      type: 'inner',
-      offset: '-30%',
-      content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
-      style: {
-        fontSize: 14,
-        textAlign: 'center',
-      },
-    },
-    interactions: [
-      {
-        type: 'element-active',
-      },
-    ],
-  };
-  
-  
-
-  const info_cards = {
-    clientes: { titulo: "Clientes", cantidad: 10 },
-    ventas: { titulo: "Ventas", cantidad: 5 },
-    cotizaciones: { titulo: "Cotizaciones", cantidad: 3 },
-    ordenes: { titulo: "Ordenes de trabajo", cantidad: 15 }
-  };
 
   return (
     <div>
