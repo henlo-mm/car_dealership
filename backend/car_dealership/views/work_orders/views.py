@@ -51,23 +51,34 @@ class WorkOrderViewSet(ModelViewSet):
         return JsonResponse(work_orders_data_list, safe=False) 
 
     @action(detail=False, methods=['get'])
-    def list_by_user_document(self, request):
+    def list_by_user_document_or_car_plate(self, request):
         user_document = request.query_params.get('document', None)
+        car_plate = request.query_params.get('car_plate', None)
 
-        if not user_document:
-            return Response({'message': 'Parámetro document es requerido'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            user = User.objects.get(document=user_document)
-        except User.DoesNotExist:
-            return Response({'message': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        except User.MultipleObjectsReturned:
-            return Response({'message': 'Múltiples usuarios encontrados con el mismo documento'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        work_orders = WorkOrder.objects.filter(customer_id=user.id).order_by('id')
+        if not user_document and not car_plate:
+            return Response({'message': 'Parámetro document o car_plate es requerido'}, status=status.HTTP_400_BAD_REQUEST)
 
         work_orders_data_list = []
-        
+
+        if user_document:
+            try:
+                user = User.objects.get(document=user_document)
+            except User.DoesNotExist:
+                return Response({'message': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            except User.MultipleObjectsReturned:
+                return Response({'message': 'Múltiples usuarios encontrados con el mismo documento'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            work_orders = WorkOrder.objects.filter(customer_id=user.id).order_by('id')
+        else:
+            try:
+                vehicle = Vehicle.objects.get(car_plate__icontains=car_plate)
+            except Vehicle.DoesNotExist:
+                return Response({'message': 'Carro no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            except Vehicle.MultipleObjectsReturned:
+                return Response({'message': 'Múltiples carros encontrados con la misma matrícula'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            work_orders = WorkOrder.objects.filter(vehicle_id=vehicle.id).order_by('id')
+
         for work_order in work_orders:
             work_order_data = {
                 "id": work_order.id,
@@ -76,7 +87,6 @@ class WorkOrderViewSet(ModelViewSet):
                 "start_date": work_order.start_date,
                 "is_available": work_order.is_available,
                 "completion_date": work_order.completion_date,
-                
                 "status": {
                     "id": work_order.status.id,
                     "name": work_order.status.name,
@@ -101,9 +111,6 @@ class WorkOrderViewSet(ModelViewSet):
             work_orders_data_list.append(work_order_data)
 
         return JsonResponse(work_orders_data_list, safe=False)
-    
-    @action(detail=False, methods=['get'])
-    def list_by_car_plate(self, request):
 
         car_plate = request.query_params.get('car_plate', None)
 
