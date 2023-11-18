@@ -42,6 +42,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
             form.setFieldsValue({
                 ...workOrderData,
                 vehicle: vehicle.id,
+                customer: customer.id,
             });
         }
     }, [workOrderData])
@@ -122,7 +123,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                         form={form}
                         layout='vertical'
                         onFinish={onSubmit}
-                        initialValues={{ is_available: false }}
+                        initialValues={  { is_available: false }}
                     >
                         <div className="row">
                             <div className='col-12 col-md-6'>
