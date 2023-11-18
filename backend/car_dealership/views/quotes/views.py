@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.http import JsonResponse
 from rest_framework.viewsets import ModelViewSet
 from ...models import Quote
 from ...serializers import QuoteSerializer, UserSerializer
@@ -10,10 +11,45 @@ class QuoteViewSet(ModelViewSet):
     serializer_class = QuoteSerializer
 
     def list(self, request):
-        quotes = Quote.objects.prefetch_related('seller', 'client').all().order_by('id')
+        quotes = Quote.objects.all().order_by('id')
 
-        serializer = self.get_serializer(quotes, many=True)
-        return Response(serializer.data)
+        quote_data_list = []
+        
+        for quote in quotes:
+            quote_data = {
+                "id": quote.id,
+                "validity": quote.validity,
+                "description": quote.description,
+                "price": quote.price,
+                "car_plate": quote.car_plate,
+                "soat": quote.soat,
+                "window_tint": quote.window_tint,
+                "car_plate_and_logo_fastening": quote.car_plate_and_logo_fastening,
+                "roadside_kit": quote.roadside_kit,
+                "fire_extinguisher": quote.fire_extinguisher,
+                "first_aid_kit": quote.fire_extinguisher,
+                "vehicle": {
+                    "id": quote.vehicle.id,
+                    "model": quote.vehicle.model,
+                    "make": quote.vehicle.make,
+                    "is_for_sale": quote.vehicle.is_for_sale,
+                },
+                "client": {
+                    "id": quote.client.id,
+                    "name": quote.client.name,
+                    "lastname": quote.client.lastname,
+                },
+                "seller": { 
+                    "id": quote.seller.id,
+                    "name": quote.seller.name,
+                    "lastname": quote.seller.lastname,
+                }
+            }
+            quote_data_list.append(quote_data)
+
+        return JsonResponse(quote_data_list, safe=False) 
+        
+        #return Response(serializer.data)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -28,8 +64,6 @@ class QuoteViewSet(ModelViewSet):
             quote_data['client'] = user.id
         else:
             return Response(user_serializer.errors, status=400)
-
-        quote_data['seller'] =  request.data.get('seller_id')
 
         quote_serializer = QuoteSerializer(data=quote_data)
 
