@@ -41,8 +41,11 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
             //Si hay data entonces configure la data
             form.setFieldsValue({
                 ...workOrderData,
-                vehicle: vehicle.id,
+                status: status.id,
+                vehicle: vehicle.model,
                 customer: customer.id,
+                // customer: `${customer.name} ${customer.lastname}`,
+                // workshop_manager: `${workshop_manager.name} ${workshop_manager.lastname}`,
             });
         }
     }, [workOrderData])
@@ -123,7 +126,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                         form={form}
                         layout='vertical'
                         onFinish={onSubmit}
-                        initialValues={  { is_available: false }}
+                        initialValues={{ is_available: false }}
                     >
                         <div className="row">
                             <div className='col-12 col-md-6'>
@@ -199,6 +202,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                         style={{
                                             width: '100%',
                                         }}
+
                                         options={
                                             StatusWorkOrdersList &&
                                             StatusWorkOrdersList?.map((v) => ({
