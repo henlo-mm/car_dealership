@@ -59,27 +59,31 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
         try {
 
 
-            // if (workOrderData) {
-            //     await updateWorkOrder(workOrderData.id, values);
-            // } else {
-            //     await createWorkOrder(values);
-            // }
+            if (workOrderData) {
+                // await updateWorkOrder(workOrderData.id, values);
+                console.log("viene data")
+            } else {
 
-            console.log(values)
+                console.log("es una creacion de workorder");
 
+                await createWorkOrder(values);
 
-            onWorkOrderUpdate();
+                console.log(values);
 
-            form.resetFields();
+                onWorkOrderUpdate();
 
+                form.resetFields();
 
-            if (onConfirm) {
-                onConfirm();
-            } //todo
-            notification.success({
-                message: 'Éxito',
-                description: 'La petición se ha completado correctamente.',
-            });
+                if (onConfirm) {
+                    onConfirm();
+                } //todo
+                notification.success({
+                    message: 'Éxito',
+                    description: 'La petición se ha completado correctamente.',
+                });
+
+            }
+
         } catch (error) {
             notification.error({
                 message: 'Error',

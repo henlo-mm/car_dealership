@@ -11,6 +11,7 @@ import { getUsers } from '../../../services/user';
 import { getvehicles } from '../../../services/vehicles';
 import { StatusWorkOrdersList } from '../.config/workOrdersStatusList'
 import dayjs from 'dayjs';
+import { DeleteModal } from '../../../core/modals/DeleteModal';
 
 export const WorkOrdersView = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -83,15 +84,14 @@ export const WorkOrdersView = () => {
         setWorkOrderToEdit(null);
     };
 
-    const showDeleteConfirmationModal = (user) => {
-        setUserToDelete(user.id);
+    const showDeleteConfirmationModal = (data) => {
+        setWorkOrdeToDelete(data.id);
         setIsModalDeleteVisible(true);
-
     };
 
     const handleDeleteWorkOrder = async () => {
         try {
-            await deleteWorkOrder(userToDelete);
+            await deleteWorkOrder(workOrdeToDelete);
             refreshTable();
             setIsModalDeleteVisible(false);
         } catch (error) {
@@ -105,12 +105,6 @@ export const WorkOrdersView = () => {
     };
 
 
-    const findStatusById = (idToFind, data) => {
-        const foundItem = data.find(item => item.id === idToFind);
-
-        return foundItem ? foundItem.name : null;
-    };
-
 
     //const userName = getUser()
     const columns = [
@@ -119,13 +113,16 @@ export const WorkOrdersView = () => {
             dataIndex: 'vehicle',
             key: 'vehicle',
             render: (vehicle) => {
-                return <p> {findVehicleById(vehicle, vehiclesData)} </p>
+                return <p> {`${vehicle.make} ${vehicle.model}`} </p>
             },
             filteredValue: [searchText],
             onFilter: (value, record) => {
-                return String(record.vehicle).toLowerCase().includes(value.toLowerCase()) ||
-                    String(record.customer).toLowerCase().includes(value.toLowerCase()) ||
-                    String(record.workshop_manager).toLowerCase().includes(value.toLowerCase())
+                return String(record.vehicle.make).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.vehicle.model).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.workshop_manager.name).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.workshop_manager.lastname).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.customer.name).toLowerCase().includes(value.toLowerCase()) ||
+                    String(record.customer.lastname).toLowerCase().includes(value.toLowerCase())
             }
         },
         {
@@ -133,7 +130,7 @@ export const WorkOrdersView = () => {
             dataIndex: 'customer',
             key: 'customer',
             render: (customer) => {
-                return <p> {findUserById(customer, usersData)} </p>
+                return <p> {`${customer.name} ${customer.lastname}`} </p>
             }
 
         },
@@ -142,7 +139,7 @@ export const WorkOrdersView = () => {
             dataIndex: 'workshop_manager',
             key: 'workshop_manager',
             render: (workshop_manager) => {
-                return <p> {findUserById(workshop_manager, usersData)} </p>
+                return <p>  {`${workshop_manager.name} ${workshop_manager.lastname}`} </p>
             }
         },
         {
@@ -164,8 +161,7 @@ export const WorkOrdersView = () => {
             title: 'status',
             dataIndex: 'status',
             key: 'status',
-            render: (status) => findStatusById(status, StatusWorkOrdersList)
-
+            render: (status) => <p> {`${status.name}`} </p>
         },
         {
             title: 'start_date',
@@ -206,19 +202,6 @@ export const WorkOrdersView = () => {
         },
     ];
 
-
-    const findUserById = (idToFind, data) => {
-        const foundItem = data.find(item => item.id === idToFind);
-
-        return foundItem ? `${foundItem.name} ${foundItem.lastName}` : null;
-    };
-
-    const findVehicleById = (idToFind, data) => {
-        const foundItem = data.find(item => item.id === idToFind);
-
-        return foundItem ? foundItem.model : null;
-    };
-
     return (
 
         <div className='card card-body'>
@@ -243,7 +226,7 @@ export const WorkOrdersView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
-                                onClick={handleAddWorkOrderClick}
+                                onClick={() => { handleAddWorkOrderClick(); }}
                             >
                                 Nuevo
                             </Button>
@@ -268,14 +251,14 @@ export const WorkOrdersView = () => {
                 </div>
             </div>
 
-            <Modal
-                title="Confirmar eliminación"
-                open={isModalDeleteVisible}
-                onOk={handleDeleteWorkOrder}
-                onCancel={handleCancelDelete}
-            >
-                ¿Está seguro(a) de eliminar este usuario?
-            </Modal>
+            <DeleteModal
+               isVisible={isModalDeleteVisible}
+               onConfirm={handleDeleteWorkOrder}
+               onCancel={handleCancelDelete}
+               title={"Eliminar Orden de trabajo"}
+               message={"¿Está seguro(a) de eliminar esta orden de trabajo"}
+            />
+
             <WorkOrdersModal
                 isVisible={isModalVisible}
                 onConfirm={handleOk}
