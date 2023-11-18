@@ -37,8 +37,12 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
 
     useEffect(() => {
         if (workOrderData && isVisible) {
+            console.log(workOrderData);
             //Si hay data entonces configure la data
-            form.setFieldsValue(workOrderData)
+            form.setFieldsValue({
+                ...workOrderData,
+                vehicle: vehicle.id,
+            });
         }
     }, [workOrderData])
 
