@@ -9,6 +9,7 @@ import { BiSolidEditAlt } from 'react-icons/bi';
 import { IoMdRefresh } from 'react-icons/io';
 import { getBranches } from '../../../services/branches';
 import { DeleteModal } from '../../../core/modals/DeleteModal';
+import dayjs from 'dayjs';
 //import 'antd/dist/antd.css';
 
 
@@ -22,6 +23,9 @@ export const VehiclesView = () => {
     const [vehicleToDelete, setVehicleToDelete] = useState(null);
     const [branchList, setBranchList] = useState([]);
     const [searchText, setSearchText] = useState("");
+
+    
+
 
     const fetchBranchData = async () => {
         try {
@@ -180,10 +184,10 @@ export const VehiclesView = () => {
         },
         {
             title: 'Sucursal',
-            // dataIndex: 'branch',
+            dataIndex: 'branch',
             key: 'branch',
-            render: (values) => {
-                return <p> {findNameById(values.branch, branchList)} </p>
+            render: (branch) => {
+                return <p> {findNameById(branch, branchList)} </p>
             }
         },
         {
