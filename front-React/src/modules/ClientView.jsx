@@ -15,7 +15,7 @@ export const Clientview = () => {
         <Sidebar />
     
       <Layout>
-        <Header style={{ background: '#fff', padding: 0 }}>
+        <Header style={{ background: 'transparent', padding: 0 }}>
           {/* Aquí puedes agregar el encabezado de tu aplicación */}
         </Header>
         <Content style={{ margin: '16px' }}>

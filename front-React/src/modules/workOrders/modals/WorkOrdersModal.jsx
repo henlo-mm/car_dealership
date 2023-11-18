@@ -76,9 +76,15 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
             if (onConfirm) {
                 onConfirm();
             } //todo
-            notification.success('Registro e usuario con exito')
+            notification.success({
+                message: 'Éxito',
+                description: 'La petición se ha completado correctamente.',
+            });
         } catch (error) {
-            notification.error('ocurrio un error', error.message)
+            notification.error({
+                message: 'Error',
+                description: 'Se produjo un error al procesar la solicitud.',
+            });
         }
         setLoading(false);
     }

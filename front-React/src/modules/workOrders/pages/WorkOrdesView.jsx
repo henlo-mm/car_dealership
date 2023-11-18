@@ -151,6 +151,11 @@ export const WorkOrdersView = () => {
             key: 'description',
         },
         {
+            title: 'Descripción',
+            dataIndex: 'description',
+            key: 'description',
+        },
+        {
             title: 'Comentarios',
             dataIndex: 'comments',
             key: 'comments',
@@ -160,17 +165,20 @@ export const WorkOrdersView = () => {
             dataIndex: 'status',
             key: 'status',
             render: (status) => findStatusById(status, StatusWorkOrdersList)
+
         },
         {
             title: 'start_date',
             dataIndex: 'start_date',
             key: 'start_date',
+
             render: (start_date) => dayjs(start_date).format('YYYY-MM-DD')
         },
         {
             title: 'completion_date',
             dataIndex: 'completion_date',
             key: 'completion_date',
+
             render: (completion_date) => dayjs(completion_date).format('YYYY-MM-DD')
         },
         {
