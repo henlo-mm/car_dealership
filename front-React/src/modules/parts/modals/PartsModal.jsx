@@ -239,8 +239,9 @@ export const PartsModal = ({ isVisible, onConfirm, onCancel, partData, onPartUpd
                       setimgData([info.file]);
 
                     }}
+      
                     onChange={(event) => {
-                      if (event) {
+                      if(event){
                         setimgData([event]);
                         console.log(imgData);
                       }
