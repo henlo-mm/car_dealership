@@ -73,26 +73,18 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
                 formData.append("model", values.model);
                 formData.append("branch", values.branch);
                 formData.append("color", values.color);
+                formData.append("car_plate", values.car_plate);
                 formData.append("is_for_sale", values.is_for_sale);
 
                 if (imgData[0] == undefined) {
                     formData.append("image", vehicleData.image);
+                    setimgData([]);
                 } else {
                     formData.append("image", imgData[0]);
-                }
-                console.log({ values });
-
-
-                // console.log('Año enviado al backend:', year);
-                // console.log(formData);
-                // console.log(values);
-
-                // Imprimir los datos en la consola
-                for (const pair of formData.entries()) {
-                    console.log(pair[0], pair[1]);
+                    setimgData([]);
                 }
 
-                await updateVehicle(vehicleData.id,formData);
+                await updateVehicle(vehicleData.id, formData);
 
                 onVehicleUpdate();
 
@@ -116,12 +108,15 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
                 formData.append("model", values.model);
                 formData.append("branch", values.branch);
                 formData.append("color", values.color);
+                formData.append("car_plate", values.car_plate);
                 formData.append("is_for_sale", values.is_for_sale);
 
                 if (imgData[0] == undefined) {
                     formData.append("image", vehicleData.image);
+                    setimgData([]);
                 } else {
                     formData.append("image", imgData[0]);
+                    setimgData([]);
                 }
 
                 console.log({ values });
@@ -292,7 +287,7 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
                                     />
                                 </Form.Item>
                             </div>
-                            <div className='col-12'>
+                            <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="image"
                                     label={<label className="form-label"> Foto </label>}
@@ -361,6 +356,19 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
                                         </Button>
 
                                     </Upload>
+                                </Form.Item>
+                            </div>
+
+                            <div className='col-12 col-md-6'>
+                                <Form.Item
+                                    name="car_plate"
+                                    label={<label className="form-label"> placa Vehiculo  </label>}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
+                                >
+                                    <Input
+                                        className='form-control'
+                                        placeholder='Nombre'
+                                    />
                                 </Form.Item>
                             </div>
                         </div>
