@@ -24,7 +24,7 @@ export const VehiclesView = () => {
     const [branchList, setBranchList] = useState([]);
     const [searchText, setSearchText] = useState("");
 
-    
+
 
 
     const fetchBranchData = async () => {
@@ -181,6 +181,11 @@ export const VehiclesView = () => {
             title: 'Color',
             dataIndex: 'color',
             key: 'color',
+        },
+        {
+            title: 'Placa',
+            dataIndex: 'car_plate',
+            key: 'car_plate',
         },
         {
             title: 'Sucursal',
