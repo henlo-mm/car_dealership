@@ -1,8 +1,10 @@
-import { Modal, Form, Spin, Input, Button, notification, Select } from 'antd';
+import { Modal, Form, Spin, Input, Button, notification, Select, Switch, DatePicker } from 'antd';
 import { useEffect, useState } from 'react';
 import { createWorkOrder, updateWorkOrder } from '../../../services/work_orders';
 import { getvehicles } from '../../../services/vehicles';
-
+import { StatusWorkOrdersList } from '../.config/workOrdersStatusList'
+import { getUsers } from '../../../services/user';
+import dayjs from 'dayjs';
 
 export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData, onWorkOrderUpdate }) => {
 
@@ -10,14 +12,17 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
 
     const [loading, setLoading] = useState(false);
     const [vehiclesList, setVehiclesList] = useState([]);
+    const [usersData, setUsersData] = useState([]);
+    const [usersTomechanic, setUsersTomechanic] = useState([]);
 
 
     const fetchData = async () => {
         try {
             const vehicles = await getvehicles();
-            const vehiclesForWorkOrders = vehicles.filter((car) => car.is_for_sale == false )
-            console.log({vehiclesForWorkOrders});
-            setVehiclesList(vehiclesForWorkOrders);
+            setVehiclesList(vehicles.filter((car) => car.is_for_sale == false));
+            const usersList = await getUsers();
+            setUsersData(usersList.filter((user) => user.role == 4));
+            setUsersTomechanic(usersList.filter((user) => user.role == 3));
         } catch (error) {
             console.error('Error branch list:', error);
         } finally {
@@ -45,20 +50,23 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
         form.resetFields();
     }
 
-    // funcioinalidad, que al ejecutar un submit, nos permite enviar los datos en una peticion http y ejecutarlo. 
+
 
     const onSubmit = async (values) => {
-        try {
-            //todo
-            // los values del form
-            setLoading(true);
-            //Hacer validaciones nezar peticiones httpcesarias
 
-            if (workOrderData) {
-                await updateWorkOrder(workOrderData.id, values);
-            } else {
-                await createWorkOrder(values);
-            }
+        setLoading(true);
+
+        try {
+
+
+            // if (workOrderData) {
+            //     await updateWorkOrder(workOrderData.id, values);
+            // } else {
+            //     await createWorkOrder(values);
+            // }
+
+            console.log(values)
+
 
             onWorkOrderUpdate();
 
@@ -80,43 +88,6 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
         }
         setLoading(false);
     }
-
-    // Objetos representativos que se deben de obtener de las peticiones http de Django
-
-    const optionsBranches = [
-        {
-            id: 1,
-            name: 'Sucursal A',
-        },
-        {
-            id: 2,
-            name: 'Sucursal B',
-        },
-        {
-            id: 3,
-            name: 'Sucursal C',
-        },
-        // Agrega más datos de usuarios aquí
-    ];
-
-    const optionsRoles = [
-        {
-            id: 1,
-            name: 'Gerente',
-        },
-        {
-            id: 2,
-            name: 'Vendedor',
-        },
-        {
-            id: 3,
-            name: 'Jefe de Taller',
-        },
-        {
-            id: 4,
-            name: 'Cliente',
-        },
-    ]
 
     return (
         <Modal
@@ -143,13 +114,14 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                         form={form}
                         layout='vertical'
                         onFinish={onSubmit}
+                        initialValues={{ is_available: false }}
                     >
                         <div className="row">
                             <div className='col-12 col-md-6'>
                                 <Form.Item
                                     name="vehicle"
                                     label={<label className="form-label"> Vehiculo  </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <Select
                                         style={{
@@ -170,11 +142,20 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="customer"
                                     label={<label className="form-label"> Cliente </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
-                                    <Input
-                                        className='form-control'
-                                        placeholder='Cliente'
+                                    <Select
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        options={
+                                            usersData &&
+                                            usersData?.map((v) => ({
+                                                value: v.id,
+                                                label: `${v.name} ${v.lastName}`,
+                                            })
+                                            )
+                                        }
                                     />
                                 </Form.Item>
                             </div>
@@ -182,48 +163,20 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="workshop_manager"
                                     label={<label className="form-label"> Gerente de la orden </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
-                                    <Input
-                                        className='form-control'
-                                        placeholder='Gerente de la orden'
-                                    />
-                                </Form.Item>
-                            </div>
-                            <div className='col-12 col-md-6'>
-                                <Form.Item
-                                    name="description"
-                                    label={<label className="form-label"> Descripción  </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
-                                >
-                                    <Input
-                                        className='form-control'
-                                        placeholder='Descripción'
-                                    />
-                                </Form.Item>
-                            </div>
-
-                            <div className='col-12 col-md-6'>
-                                <Form.Item
-                                    name="comments"
-                                    label={<label className="form-label"> Comentarios </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
-                                >
-                                    <Input
-                                        className='form-control'
-                                        placeholder='Comentarios'
-                                    />
-                                </Form.Item>
-                            </div>
-                            <div className='col-12 col-md-6'>
-                                <Form.Item
-                                    name="start_date"
-                                    label={<label className="form-label"> Fecha de inicio  </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
-                                >
-                                    <Input
-                                        className='form-control'
-                                        placeholder='Fecha de inicio'
+                                    <Select
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        options={
+                                            usersTomechanic &&
+                                            usersTomechanic?.map((v) => ({
+                                                value: v.id,
+                                                label: `${v.name} ${v.lastName}`,
+                                            })
+                                            )
+                                        }
                                     />
                                 </Form.Item>
                             </div>
@@ -231,26 +184,89 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="status"
                                     label={<label className="form-label"> Estado </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
-                                    <Input
+                                    <Select
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        options={
+                                            StatusWorkOrdersList &&
+                                            StatusWorkOrdersList?.map((v) => ({
+                                                value: v.id,
+                                                label: `${v.name}`,
+                                            })
+                                            )
+                                        }
+                                    />
+                                </Form.Item>
+                            </div>
+
+                            <div className='col-12 col-md-6'>
+                                <Form.Item
+                                    name="start_date"
+                                    label={<label className="form-label"> Fecha de inicio  </label>}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
+                                    valuePropName='dateElement'
+                                    normalize={(dateElement) => dayjs(dateElement).format('YYYY-MM-DD')}
+                                >
+                                    <DatePicker
+                                        picker='date'
                                         className='form-control'
-                                        placeholder='Estado'
                                     />
                                 </Form.Item>
                             </div>
                             <div className='col-12 col-md-6'>
                                 <Form.Item
-                                    name="is_available"
-                                    label={<label className="form-label"> Está disponible  </label>}
-                                    rules={[{ required: true, message: 'campo obligatorio' }]}
+                                    name="completion_date"
+                                    label={<label className="form-label"> Fecha de entrega  </label>}
+                                    valuePropName='dateElement'
+                                    normalize={(dateElement) => dayjs(dateElement).format('YYYY-MM-DD')}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
-                                    <Input
+                                    <DatePicker
+                                        picker='date'
                                         className='form-control'
-                                        placeholder='true / false'
                                     />
                                 </Form.Item>
                             </div>
+
+                            <div className='col-12 col-md-6'>
+                                <Form.Item
+                                    name="is_available"
+                                    label={<label className="form-label"> Está disponible  </label>}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
+                                >
+                                    <Switch
+                                        defaultChecked={false}
+                                    />
+                                </Form.Item>
+                            </div>
+                            <div className='col-12'>
+                                <Form.Item
+                                    name="description"
+                                    label={<label className="form-label"> Descripción  </label>}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
+                                >
+                                    <Input.TextArea
+                                        className='form-control'
+                                        placeholder='Descripción'
+                                    />
+                                </Form.Item>
+                            </div>
+                            <div className='col-12'>
+                                <Form.Item
+                                    name="comments"
+                                    label={<label className="form-label"> Comentarios </label>}
+                                    rules={[{ required: false, message: 'campo obligatorio' }]}
+                                >
+                                    <Input.TextArea
+                                        className='form-control'
+                                        placeholder='Comentarios'
+                                    />
+                                </Form.Item>
+                            </div>
+
                         </div>
                     </Form>
                 </div>
