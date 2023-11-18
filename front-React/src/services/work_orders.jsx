@@ -28,6 +28,34 @@ export const getWorkOrder = async (workOrderId) => {
       console.error('Error al obtener la orden de trabajo:', error);
     }
 };
+
+export const getWorkOrdersByUserDocument = async (userDocument) => {
+  try {
+    const response = await api.get('/work_orders/list_by_user_document/', {
+        params: { 
+          document: userDocument 
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener las órdenes de trabajo:', error);
+  }
+};
+
+export const getWorkOrdersByCarPlate = async (carPlate) => {
+  try {
+    const response = await api.get('/work_orders/list_by_car_plate/', {
+      params: { 
+        car_plate: carPlate 
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener las órdenes de trabajo:', error);
+  }
+};
+
   
 export const updateWorkOrder = async (workOrderId, workOrderData) => {
     try {
