@@ -44,6 +44,4 @@ jobs:
           sudo yum install python3-pip
           sudo pip3 install -r requirements.txt
           sudo python3 manage.py collectstatic --noinput
-          source  /var/www/car_dealership/backend/bin/activate
-          pkill -f gunicorn
-          gunicorn backend.wsgi:application
+          
