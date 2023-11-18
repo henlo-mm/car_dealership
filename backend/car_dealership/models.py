@@ -5,7 +5,6 @@ class Role(models.Model):
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     class Meta:
         managed = True
         db_table = 'roles'
@@ -111,8 +110,9 @@ class Quote(models.Model):
 
 class Sale(models.Model):
     id = models.AutoField(primary_key=True)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, default=1)
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_sales', default=1)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_sales')
+    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='client_sales')
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     sale_date = models.DateTimeField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)

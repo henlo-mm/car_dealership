@@ -46,26 +46,26 @@ header img{
     min-width: 90px;
 }
 
-.ant-card-head-wrapper{
+.login .ant-card-head-wrapper{
     flex-direction: column;
     align-items: flex-start !important;
 }
-.ant-card-extra{
+.login .ant-card-extra{
     margin: 0 !important;
 }
 
-:where(.css-dev-only-do-not-override-1adbn6x).ant-card .ant-card-head{
+.login :where(.css-dev-only-do-not-override-1adbn6x).ant-card .ant-card-head{
     border: none !important;
 }
 
-.ant-card{
+.login .ant-card{
     padding: 1.5rem;
     border-radius: 30px;
     background: #A4B3B5;
     border: none !important;
 }
 
-.ant-card-head-title{
+.login .ant-card-head-title{
     font-family: 'Big Shoulders Display';
     font-size: 36px;
     font-weight: 700;
@@ -74,15 +74,15 @@ header img{
     text-align: left;
 }
 
-.ant-card-extra, .ant-card-head-title{
+.login .ant-card-extra, .ant-card-head-title{
     color: #343A40EF !important;
 }
 
-.ant-card-body{
+.login .ant-card-body{
     padding-top: 3rem !important;
 }
 
-#loginForm_email, .ant-input-password, .ant-input {
+.login #loginForm_email, .ant-input-password, .loginForm_matricula{
     background: transparent;
     border: 0.6px solid black !important;
     border-radius: 30px !important;
@@ -92,14 +92,14 @@ header img{
     font-size: 16px;
 }
 
-#loginForm_email:hover, .ant-input-password:hover {
+.login #loginForm_email:hover, .ant-input-password:hover {
     color: #0000006E;
 }
 
-.item_icon {
+.login .item_icon {
     position: relative;
 }
-.item_icon .ant-form-item-control-input-content::before{
+.login .item_icon .ant-form-item-control-input-content::before{
     content: '';
   background-image: url(/src/assets/arroba.png); /* Ruta relativa a la imagen en tu proyecto */
   background-size: 20px 20px; /* Ajusta el tamaño de la imagen */
@@ -112,24 +112,23 @@ header img{
   height: 20px; /* Ajusta la altura de la imagen */
 }
 
-.secure .ant-form-item-control-input-content::before{
+.login .secure .ant-form-item-control-input-content::before{
     background-image: url(/src/assets/candado.png) !important;
     background-size: contain !important;
 }
 
-.ant-input{
+.login .ant-input{
     background: transparent;
 }
 
-.btn_entrar{
+.login .btn_entrar{
     text-align: right;
 }
 
-.btn_entrar .ant-btn{
+.login .btn_entrar .ant-btn{
     text-align: right;
     background: transparent;
     border: 1px solid black;
-    max-width: 130px;
     width: auto;
     height: auto;
     font-size: 18px;
@@ -142,13 +141,13 @@ header img{
     border-radius: 30px;
 
 }
-.btn_entrar .ant-btn:hover{
+.login .btn_entrar .ant-btn:hover{
     background-color: #1E1E1E !important;
     color: white !important;
 
 }
 
-.link_ext{
+.login .link_ext{
     margin-bottom: 24px;
     text-align: right;
     font-size: 18px;
@@ -158,7 +157,7 @@ header img{
 
 }
 
-.link_ext a{
+.login .link_ext a{
     text-decoration: none;
     color:#0B2926;
 

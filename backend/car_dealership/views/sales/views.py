@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework.viewsets import ModelViewSet
 from ...models import Sale
 from ...serializers import SaleSerializer
@@ -9,8 +10,34 @@ class SaleViewSet(ModelViewSet):
 
     def list(self, request):
         sales = Sale.objects.all().order_by('id')
-        serializer = self.get_serializer(sales, many=True)
-        return Response(serializer.data)
+
+        sale_data_list = []
+        
+        for sale in sales:
+            sale_data = {
+                "id": sale.id,
+                "sale_date": sale.sale_date,
+                "price": sale.price,
+                "vehicle": {
+                    "id": sale.vehicle.id,
+                    "model": sale.vehicle.model,
+                    "make": sale.vehicle.make,
+                    "is_for_sale": sale.vehicle.is_for_sale,
+                },
+                "client": {
+                    "id": sale.client.id,
+                    "name": sale.client.name,
+                    "lastname": sale.client.lastname,
+                },
+                "seller": { 
+                    "id": sale.seller.id,
+                    "name": sale.seller.name,
+                    "lastname": sale.seller.lastname,
+                }
+            }
+            sale_data_list.append(sale_data)
+
+        return JsonResponse(sale_data_list, safe=False) 
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
