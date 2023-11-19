@@ -1,8 +1,9 @@
-import { Modal, Form, Spin, Input, Button, notification, Select } from 'antd';
+import { Modal, Form, Spin, Input, Button, notification, Select, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 import { createUser, updateUser } from '../../../services/user';
 import { getBranches } from '../../../services/branches';
-
+import { UploadOutlined } from '@ant-design/icons';
+import { CiImageOn } from 'react-icons/ci';
 
 export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpdate }) => {
 
@@ -10,6 +11,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
     const [loading, setLoading] = useState(false);
     const [branchList, setBranchList] = useState([]);
+    const [imgData, setimgData] = useState([]);
 
     const fetchBranchData = async () => {
         try {
@@ -53,22 +55,41 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
             if (userData) {
                 await updateUser(userData.id, values);
+
+                onUserUpdate();
+
+                form.resetFields();
+
+
+                if (onConfirm) {
+                    onConfirm();
+                }
+                notification.success({
+                    message: 'Operacion exitosa',
+                    description: 'El usuario ha sido actualizado',
+                });
+
             } else {
+
                 await createUser(values);
+
+                onUserUpdate();
+
+                form.resetFields();
+
+
+                if (onConfirm) {
+                    onConfirm();
+                }
+                notification.success({
+                    message: 'Operacion exitosa',
+                    description: 'El usuario ha sido creado',
+                });
+
+
             }
-            
-            onUserUpdate();
-
-            form.resetFields();
 
 
-            if (onConfirm) {
-                onConfirm();
-            } 
-            notification.success({
-                message: 'Operacion exitosa',
-                description: 'El usuario ha sido creado',
-            });
         } catch (error) {
             notification.error({
                 message: 'Error',
@@ -252,6 +273,78 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
                                             )
                                         }
                                     />
+                                </Form.Item>
+                            </div>
+
+                            <div className='col-12 col-md-6'>
+                                <Form.Item
+                                    name="avatar"
+                                    label={<label className="form-label"> Foto </label>}
+                                    valuePropName='fileList'
+                                    getValueFromEvent={(event) => {
+                                        return event?.fileList
+                                    }}
+                                    rules={[
+                                        {
+                                            required: false,
+                                            message: 'campo obligatorio'
+                                        },
+                                        {
+                                            validator(_, fileList) {
+                                                return new Promise((resolve, reject) => {
+                                                    if (fileList[0] && fileList[0].size > 500000) {
+                                                        reject('imagen demasiado pesada');
+                                                        message.error('imagen demasiado pesada');
+                                                    } else {
+                                                        resolve(fileList[0]);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    ]}
+                                >
+
+                                    <Upload
+                                        listType="picture"
+                                        iconRender={() => {
+                                            return <CiImageOn size={25} />
+                                        }}
+                                        accept='.png, .jpg, .jpge'
+                                        maxCount={1}
+                                        beforeUpload={(file) => {
+                                            return new Promise((resolve, reject) => {
+                                                if (file && file.size > 700000) {
+                                                    reject(['imagen demasiado pesada']);
+                                                    message.error('imagen demasiado pesada');
+                                                } else {
+                                                    resolve(file);
+                                                }
+                                            });
+                                        }}
+                                        customRequest={(info) => {
+                                            setimgData([info.file]);
+
+                                        }}
+                                        onChange={(event) => {
+                                            if (event) {
+                                                setimgData([event]);
+                                                console.log(imgData);
+                                            }
+                                        }}
+                                        onRemove={(event) => {
+                                            if (event) {
+                                                // console.log('ejecutamos el on remove', event);
+                                                setimgData([]);
+                                                // console.log(imgData)
+                                            }
+                                        }}
+                                    >
+                                        <Button
+                                            icon={<UploadOutlined />}
+                                        >Cargar Foto
+                                        </Button>
+
+                                    </Upload>
                                 </Form.Item>
                             </div>
                         </div>

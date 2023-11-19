@@ -43,7 +43,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
             form.setFieldsValue({
                 ...workOrderData,
                 status: workOrderData.status.id,
-                vehicle: workOrderData.vehicle.model,
+                vehicle: workOrderData.vehicle.id,
                 customer: workOrderData.customer.id,
                 workshop_manager: workOrderData.workshop_manager.id,
                 start_date: dayjs(workOrderData.start_date),
@@ -71,19 +71,45 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
 
 
             if (workOrderData) {
-                // await updateWorkOrder(workOrderData.id, values);
-                console.log("viene data")
+
+                console.log("updateWorkOrder")
+                console.log("valores que paso en el update",{
+                    ...values,
+                    start_date: dayjs(values.start_date).format('YYYY-MM-DD'),
+                    completion_date: dayjs(values.completion_date).format('YYYY-MM-DD')
+                })
+
+                console.log("lo que paso con dayjs", dayjs(values.start_date).format('YYYY-MM-DD'));
+
+                await updateWorkOrder(workOrderData.id, {
+                    ...values,
+                    start_date: dayjs(values.start_date).format('YYYY-MM-DD'),
+                    completion_date: dayjs(values.completion_date).format('YYYY-MM-DD')
+                });
+
+                console.log(values)
+
+                onWorkOrderUpdate();
+
+                form.resetFields();
+
+                if (onConfirm) {
+                    onConfirm();
+                }
+                notification.success({
+                    message: 'Éxito',
+                    description: 'La orden de trabajo se ha actualizado',
+                });
+
             } else {
-
-                console.log("es una creacion de workorder (dateElement) => dayjs(dateElement).format('YYYY-MM-DD')");
-
+                
+                console.log("updateWorkOrder")
                 await createWorkOrder({
                     ...values,
                     start_date: dayjs(values.start_date).format('YYYY-MM-DD'),
                     completion_date: dayjs(values.completion_date).format('YYYY-MM-DD')
                 });
 
-                console.log(values);
 
                 onWorkOrderUpdate();
 
@@ -94,7 +120,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                 } //todo
                 notification.success({
                     message: 'Éxito',
-                    description: 'La petición se ha completado correctamente.',
+                    description: 'La orden de trabajo se ha creado',
                 });
 
             }
