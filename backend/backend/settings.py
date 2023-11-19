@@ -30,7 +30,13 @@ SECRET_KEY = 'django-insecure-!p+kil272om69=fg5yemca(pse5a39(%dq_@n0*yyns_)t9vgi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.223.190.219']
+ALLOWED_HOSTS = [
+    '3.223.190.219',
+    'autohaus.link',
+    'www.autohaus.link',
+    '76.76.21.21',
+    'car_dealership.auto-haus.link'        
+]
 
 # Application definition
 
