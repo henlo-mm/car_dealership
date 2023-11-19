@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     '.autohaus.link',
     'www.autohaus.link',
     '76.76.21.21',
-    'car_dealership.auto-haus.link'        
+    'backend.auto-haus.link'        
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
