@@ -1,7 +1,8 @@
 import { Button, Input, Table } from 'antd';
-import React, { useState } from 'react'
+import React, { useState , useEffect } from 'react'
 import { SalesModal } from '../modals/SalesModal';
 import { DeleteModal } from '../../../core/modals/DeleteModal';
+import { getSales, deleteSale } from '../../../services/sales';
 import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
@@ -25,6 +26,22 @@ export const SalesView = () => {
   };
 
 
+  const fetchData = async () => {
+    try {
+        const dataSales = await getSales();
+        setSalesData(dataSales);
+    } catch (error) {
+        console.error('Error:', error);
+    } finally {
+        setLoading(false);
+    }
+};
+
+useEffect(() => {
+    fetchData();
+}, [refreshKey]);
+
+
   const columns = [
     {
       title: 'Codigo Venta',
@@ -32,14 +49,20 @@ export const SalesView = () => {
       key: 'id',
     },
     {
-      title: 'Vendedor',
-      dataIndex: 'seller',
-      key: 'seller',
-    },
-    {
       title: 'Vehiculo',
       dataIndex: 'vehicle',
       key: 'vehicle',
+      render: (vehicle) => {
+        return <p>  {`${vehicle.make} ${vehicle.model}`} </p>
+      }
+    },
+    {
+      title: 'Vendedor',
+      dataIndex: 'seller',
+      key: 'seller',
+      render: (seller) => {
+        return <p>  {`${seller.name} ${seller.lastname}`} </p>
+      }
     },
     {
       title: 'Valor venta',
@@ -55,13 +78,7 @@ export const SalesView = () => {
       title: 'Acciones',
       key: 'actions',
       render: (values) => (
-        <div>
-          <Button
-            type="link"
-            icon={<BiSolidEditAlt />}
-            size={20}
-
-          />
+        <div>          
           <Button
             type="link"
             size={20}
@@ -72,6 +89,23 @@ export const SalesView = () => {
     },
   ]
 
+  const handleAddSaleClick = (values) => {
+    console.log('se abre el modal?')
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    // todo: logica para cerrar el modal
+    console.log('se ejecuto el cancelar')
+    setIsModalVisible(false);
+    setWorkOrderToEdit(null)
+};
+
+  const handleOk = () => {
+    console.log('se ejecuto el ok')
+    setIsModalVisible(false);
+    setWorkOrderToEdit(null);
+};
 
   return (
 
@@ -90,7 +124,7 @@ export const SalesView = () => {
                 className='m-1'
                 type="primary"
                 icon={<PlusCircleOutlined />}
-
+                onClick={() => { handleAddSaleClick(); }}
               >
                 Nuevo
               </Button>
@@ -124,13 +158,12 @@ export const SalesView = () => {
       </div>
 
 
-      {/* <SalesModal
+       <SalesModal
         isVisible={isModalVisible}
         onConfirm={handleOk}
         onCancel={handleCancel}
-        branchData={branchToEdit}
-        onBranchUpdate={refreshTable}
-      /> */}
+        onSaleUpdate={refreshTable}
+      />
 
       {/* <DeleteModal
         isVisible={isDeleteModalVisible}

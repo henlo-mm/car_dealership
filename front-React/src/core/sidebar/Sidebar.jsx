@@ -10,6 +10,8 @@ import {
 import { BsFillBuildingsFill } from 'react-icons/bs';
 import { MdCarRepair, MdCarRental, MdMiscellaneousServices, MdDirectionsCarFilled, MdAccountCircle } from "react-icons/md";
 import { MdRequestQuote } from "react-icons/md";
+import logo from '../../assets/logo-autohaus.svg';
+import avatar from '../../assets/usuario.png';
 
 import { Layout, Menu, Avatar, Dropdown, Button, FloatButton } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -28,6 +30,32 @@ export const Sidebar = () => {
 
   const [selectedKeysMenu, setSelectedKeysMenu] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
+
+  console.log(user.avatar, "avatar")
+  const optionsRoles = [
+    {
+        id: 1,
+        name: 'Gerente',
+    },
+    {
+        id: 2,
+        name: 'Vendedor',
+    },
+    {
+        id: 3,
+        name: 'Jefe de Taller',
+    },
+    {
+        id: 4,
+        name: 'Cliente',
+    },
+]
+
+let roleName = "Rol no encontrado";
+const matchingRole = optionsRoles.find(role => role.id === user.role);
+if (matchingRole) {
+  roleName = matchingRole.name;
+}
 
   useEffect(() => {
     if (location) {
@@ -100,7 +128,7 @@ export const Sidebar = () => {
           style={{
             zIndex: 10000,
           }}
-          className="position-fixed"
+          className="position-fixed sidebar"
         >
           <Dropdown
             menu={{
@@ -119,21 +147,16 @@ export const Sidebar = () => {
           </Dropdown>
         </div>
         :
-        <Sider width={200} theme="dark" collapsible>
-          <div className="logo"> LOGO CARRITO </div>
+        <Sider className='sidebar' width={200} theme="dark" collapsible>
+          <div className="logo"> <img src={logo} alt="Logo" /> </div>
           <div className="user-info">
-            <Avatar src={user?.avatar} size={32}  />
-            <span>{user?.name + ' ' + user?.lastname}</span>
-            <span>{user?.role}</span>
-            <button onClick={() => logout()}>log out</button>
+            <Avatar src={user.avatar ? user.avatar : avatar} size={42}  />
+            <span className='h5 mb-0 mt-1'>{user?.name + ' ' + user?.lastname}</span>
+            <span className='mt-0'>({roleName})</span>
+            <button className='my-3 salir' onClick={() => logout()}>Salir</button>
           </div>
-          {/* <Menu theme="dark" mode="vertical" >
-          <Menu.Item key="1" icon={ <DesktopOutlined />} />
-          <Menu.Item key="2" icon={<UserOutlined />} />
-          <Menu.Item key="3" icon={<TeamOutlined />} />
-          <Menu.Item key="4" icon={<FileOutlined />} />
-            </Menu> */}
           <Menu
+            className='mt-3'
             theme="dark"
             mode="vertical"
             items={items.map(x => { return x })}

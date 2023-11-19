@@ -1,10 +1,14 @@
-.logo {
-    height: 32px;
-    background: rgba(255, 255, 255, 0.2);
+.sidebar .logo {
+    height: auto;
+    background: transparent;
+    text-align: center;
     margin: 16px;
   }
-  
-  .user-info {
+.sidebar .logo img{
+  width: 100%;
+  max-width: 70px;
+}
+  .sidebar .user-info {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,10 +16,18 @@
     color: white;
   }
   
-  .user-info span {
+  .sidebar .user-info span {
     margin-top: 4px;
   }
+  .sidebar .salir {
+    border-radius: 30px;
+    border: none;
+    background-color: red;
+    color: white;
+    padding: 5px 20px;
+    font-size: 14px;
+  }
 
-  .ant-upload-list-item-thumbnail {
+  .sidebar .ant-upload-list-item-thumbnail {
     height: 0 !important;
   }
