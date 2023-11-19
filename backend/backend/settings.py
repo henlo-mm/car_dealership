@@ -32,7 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '3.223.190.219',
-    'autohaus.link',
+    '.autohaus.link',
     'www.autohaus.link',
     '76.76.21.21',
     'car_dealership.auto-haus.link'        
