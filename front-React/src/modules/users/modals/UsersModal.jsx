@@ -31,7 +31,10 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
     useEffect(() => {
         if (userData && isVisible) {
             //Si hay data entonces configure la data
-            form.setFieldsValue(userData)
+            form.setFieldsValue({
+                ...userData,
+                avatar: []
+            })
         }
     }, [userData])
 
@@ -54,10 +57,28 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
             //Hacer validaciones nezar peticiones httpcesarias
 
             if (userData) {
-                await updateUser(userData.id, values);
+
+                const formData = new FormData();
+
+                formData.append("address", values.address);
+                formData.append("branch", values.branch);
+                formData.append("document", values.document);
+                formData.append("email", values.email);
+                formData.append("lastName", values.lastName);
+                formData.append("name", values.name);
+                formData.append("phone", values.phone);
+                formData.append("role", values.role);
+                formData.append("secondPhone", values.secondPhone);
+                if (imgData[0] == undefined) {
+                    formData.append("avatar", userData.avatar);
+                } else {
+                    formData.append("avatar", imgData[0]);
+                }
+
+                await updateUser(userData.id, formData);
 
                 onUserUpdate();
-
+                setimgData([]);
                 form.resetFields();
 
 
@@ -71,7 +92,9 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
             } else {
 
-                await createUser(values);
+                // await createUser( {...values, avatar: imgData});
+
+                console.log("form enviado", { ...values, avatar: imgData[0] })
 
                 onUserUpdate();
 
