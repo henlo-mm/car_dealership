@@ -25,7 +25,7 @@ class UserView(APIView):
             lastname = data.get('lastName')
             phone = data.get('phone')
             email = data.get('email')
-            password = make_password(data.get('document'))
+            password = make_password(str(data.get('document')))
             branch_id = data.get('branch')
             role_id = data.get('role')
 
@@ -116,7 +116,6 @@ class UserView(APIView):
             user.lastname = data.get('lastName', user.lastname)
             user.phone = data.get('phone', user.phone)
             user.document = data.get('document', user.document)
-            user.password = make_password(data.get('document'))
             user.email = data.get('email', user.email)
            
             user.branch_id = data.get('branch', user.branch_id)
