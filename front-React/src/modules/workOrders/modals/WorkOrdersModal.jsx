@@ -38,14 +38,17 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
     useEffect(() => {
         if (workOrderData && isVisible) {
             console.log(workOrderData);
+            console.log('dayJs', dayjs(workOrderData.completion_date))
             //Si hay data entonces configure la data
             form.setFieldsValue({
                 ...workOrderData,
-                status: status.id,
-                vehicle: vehicle.model,
-                customer: customer.id,
-                // customer: `${customer.name} ${customer.lastname}`,
-                // workshop_manager: `${workshop_manager.name} ${workshop_manager.lastname}`,
+                status: workOrderData.status.id,
+                vehicle: workOrderData.vehicle.model,
+                customer: workOrderData.customer.id,
+                workshop_manager: workOrderData.workshop_manager.id,
+                start_date: dayjs(workOrderData.start_date),
+                completion_date: dayjs(workOrderData.completion_date),
+                is_available: workOrderData.is_available
             });
         }
     }, [workOrderData])
@@ -72,9 +75,13 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                 console.log("viene data")
             } else {
 
-                console.log("es una creacion de workorder");
+                console.log("es una creacion de workorder (dateElement) => dayjs(dateElement).format('YYYY-MM-DD')");
 
-                await createWorkOrder(values);
+                await createWorkOrder({
+                    ...values,
+                    start_date: dayjs(values.start_date).format('YYYY-MM-DD'),
+                    completion_date: dayjs(values.completion_date).format('YYYY-MM-DD')
+                });
 
                 console.log(values);
 
@@ -220,8 +227,8 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                     name="start_date"
                                     label={<label className="form-label"> Fecha de inicio  </label>}
                                     rules={[{ required: false, message: 'campo obligatorio' }]}
-                                    valuePropName='dateElement'
-                                    normalize={(dateElement) => dayjs(dateElement).format('YYYY-MM-DD')}
+                                // valuePropName='dateElement'
+                                // normalize={(dateElement) => dayjs(dateElement).format('YYYY-MM-DD')}
                                 >
                                     <DatePicker
                                         picker='date'
@@ -233,8 +240,8 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                 <Form.Item
                                     name="completion_date"
                                     label={<label className="form-label"> Fecha de entrega  </label>}
-                                    valuePropName='dateElement'
-                                    normalize={(dateElement) => dayjs(dateElement).format('YYYY-MM-DD')}
+                                    // valuePropName='dateElement'
+                                    // normalize={(dateElement) => dayjs(dateElement).format('YYYY-MM-DD')}
                                     rules={[{ required: false, message: 'campo obligatorio' }]}
                                 >
                                     <DatePicker
@@ -249,6 +256,7 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
                                     name="is_available"
                                     label={<label className="form-label"> Está disponible  </label>}
                                     rules={[{ required: false, message: 'campo obligatorio' }]}
+                                    valuePropName='checked'
                                 >
                                     <Switch
                                         defaultChecked={false}

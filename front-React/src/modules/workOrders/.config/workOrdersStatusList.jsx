@@ -9,6 +9,6 @@ export const StatusWorkOrdersList = [
     },
     {
         id: 3,
-        name: 'Finalizado',
+        name: 'Terminado',
     },
 ]
