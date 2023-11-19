@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://3.223.190.219/',
+  baseURL: 'https://backend.auto-haus.link/',
 });
 
 export default api;
