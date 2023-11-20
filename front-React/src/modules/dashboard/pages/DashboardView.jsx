@@ -118,23 +118,30 @@ label: {
 
 
   return (
-    <div>
-      <Flex gap="middle" horizontal='horizontal'>
-        {Object.entries(info_cards).map(([key, value]) => (
-          <Card key={key} count={value.cantidad} title={value.titulo} />
-        ))}
-      </Flex>
-      <div className='row my-5'>
-        <div className='col-12 col-lg-6'>
-          <Column {...config} />
-        </div>
-        <div className='col-12 col-lg-3 text-center'>
-          <h2>Vehiculos</h2>
-          <DemoPie />
-        </div>
-        <div className='col-12 col-lg-3 text-center'>
-          <h2>Partes</h2>
-          <DemoPie />
+    <div className='card card-body'>
+      <div className='card-header'>
+        <h5 className='card-title h3'>
+          Dashboard
+        </h5>
+      </div>
+      <div className='card-body'>
+        <Flex gap="middle" horizontal='horizontal'>
+          {Object.entries(info_cards).map(([key, value]) => (
+            <Card key={key} count={value.cantidad} title={value.titulo} />
+          ))}
+        </Flex>
+        <div className='row my-5'>
+          <div className='col-12 col-lg-6'>
+            <Column {...config} />
+          </div>
+          <div className='col-12 col-lg-3 text-center'>
+            <h2>Vehiculos</h2>
+            <DemoPie />
+          </div>
+          <div className='col-12 col-lg-3 text-center'>
+            <h2>Partes</h2>
+            <DemoPie />
+          </div>
         </div>
       </div>
     </div>

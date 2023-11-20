@@ -165,8 +165,8 @@ export const PartsView = () => {
 
         <div className='card card-body'>
             <div className='card-header'>
-                <h5 className='card-title'>
-                    PartsView
+                <h5 className='card-title h3'>
+                    Partes
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>
