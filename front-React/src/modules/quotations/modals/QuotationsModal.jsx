@@ -4,23 +4,25 @@ import { Button, Form, Input, Modal, Select, Spin, Steps, Switch, message } from
 import { UserOutlined, CarOutlined, CheckOutlined } from '@ant-design/icons';
 import { getUsers } from '../../../services/user';
 import { getvehicles } from '../../../services/vehicles';
-
+import useAuth from 'auth';
 
 const { Step } = Steps;
-const { Option } = Select;
 
 const steps = [
   {
     title: 'Usuario',
     content: 'UsuarioContent',
+    icon: <UserOutlined />
   },
   {
     title: 'Cotización',
     content: 'CotizacionContent',
+    icon: <CarOutlined />
   },
   {
     title: 'Confirmación',
     content: 'ConfirmacionContent',
+    icon: <CheckOutlined />
   },
 ];
 
@@ -35,6 +37,7 @@ export const QuotationsModal = ({ isVisible }) => {
   const [vehiclesData, setVehiclesData] = useState([]);
   const [sellersData, setSellersData] = useState([]);
   const [formData, setFormData] = useState({});
+  const { user } = useAuth();
 
   const fetchData = async () => {
     try {
@@ -242,17 +245,12 @@ export const QuotationsModal = ({ isVisible }) => {
   const CotizacionContent = () => (
 
   
-    // seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_quotes')
-    // client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='client_quotes')
     // validity = models.IntegerField(null=False)
     // valid_date = models.DateField()
-    // description = models.TextField(null=False)
 
     // car_plate = models.BooleanField(default=False)
-    // window_tint = models.BooleanField(default=False)
     // car_plate_and_logo_fastening = models.BooleanField(default=False)
-    // fire_extinguisher = models.BooleanField(default=False)
-    // first_aid_kit = models.BooleanField(default=False)
+ 
 
     <>
       <div className='row mt-4'>
@@ -323,6 +321,54 @@ export const QuotationsModal = ({ isVisible }) => {
             />
           </Form.Item>
         </div>
+        <div className='col-12 col-md-6 d-flex'>
+          <Form.Item
+            name="fire_extinguisher"
+            label={<label className="form-label"> fire_extinguisher  </label>}
+            rules={[{ required: false, message: 'campo obligatorio' }]}
+            valuePropName="checked"
+          >
+            <Switch
+              defaultChecked={false}
+            />
+          </Form.Item>
+        </div>
+        <div className='col-12 col-md-6 d-flex'>
+          <Form.Item
+            name="first_aid_kit"
+            label={<label className="form-label"> first_aid_kit  </label>}
+            rules={[{ required: false, message: 'campo obligatorio' }]}
+            valuePropName="checked"
+          >
+            <Switch
+              defaultChecked={false}
+            />
+          </Form.Item>
+        </div>
+        <div className='col-12 col-md-6 d-flex'>
+          <Form.Item
+            name="car_plate"
+            label={<label className="form-label"> car_plate  </label>}
+            rules={[{ required: false, message: 'campo obligatorio' }]}
+            valuePropName="checked"
+          >
+            <Switch
+              defaultChecked={false}
+            />
+          </Form.Item>
+        </div>
+        <div className='col-12 col-md-6 d-flex'>
+          <Form.Item
+            name="car_plate_and_logo_fastening"
+            label={<label className="form-label"> car_plate_and_logo_fastening  </label>}
+            rules={[{ required: false, message: 'campo obligatorio' }]}
+            valuePropName="checked"
+          >
+            <Switch
+              defaultChecked={false}
+            />
+          </Form.Item>
+        </div>
         <div className='col-12'>
           <Form.Item
             name="description"
@@ -335,6 +381,7 @@ export const QuotationsModal = ({ isVisible }) => {
             />
           </Form.Item>
         </div>
+        
       </div>
     </>
   );
@@ -372,7 +419,7 @@ export const QuotationsModal = ({ isVisible }) => {
           >
             <Steps current={currentStep} size="small" className="steps">
               {steps.map((step) => (
-                <Step key={step.title} title={step.title} icon={<UserOutlined />} />
+                <Step key={step.title} title={step.title} icon={step.icon} />
               ))}
             </Steps>
 
