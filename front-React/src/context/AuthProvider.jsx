@@ -50,10 +50,6 @@ export const AuthProvider = ({ children }) => {
             lastname: response?.user?.lastname || '',
             avatar: response?.user?.avatar,
         }
-        console.log(user);
-        console.log("user", user?.id)
-        console.log("branch", user?.branch)
-        console.log("email", user?.email)
 
         localStorage.setItem('token', user?.token);
         localStorage.setItem('userData', JSON.stringify(user));

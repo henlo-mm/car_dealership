@@ -17,6 +17,9 @@ export const QuotationsView = () => {
     const handleCancel = () => {
         setOpenModal(false);
     }
+   
+
+
 
     const columns = [
         {
@@ -81,7 +84,7 @@ export const QuotationsView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
-                                onClick={() => setOpenModal(true)}
+                                onClick={() => setOpenModal(true)}                               
                             >
                                 Nuevo
                             </Button>
@@ -119,6 +122,13 @@ export const QuotationsView = () => {
             isVisible={openModal}
             // onConfirm={handleOk}
             onCancel={handleCancel}
+            // branchData={branchToEdit}
+            // onBranchUpdate={refreshTable}
+           />
+            <QuotationsModal
+            isVisible={openModal}
+            // onConfirm={handleOk}
+            // onCancel={handleCancel}
             // branchData={branchToEdit}
             // onBranchUpdate={refreshTable}
            />
