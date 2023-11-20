@@ -6,6 +6,8 @@ import { getSales, deleteSale } from '../../../services/sales';
 import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
+import dayjs from 'dayjs';
+import { IoMdRefresh } from 'react-icons/io';
 
 
 const { Search } = Input;
@@ -19,7 +21,8 @@ export const SalesView = () => {
   const [loading, setLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
-  const [sellDelete, setSellToDelete] = useState(null);
+  const [saleToDelete, setSaleToDelete] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
   const refreshTable = () => {
     setRefreshKey((prevKey) => prevKey + 1);
@@ -47,6 +50,16 @@ useEffect(() => {
       title: 'Codigo Venta',
       dataIndex: 'id',
       key: 'id',
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return String(record.vehicle.make).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.vehicle.model).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.seller.name).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.seller.lastname).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.client.name).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.client.lastname).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.id).toLowerCase().includes(value.toLowerCase())
+    }
     },
     {
       title: 'Vehiculo',
@@ -68,26 +81,44 @@ useEffect(() => {
       title: 'Valor venta',
       dataIndex: 'price',
       key: 'price',
+      sorter: (a, b) => a.price - b.price,
     },
     {
       title: 'Fecha venta',
       dataIndex: 'sale_date',
       key: 'sale_date',
+      render: (sale_date) => dayjs(sale_date).format('YYYY-MM-DD')
     },
     {
       title: 'Acciones',
       key: 'actions',
       render: (values) => (
         <div>          
-          <Button
-            type="link"
-            size={20}
-            icon={<AiOutlineDelete />}
-          />
+          <Button type="link" icon={<AiOutlineDelete size={20} onClick={() => showDeleteConfirmationModal(values)} />} />
         </div>
       ),
     },
   ]
+
+  const handleCancelDelete = () => {
+    setIsModalDeleteVisible(false);
+  };
+
+  const showDeleteConfirmationModal = (data) => {
+    setSaleToDelete(data.id);
+    setIsModalDeleteVisible(true);
+  };
+
+  const handleDeleteSale = async () => {
+    try {
+        await deleteSale(saleToDelete);
+        refreshTable();
+        setIsModalDeleteVisible(false);
+    } catch (error) {
+        console.error('Error:', error);
+        setIsModalDeleteVisible(false);
+    }
+  };
 
   const handleAddSaleClick = (values) => {
     console.log('se abre el modal?')
@@ -111,12 +142,19 @@ useEffect(() => {
 
     <div className='card card-body'>
       <div className='card-header'>
-        <h5 className='card-title'>
-          SalesView
+        <h5 className='card-title h3'>
+          Ventas
         </h5>
         <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
           <div className='col-lg-4 col-md-12 py-2'>
-            <Search placeholder="Buscar ventas" />
+            <Input.Search
+                placeholder="Buscar"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onSearch={(value) => {
+                    setSearchText(value)
+                }}
+            />
           </div>
           <div className='col-lg-6 col-md-12 py-2'>
             <div className='d-flex flex-column flex-sm-wrap flex-lg-row justify-content-end align-items-lg-center align-items-sm-start flex-wrap py-3'>
@@ -129,16 +167,11 @@ useEffect(() => {
                 Nuevo
               </Button>
               <Button
-                className='m-1'
-                type="default"
-                icon={<FilterOutlined />}>
-                Sucursal
-              </Button>
-              <Button
-                className='m-1'
-                type="default"
-                icon={<FilterOutlined />}>
-                tipo de usuario
+                  className='m-1'
+                  type="default"
+                  icon={<IoMdRefresh />}
+                  onClick={refreshTable}
+              >
               </Button>
             </div>
 
@@ -165,13 +198,13 @@ useEffect(() => {
         onSaleUpdate={refreshTable}
       />
 
-      {/* <DeleteModal
-        isVisible={isDeleteModalVisible}
-        onConfirm={handleDeleteBranch}
-        onCancel={handleCancelDeleteBranch}
-        title={"Eliminar Sucursal"}
-        message={"¿Está seguro(a) de eliminar esta sucursal?"}
-      /> */}
+      <DeleteModal
+          isVisible={isModalDeleteVisible}
+          onConfirm={handleDeleteSale}
+          onCancel={handleCancelDelete}
+          title={"Eliminar Orden de trabajo"}
+          message={"¿Está seguro(a) de eliminar esta orden de trabajo"}
+      />
     </div>
   );
 }
