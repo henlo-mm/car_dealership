@@ -39,17 +39,22 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (values) => {
         const response = await loginservice(values);
+        console.log("response",response)
         const user = {
+            id: response?.user?.id,
+            email: response?.user?.email,
+            branch: response?.user?.branch,
             token: response?.token,
             role: response?.user?.role,
-            role_name: response?.user?.role_name,
             name: response?.user?.name,
             lastname: response?.user?.lastname || '',
             avatar: response?.user?.avatar,
         }
+
         localStorage.setItem('token', user?.token);
         localStorage.setItem('userData', JSON.stringify(user));
         setUser({ ...user });
+
         navigateTo(response?.user?.role)
     }
 

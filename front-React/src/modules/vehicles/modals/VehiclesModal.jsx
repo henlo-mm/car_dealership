@@ -281,6 +281,7 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
                                     label={<label className="form-label"> Habilitado para vender  </label>}
                                     rules={[{ required: false, message: 'campo obligatorio' }]}
                                     valuePropName="checked"
+                                    initialValue={false}
                                 >
                                     <Switch
                                         defaultChecked={false}

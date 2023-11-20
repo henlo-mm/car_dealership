@@ -1,6 +1,6 @@
 import api from '../api/config';
 
-// http://3.223.190.219/quotes/
+
 
 export const getQuotes = async () => {
     try {

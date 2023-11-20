@@ -4,28 +4,32 @@ import { Button, Form, Input, Modal, Select, Spin, Steps, Switch, message } from
 import { UserOutlined, CarOutlined, CheckOutlined } from '@ant-design/icons';
 import { getUsers } from '../../../services/user';
 import { getvehicles } from '../../../services/vehicles';
+import useAuth from 'auth';
+
 
 
 const { Step } = Steps;
-const { Option } = Select;
 
 const steps = [
   {
     title: 'Usuario',
     content: 'UsuarioContent',
+    icon: <UserOutlined />
   },
   {
     title: 'Cotización',
     content: 'CotizacionContent',
+    icon: <CarOutlined />
   },
   {
     title: 'Confirmación',
     content: 'ConfirmacionContent',
+    icon: <CheckOutlined />
   },
 ];
 
 
-export const QuotationsModal = ({ isVisible }) => {
+export const QuotationsModal = ({ isVisible, onCancel }) => {
 
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
@@ -35,6 +39,7 @@ export const QuotationsModal = ({ isVisible }) => {
   const [vehiclesData, setVehiclesData] = useState([]);
   const [sellersData, setSellersData] = useState([]);
   const [formData, setFormData] = useState({});
+  const { user } = useAuth();
 
   const fetchData = async () => {
     try {
@@ -69,49 +74,115 @@ export const QuotationsModal = ({ isVisible }) => {
     setCurrentStep(currentStep - 1);
   };
 
+  const combineObjects = (objeto1, objeto2) => {
+    return {
+      oneStepper: objeto1,
+      twoStepper: objeto2,
+    };
+  }
+
   const handleFinish = (values) => {
     // Aquí puedes enviar los datos al servidor
 
+    console.log(formData)
 
     if (usuarioCreado) {
 
       const dataToSend = new FormData();
+      const dataToSendQuote = new FormData();
       dataToSend.append("emailuserCreated", formData.usuario)
-      dataToSend.append("price", formData.precio)
-      dataToSend.append("vehicle", formData.vehicle)
-      // dataToSend.append("userId", formData.usuario)
-      // dataToSend.append("userId", formData.usuario)
+     
+     
+      dataToSendQuote.append("price", formData.precio)
+      dataToSendQuote.append("description", formData.description)
+      dataToSendQuote.append("vehicle", formData.vehicle)
+      dataToSendQuote.append("car_plate", formData.car_plate)
+      dataToSendQuote.append("car_plate_and_logo_fastening", formData.car_plate_and_logo_fastening)
+      dataToSendQuote.append("fire_extinguisher", formData.fire_extinguisher)
+      dataToSendQuote.append("first_aid_kit", formData.first_aid_kit)
+      dataToSendQuote.append("roadside_kit", formData.roadside_kit)
+      dataToSendQuote.append("soat", formData.soat)
+      dataToSendQuote.append("window_tint", formData.window_tint)
+      dataToSendQuote.append("vehicle", formData.vehicle)
+      dataToSendQuote.append("seller", user?.id)
 
-      // Imprimir los datos en la consola
-      console.log("pasamos un usuario ya creado")
-      for (const pair of dataToSend.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-      // console.log({ ...values, branch: 1, role: 4 })
-      // console.log('Datos finales:', formData);
-      // message.success('Formulario completado con éxito');
-    } else {
+      console.log("user id", user?.id)
+      console.log("user id", user?.branch)
 
-      const dataToSend = new FormData();
-      dataToSend.append("userId", formData.usuario)
-      dataToSend.append("price", formData.precio)
-      dataToSend.append("vehicle", formData.vehicle)
-      dataToSend.append("address", formData.address)
-      dataToSend.append("document", formData.document)
-      dataToSend.append("name", formData.name)
-      dataToSend.append("lastName", formData.lastName)
-      dataToSend.append("email", formData.email)
-      dataToSend.append("description", formData.description)
-
-      // Imprimir los datos en la consola
       console.log("creamos un usuario nuevo")
       for (const pair of dataToSend.entries()) {
         console.log(pair[0], pair[1]);
       }
 
+      // Imprimir los datos en la consola
+      console.log("creamos la cotizacion en otro objeto")
+      for (const pair of dataToSendQuote.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      console.log(combineObjects(dataToSend, dataToSendQuote))
+
+      // Imprimir los datos en la consola
+      console.log("pasamos un usuario ya creado")
+
+      console.log("user id", user)
+      for (const pair of dataToSend.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+    } else {
+
+      const dataToSendClient = new FormData();
+      const dataToSendQuote = new FormData();
+
+      dataToSendClient.append("userId", formData.usuario)
+      dataToSendClient.append("address", formData.address)
+      dataToSendClient.append("document", formData.document)
+      dataToSendClient.append("name", formData.name)
+      dataToSendClient.append("lastName", formData.lastName)
+      dataToSendClient.append("email", formData.email)
+      dataToSendClient.append("role", 4)
+      dataToSendClient.append("branch", user.branch)
+
+      dataToSendQuote.append("price", formData.precio)
+      dataToSendQuote.append("description", formData.description)
+      dataToSendQuote.append("vehicle", formData.vehicle)
+      dataToSendQuote.append("car_plate", formData.car_plate)
+      dataToSendQuote.append("car_plate_and_logo_fastening", formData.car_plate_and_logo_fastening)
+      dataToSendQuote.append("fire_extinguisher", formData.fire_extinguisher)
+      dataToSendQuote.append("first_aid_kit", formData.first_aid_kit)
+      dataToSendQuote.append("roadside_kit", formData.roadside_kit)
+      dataToSendQuote.append("soat", formData.soat)
+      dataToSendQuote.append("window_tint", formData.window_tint)
+      dataToSendQuote.append("vehicle", formData.vehicle)
+      dataToSendQuote.append("seller", user.id)
+
+      console.log("user id", user.id)
+      // Imprimir los datos en la consola
+      console.log("creamos un usuario nuevo")
+      for (const pair of dataToSendClient.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      // Imprimir los datos en la consola
+      console.log("creamos la cotizacion en otro objeto")
+      for (const pair of dataToSendQuote.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      console.log(combineObjects(dataToSendClient, dataToSendQuote))
+
     }
   };
 
+  const onClose = () => {
+    if (onCancel) {
+      onCancel();
+
+    }
+    setFormData({});
+    form.resetFields();
+    console.log('se ejecuto el cancelar')
+  }
 
 
   const UsuarioContent = () => (
@@ -146,7 +217,7 @@ export const QuotationsModal = ({ isVisible }) => {
           </Form.Item>
         ) : (
           <>
-            <div className="row">
+            <div className="row mt-4'">
               <div className='col-12 col-md-6'>
                 <Form.Item
                   name="name"
@@ -241,18 +312,13 @@ export const QuotationsModal = ({ isVisible }) => {
 
   const CotizacionContent = () => (
 
-  
-    // seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_quotes')
-    // client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='client_quotes')
+
     // validity = models.IntegerField(null=False)
     // valid_date = models.DateField()
-    // description = models.TextField(null=False)
 
     // car_plate = models.BooleanField(default=False)
-    // window_tint = models.BooleanField(default=False)
     // car_plate_and_logo_fastening = models.BooleanField(default=False)
-    // fire_extinguisher = models.BooleanField(default=False)
-    // first_aid_kit = models.BooleanField(default=False)
+
 
     <>
       <div className='row mt-4'>
@@ -293,6 +359,7 @@ export const QuotationsModal = ({ isVisible }) => {
             label={<label className="form-label"> Soat  </label>}
             rules={[{ required: false, message: 'campo obligatorio' }]}
             valuePropName="checked"
+            initialValue={false}
           >
             <Switch
               defaultChecked={false}
@@ -305,6 +372,7 @@ export const QuotationsModal = ({ isVisible }) => {
             label={<label className="form-label"> roadside_kit  </label>}
             rules={[{ required: false, message: 'campo obligatorio' }]}
             valuePropName="checked"
+            initialValue={false}
           >
             <Switch
               defaultChecked={false}
@@ -317,6 +385,59 @@ export const QuotationsModal = ({ isVisible }) => {
             label={<label className="form-label"> window_tint  </label>}
             rules={[{ required: false, message: 'campo obligatorio' }]}
             valuePropName="checked"
+            initialValue={false}
+          >
+            <Switch
+              defaultChecked={false}
+            />
+          </Form.Item>
+        </div>
+        <div className='col-12 col-md-6 d-flex'>
+          <Form.Item
+            name="fire_extinguisher"
+            label={<label className="form-label"> fire_extinguisher  </label>}
+            rules={[{ required: false, message: 'campo obligatorio' }]}
+            valuePropName="checked"
+            initialValue={false}
+          >
+            <Switch
+              defaultChecked={false}
+            />
+          </Form.Item>
+        </div>
+        <div className='col-12 col-md-6 d-flex'>
+          <Form.Item
+            name="first_aid_kit"
+            label={<label className="form-label"> first_aid_kit  </label>}
+            rules={[{ required: false, message: 'campo obligatorio' }]}
+            valuePropName="checked"
+            initialValue={false}
+          >
+            <Switch
+              defaultChecked={true}
+            />
+          </Form.Item>
+        </div>
+        <div className='col-12 col-md-6 d-flex'>
+          <Form.Item
+            name="car_plate"
+            label={<label className="form-label"> car_plate  </label>}
+            rules={[{ required: false, message: 'campo obligatorio' }]}
+            valuePropName="checked"
+            initialValue={false}
+          >
+            <Switch
+              defaultChecked={false}
+            />
+          </Form.Item>
+        </div>
+        <div className='col-12 col-md-6 d-flex'>
+          <Form.Item
+            name="car_plate_and_logo_fastening"
+            label={<label className="form-label"> car_plate_and_logo_fastening  </label>}
+            rules={[{ required: false, message: 'campo obligatorio' }]}
+            valuePropName="checked"
+            initialValue={false}
           >
             <Switch
               defaultChecked={false}
@@ -335,13 +456,18 @@ export const QuotationsModal = ({ isVisible }) => {
             />
           </Form.Item>
         </div>
+
       </div>
     </>
   );
 
   const ConfirmacionContent = () => (
     <>
-      <p> {JSON.stringify(formData)} </p>
+      <div className='row mt-4'>
+        <div className="alert alert-success alert-dismissible fade show">
+          ¡Operación exitosa! Todos los datos se guardaron correctamente.
+        </div>
+      </div>
     </>
   );
 
@@ -352,7 +478,7 @@ export const QuotationsModal = ({ isVisible }) => {
     <Modal
       title={"Registrar cotización"}
       open={isVisible}
-      onCancel={console.log("cancelar")}
+      onCancel={onClose}
       width={800}
       footer={false}
     >
@@ -368,11 +494,13 @@ export const QuotationsModal = ({ isVisible }) => {
             form={form}
             layout="vertical"
             onFinish={handleFinish}
-            initialValues={{ usuarioCreado: false }}
+            initialValues={{
+              usuarioCreado: false,
+            }}
           >
             <Steps current={currentStep} size="small" className="steps">
               {steps.map((step) => (
-                <Step key={step.title} title={step.title} icon={<UserOutlined />} />
+                <Step key={step.title} title={step.title} icon={step.icon} />
               ))}
             </Steps>
 

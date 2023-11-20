@@ -5,6 +5,7 @@ import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
 
+
 const { Search } = Input;
 
 export const QuotationsView = () => {
@@ -12,6 +13,11 @@ export const QuotationsView = () => {
     const [quotationsData, setQuotationsData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [openModal, setOpenModal] = useState(true)
+
+    const handleCancel = () => {
+        setOpenModal(false);
+    }
+   
 
 
 
@@ -78,7 +84,7 @@ export const QuotationsView = () => {
                                 className='m-1'
                                 type="primary"
                                 icon={<PlusCircleOutlined />}
-                                onClick={() => setOpenModal(true)}
+                                onClick={() => setOpenModal(true)}                               
                             >
                                 Nuevo
                             </Button>
@@ -112,6 +118,13 @@ export const QuotationsView = () => {
             </div>
 
 
+            <QuotationsModal
+            isVisible={openModal}
+            // onConfirm={handleOk}
+            onCancel={handleCancel}
+            // branchData={branchToEdit}
+            // onBranchUpdate={refreshTable}
+           />
             <QuotationsModal
             isVisible={openModal}
             // onConfirm={handleOk}
