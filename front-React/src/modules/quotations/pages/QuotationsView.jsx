@@ -5,6 +5,7 @@ import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
 
+
 const { Search } = Input;
 
 export const QuotationsView = () => {
@@ -13,7 +14,9 @@ export const QuotationsView = () => {
     const [loading, setLoading] = useState(false);
     const [openModal, setOpenModal] = useState(true)
 
-
+    const handleCancel = () => {
+        setOpenModal(false);
+    }
 
     const columns = [
         {
@@ -115,7 +118,7 @@ export const QuotationsView = () => {
             <QuotationsModal
             isVisible={openModal}
             // onConfirm={handleOk}
-            // onCancel={handleCancel}
+            onCancel={handleCancel}
             // branchData={branchToEdit}
             // onBranchUpdate={refreshTable}
            />

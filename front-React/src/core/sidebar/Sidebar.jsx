@@ -125,6 +125,8 @@ export const Sidebar = () => {
             <Avatar src={user?.avatar} size={32}  />
             <span>{user?.name + ' ' + user?.lastname}</span>
             <span>{user?.role}</span>
+            <span>{user?.id}</span>
+            <span>{user?.branch}</span>
             <button onClick={() => logout()}>log out</button>
           </div>
           {/* <Menu theme="dark" mode="vertical" >
