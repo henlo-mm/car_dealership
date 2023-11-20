@@ -176,14 +176,7 @@ export const BranchesView = () => {
                                 onClick={refreshTable}
                             >
                             </Button>
-                            <Button
-                                className='m-1'
-                                type="default"
-                                icon={<FilterOutlined />}>
-                                tipo de usuario
-                            </Button>
                         </div>
-
                     </div>
                 </div>
             </div>
