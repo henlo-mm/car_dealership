@@ -3,6 +3,7 @@ import { Column , Pie } from '@ant-design/charts';
 import { getUsers } from '../../../services/user';
 import { getWorkOrders } from '../../../services/work_orders';
 import { getSales } from '../../../services/sales';
+import { getQuotes } from '../../../services/quotes';
 //import { Column } from '@ant-design/plots';
 import Card from '../templates/card';
 import DemoPie from '../templates/pie';
@@ -12,6 +13,7 @@ export const DashboardView = () => {
   const [userData, setUserData] = useState([]);
   const [workOrder, setWorkOrder] = useState([]);
   const [sales, setSales] = useState([]);
+  const [quotes, setQuotes] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchUserData = async () => {
@@ -27,6 +29,10 @@ export const DashboardView = () => {
       const dataSales = await getSales();
       const cantidadElementosSales = Object.keys(dataSales).length;
       setSales(cantidadElementosSales);
+
+      const dataQuotes = await getQuotes();
+      const cantidadElementosQuotes = Object.keys(dataQuotes).length;
+      setQuotes(cantidadElementosQuotes);
     } catch (error) {
       console.error('Error:', error);
     } 
@@ -41,7 +47,7 @@ export const DashboardView = () => {
   const info_cards = {
     clientes: { titulo: "Clientes", cantidad: userData },
     ventas: { titulo: "Ventas", cantidad: sales },
-    cotizaciones: { titulo: "Cotizaciones", cantidad: 3 },
+    cotizaciones: { titulo: "Cotizaciones", cantidad: quotes },
     ordenes: { titulo: "Ordenes de trabajo", cantidad: workOrder }
   };
 
