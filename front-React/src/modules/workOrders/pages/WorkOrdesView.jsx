@@ -39,7 +39,6 @@ export const WorkOrdersView = () => {
             setUsersData(dataUsers);
             setVehiclesData(dataVehicles);
 
-            console.log(dataWorkOrders);
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -55,13 +54,11 @@ export const WorkOrdersView = () => {
         if (values) {
             setWorkOrderToEdit(values)
         }
-        console.log('se abre el modal?')
         setIsModalVisible(true);
     };
 
     const handleCancel = () => {
         // todo: logica para cerrar el modal
-        console.log('se ejecuto el cancelar')
         setIsModalVisible(false);
         setWorkOrderToEdit(null)
     };
@@ -79,7 +76,6 @@ export const WorkOrdersView = () => {
          role_id = data.get('role_id')
          */
         // todo: logica para crear un usuario nuevo
-        console.log('se ejecuto el ok')
         setIsModalVisible(false);
         setWorkOrderToEdit(null);
     };
@@ -204,8 +200,8 @@ export const WorkOrdersView = () => {
 
         <div className='card card-body'>
             <div className='card-header'>
-                <h5 className='card-title'>
-                    WorkOrdersView
+                <h5 className='card-title h3'>
+                    Ordenes de trabajo
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>

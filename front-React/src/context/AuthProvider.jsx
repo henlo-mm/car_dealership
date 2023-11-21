@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }) => {
         if (route) {
             navigate(route);
         } else {
-            console.log("se salio en: ROLES_ROUTES[rol] ")
             logout()
         }
     }
@@ -40,16 +39,20 @@ export const AuthProvider = ({ children }) => {
     const login = async (values) => {
         const response = await loginservice(values);
         const user = {
+            id: response?.user?.id,
+            email: response?.user?.email,
+            branch: response?.user?.branch,
             token: response?.token,
             role: response?.user?.role,
-            role_name: response?.user?.role_name,
             name: response?.user?.name,
             lastname: response?.user?.lastname || '',
             avatar: response?.user?.avatar,
         }
+
         localStorage.setItem('token', user?.token);
         localStorage.setItem('userData', JSON.stringify(user));
         setUser({ ...user });
+
         navigateTo(response?.user?.role)
     }
 
@@ -58,7 +61,6 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem("token");
             const userData = localStorage.getItem("userData");
             if (!token || !userData) {
-                console.log("se salio en: !token || !userData ")
                 logout()
                 return;
             }
@@ -69,7 +71,6 @@ export const AuthProvider = ({ children }) => {
                 setUser(value)
                 !location.pathname?.includes(ROLES_ROUTES[value.role]) && navigateTo(value.role)
             } catch (e) {
-                console.log("se salio en: catch (e)", e)
                 logout();
             }
         })()

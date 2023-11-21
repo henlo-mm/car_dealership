@@ -66,7 +66,6 @@ export const VehiclesView = () => {
 
         if (values) {
             setVehicleToEdit(values)
-            console.log({ vehicleToEdit })
         }
 
         setIsModalVisible(true);
@@ -91,12 +90,10 @@ export const VehiclesView = () => {
 
     const handleCancel = () => {
         // todo: logica para cerrar el modal
-        console.log('se ejecuto el cancelar')
         setIsModalVisible(false);
     };
     const handleOk = () => {
         // todo: logica para crear un usuario nuevo
-        console.log('se ejecuto el ok')
         setIsModalVisible(false);
     };
 
@@ -230,13 +227,12 @@ export const VehiclesView = () => {
     ];
 
 
-    console.log({ vehiclesData })
     return (
 
         <div className='card card-body'>
             <div className='card-header'>
-                <h5 className='card-title'>
-                    VehiclesView
+                <h5 className='card-title h3'>
+                    Vehiculos
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>

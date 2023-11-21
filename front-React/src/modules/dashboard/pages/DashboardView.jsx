@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Column , Pie } from '@ant-design/charts';
 import { getUsers } from '../../../services/user';
 import { getWorkOrders } from '../../../services/work_orders';
+import { getSales } from '../../../services/sales';
+import { getQuotes } from '../../../services/quotes';
 //import { Column } from '@ant-design/plots';
 import Card from '../templates/card';
 import DemoPie from '../templates/pie';
@@ -10,6 +12,8 @@ import { Flex } from 'antd';
 export const DashboardView = () => {
   const [userData, setUserData] = useState([]);
   const [workOrder, setWorkOrder] = useState([]);
+  const [sales, setSales] = useState([]);
+  const [quotes, setQuotes] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchUserData = async () => {
@@ -21,23 +25,27 @@ export const DashboardView = () => {
       const dataWorkOrders = await getWorkOrders();
       const cantidadElementosWorkOrder = Object.keys(dataWorkOrders).length;
       setWorkOrder(cantidadElementosWorkOrder);
+
+      const dataSales = await getSales();
+      const cantidadElementosSales = Object.keys(dataSales).length;
+      setSales(cantidadElementosSales);
+
+      const dataQuotes = await getQuotes();
+      const cantidadElementosQuotes = Object.keys(dataQuotes).length;
+      setQuotes(cantidadElementosQuotes);
     } catch (error) {
       console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   useEffect(() => {
     fetchUserData();
   }, [refreshKey]);
 
-  console.log(userData)
-
   const info_cards = {
     clientes: { titulo: "Clientes", cantidad: userData },
-    ventas: { titulo: "Ventas", cantidad: 5 },
-    cotizaciones: { titulo: "Cotizaciones", cantidad: 3 },
+    ventas: { titulo: "Ventas", cantidad: sales },
+    cotizaciones: { titulo: "Cotizaciones", cantidad: quotes },
     ordenes: { titulo: "Ordenes de trabajo", cantidad: workOrder }
   };
 
@@ -118,23 +126,26 @@ label: {
 
 
   return (
-    <div>
-      <Flex gap="middle" horizontal='horizontal'>
-        {Object.entries(info_cards).map(([key, value]) => (
-          <Card key={key} count={value.cantidad} title={value.titulo} />
-        ))}
-      </Flex>
-      <div className='row my-5'>
-        <div className='col-12 col-lg-6'>
-          <Column {...config} />
-        </div>
-        <div className='col-12 col-lg-3 text-center'>
-          <h2>Vehiculos</h2>
-          <DemoPie />
-        </div>
-        <div className='col-12 col-lg-3 text-center'>
-          <h2>Partes</h2>
-          <DemoPie />
+    <div className='card card-body'>
+      <div className='card-header'>
+        <h5 className='card-title h3'>
+          Dashboard
+        </h5>
+      </div>
+      <div className='card-body'>
+        <Flex gap="middle" horizontal='horizontal'>
+          {Object.entries(info_cards).map(([key, value]) => (
+            <Card key={key} count={value.cantidad} title={value.titulo} />
+          ))}
+        </Flex>
+        <div className='row my-5'>
+          <div className='col-12 col-lg-6'>
+            <Column {...config} />
+          </div>
+          <div className='col-12 col-lg-6 text-center'>
+            <h2>Vehiculos</h2>
+            <DemoPie />
+          </div>          
         </div>
       </div>
     </div>

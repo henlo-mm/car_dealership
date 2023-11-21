@@ -1,8 +1,9 @@
-import { Modal, Form, Spin, Input, Button, notification, Select } from 'antd';
+import { Modal, Form, Spin, Input, Button, notification, Select, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 import { createUser, updateUser } from '../../../services/user';
 import { getBranches } from '../../../services/branches';
-
+import { UploadOutlined } from '@ant-design/icons';
+import { CiImageOn } from 'react-icons/ci';
 
 export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpdate }) => {
 
@@ -10,6 +11,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
     const [loading, setLoading] = useState(false);
     const [branchList, setBranchList] = useState([]);
+    const [imgData, setimgData] = useState([]);
 
     const fetchBranchData = async () => {
         try {
@@ -29,7 +31,10 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
     useEffect(() => {
         if (userData && isVisible) {
             //Si hay data entonces configure la data
-            form.setFieldsValue(userData)
+            form.setFieldsValue({
+                ...userData,
+                avatar: []
+            })
         }
     }, [userData])
 
@@ -45,30 +50,67 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
     const onSubmit = async (values) => {
         try {
-            console.log(values)
             //todo
             // los values del form
             setLoading(true);
             //Hacer validaciones nezar peticiones httpcesarias
 
             if (userData) {
-                await updateUser(userData.id, values);
+
+                const formData = new FormData();
+
+                formData.append("address", values.address);
+                formData.append("branch", values.branch);
+                formData.append("document", values.document);
+                formData.append("email", values.email);
+                formData.append("lastName", values.lastName);
+                formData.append("name", values.name);
+                formData.append("phone", values.phone);
+                formData.append("role", values.role);
+                formData.append("secondPhone", values.secondPhone);
+                if (imgData[0] == undefined) {
+                    formData.append("avatar", userData.avatar);
+                } else {
+                    formData.append("avatar", imgData[0]);
+                }
+
+                await updateUser(userData.id, formData);
+
+                onUserUpdate();
+                setimgData([]);
+                form.resetFields();
+
+
+                if (onConfirm) {
+                    onConfirm();
+                }
+                notification.success({
+                    message: 'Operacion exitosa',
+                    description: 'El usuario ha sido actualizado',
+                });
+
             } else {
-                await createUser(values);
+
+                // await createUser( {...values, avatar: imgData});
+
+
+                onUserUpdate();
+
+                form.resetFields();
+
+
+                if (onConfirm) {
+                    onConfirm();
+                }
+                notification.success({
+                    message: 'Operacion exitosa',
+                    description: 'El usuario ha sido creado',
+                });
+
+
             }
-            
-            onUserUpdate();
-
-            form.resetFields();
 
 
-            if (onConfirm) {
-                onConfirm();
-            } 
-            notification.success({
-                message: 'Operacion exitosa',
-                description: 'El usuario ha sido creado',
-            });
         } catch (error) {
             notification.error({
                 message: 'Error',
@@ -252,6 +294,77 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
                                             )
                                         }
                                     />
+                                </Form.Item>
+                            </div>
+
+                            <div className='col-12 col-md-6'>
+                                <Form.Item
+                                    name="avatar"
+                                    label={<label className="form-label"> Foto </label>}
+                                    valuePropName='fileList'
+                                    getValueFromEvent={(event) => {
+                                        return event?.fileList
+                                    }}
+                                    rules={[
+                                        {
+                                            required: false,
+                                            message: 'campo obligatorio'
+                                        },
+                                        {
+                                            validator(_, fileList) {
+                                                return new Promise((resolve, reject) => {
+                                                    if (fileList[0] && fileList[0].size > 500000) {
+                                                        reject('imagen demasiado pesada');
+                                                        message.error('imagen demasiado pesada');
+                                                    } else {
+                                                        resolve(fileList[0]);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    ]}
+                                >
+
+                                    <Upload
+                                        listType="picture"
+                                        iconRender={() => {
+                                            return <CiImageOn size={25} />
+                                        }}
+                                        accept='.png, .jpg, .jpge'
+                                        maxCount={1}
+                                        beforeUpload={(file) => {
+                                            return new Promise((resolve, reject) => {
+                                                if (file && file.size > 700000) {
+                                                    reject(['imagen demasiado pesada']);
+                                                    message.error('imagen demasiado pesada');
+                                                } else {
+                                                    resolve(file);
+                                                }
+                                            });
+                                        }}
+                                        customRequest={(info) => {
+                                            setimgData([info.file]);
+
+                                        }}
+                                        onChange={(event) => {
+                                            if (event) {
+                                                setimgData([event]);
+                                            }
+                                        }}
+                                        onRemove={(event) => {
+                                            if (event) {
+                                                // console.log('ejecutamos el on remove', event);
+                                                setimgData([]);
+                                                // console.log(imgData)
+                                            }
+                                        }}
+                                    >
+                                        <Button
+                                            icon={<UploadOutlined />}
+                                        >Cargar Foto
+                                        </Button>
+
+                                    </Upload>
                                 </Form.Item>
                             </div>
                         </div>

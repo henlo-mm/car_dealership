@@ -58,7 +58,6 @@ export const BranchesView = () => {
     };
 
     const handleOk = () => {
-        console.log('se ejecuto el ok')
         setIsModalVisible(false);
         setBranchToEdit(null);
     };
@@ -145,8 +144,8 @@ export const BranchesView = () => {
 
         <div className='card card-body'>
             <div className='card-header'>
-                <h5 className='card-title'>
-                    BranchesView
+                <h5 className='card-title h3'>
+                    Sucursales
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>
@@ -176,14 +175,7 @@ export const BranchesView = () => {
                                 onClick={refreshTable}
                             >
                             </Button>
-                            <Button
-                                className='m-1'
-                                type="default"
-                                icon={<FilterOutlined />}>
-                                tipo de usuario
-                            </Button>
                         </div>
-
                     </div>
                 </div>
             </div>

@@ -31,7 +31,6 @@ export const Sidebar = () => {
   const [selectedKeysMenu, setSelectedKeysMenu] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
 
-  console.log(user.avatar, "avatar")
   const optionsRoles = [
     {
         id: 1,
