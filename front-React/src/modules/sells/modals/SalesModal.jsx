@@ -64,14 +64,11 @@ export const SalesModal = ({ isVisible, onConfirm, onCancel, onSaleUpdate }) => 
 
         try {
 
-          console.log("es una creacion de Sales (dateElement) => dayjs(dateElement).format('YYYY-MM-DD')");
 
           await createSale({
               ...values,
               sale_date: dayjs(values.sale_date).format('YYYY-MM-DD'),
           });
-
-          console.log(values);
 
           onSaleUpdate();
 

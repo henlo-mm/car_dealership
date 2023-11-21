@@ -39,7 +39,6 @@ export const WorkOrdersView = () => {
             setUsersData(dataUsers);
             setVehiclesData(dataVehicles);
 
-            console.log(dataWorkOrders);
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -55,13 +54,11 @@ export const WorkOrdersView = () => {
         if (values) {
             setWorkOrderToEdit(values)
         }
-        console.log('se abre el modal?')
         setIsModalVisible(true);
     };
 
     const handleCancel = () => {
         // todo: logica para cerrar el modal
-        console.log('se ejecuto el cancelar')
         setIsModalVisible(false);
         setWorkOrderToEdit(null)
     };
@@ -79,7 +76,6 @@ export const WorkOrdersView = () => {
          role_id = data.get('role_id')
          */
         // todo: logica para crear un usuario nuevo
-        console.log('se ejecuto el ok')
         setIsModalVisible(false);
         setWorkOrderToEdit(null);
     };

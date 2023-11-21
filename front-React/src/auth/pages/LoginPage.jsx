@@ -11,7 +11,6 @@ export const LoginPage = () => {
   const { login } = useAuth();
 
   const onFinish = async (values) => { 
-    console.log("entrar")
     try {
       await login(values)
     } catch (error) {

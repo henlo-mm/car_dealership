@@ -37,7 +37,6 @@ const contarVehiculosPorSucursal = () => {
       vehiculosPorSucursal[branch] = 1;
     }
   });
-  console.log(vehiculosPorSucursal, "arreglo de veh")
   // Convertir el objeto en un arreglo con el formato deseado
   const data = Object.keys(vehiculosPorSucursal).map((key) => ({
     type: branchList.find((sucursal) => sucursal.id === parseInt(key, 10)).name,
@@ -57,7 +56,6 @@ if (Array.isArray(data2) && data2.length > 0) {
     value: Number(item.value), // Convertir a número
   }));
 }
-console.log(formattedData, "arre final")
   
 
   const data = [

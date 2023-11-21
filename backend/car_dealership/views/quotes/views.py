@@ -1,10 +1,13 @@
 from django.db import transaction
 from django.http import JsonResponse
 from rest_framework.viewsets import ModelViewSet
-from ...models import Quote
+from rest_framework.parsers import MultiPartParser, FormParser
+
+from ...models import Quote, User
 from ...serializers import QuoteSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
+import json
 
 class QuoteViewSet(ModelViewSet):
     queryset = Quote.objects.all()
@@ -27,7 +30,8 @@ class QuoteViewSet(ModelViewSet):
                 "car_plate_and_logo_fastening": quote.car_plate_and_logo_fastening,
                 "roadside_kit": quote.roadside_kit,
                 "fire_extinguisher": quote.fire_extinguisher,
-                "first_aid_kit": quote.fire_extinguisher,
+                "first_aid_kit": quote.first_aid_kit,
+                "created_at": quote.created_at,
                 "vehicle": {
                     "id": quote.vehicle.id,
                     "model": quote.vehicle.model,
@@ -45,24 +49,55 @@ class QuoteViewSet(ModelViewSet):
                     "lastname": quote.seller.lastname,
                 }
             }
+
             quote_data_list.append(quote_data)
 
         return JsonResponse(quote_data_list, safe=False) 
         
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        user_data = request.data.get('user_data')
-        quote_data = request.data.get('quote_data')
+        data = request.data
+        user_data = {}
+        email = ""
 
-        user_serializer = UserSerializer(data=user_data)
-
-        if user_serializer.is_valid():
-            user = user_serializer.save()
-            
-            quote_data['client'] = user.id
+        if 'emailuserCreated' in data:
+            email = data.get('emailuserCreated')
         else:
-            return Response(user_serializer.errors, status=400)
+            user_data = {
+                'id': data.get('userId'),
+                'address': data.get('address'),
+                'document': data.get('document'),
+                'name': data.get('name'),
+                'lastname': data.get('lastName'),
+                'email': data.get('email'),
+                'role_id': int(data.get('role')),
+                'branch_id': int(data.get('branch')),
+            }
 
+        quote_data = {
+            'price': data.get('price'),
+            'description': data.get('description'),
+            'vehicle': data.get('vehicle'), 
+            'car_plate': data.get('car_plate'),
+            'car_plate_and_logo_fastening': data.get('car_plate_and_logo_fastening'),
+            'fire_extinguisher': data.get('fire_extinguisher'),
+            'first_aid_kit': data.get('first_aid_kit'),
+            'roadside_kit': data.get('roadside_kit'),
+            'soat': data.get('soat'),
+            'window_tint': data.get('window_tint'),
+            'seller': int(data.get('seller')),
+        }
+
+
+
+        if user_data:
+            user_data.pop('id', None)
+            user = User.objects.create(**user_data)
+        else:
+            user = User.objects.get(email=email)
+
+        quote_data['client'] = user.id
+        
         quote_serializer = QuoteSerializer(data=quote_data)
 
         if quote_serializer.is_valid():

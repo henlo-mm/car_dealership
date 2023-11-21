@@ -32,7 +32,6 @@ export const PartsView = () => {
         try {
             const data = await getParts();
             setPartsData(data);
-            console.log(partsData);
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -47,7 +46,6 @@ export const PartsView = () => {
     const handleAddPartClick = (values) => {
         if (values) {
             setPartToEdit(values);
-            console.log({ partToEdit })
         }
         setIsModalVisible(true);
     };

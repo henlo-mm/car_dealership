@@ -121,19 +121,16 @@ useEffect(() => {
   };
 
   const handleAddSaleClick = (values) => {
-    console.log('se abre el modal?')
     setIsModalVisible(true);
   };
 
   const handleCancel = () => {
     // todo: logica para cerrar el modal
-    console.log('se ejecuto el cancelar')
     setIsModalVisible(false);
     setWorkOrderToEdit(null)
 };
 
   const handleOk = () => {
-    console.log('se ejecuto el ok')
     setIsModalVisible(false);
     setWorkOrderToEdit(null);
 };

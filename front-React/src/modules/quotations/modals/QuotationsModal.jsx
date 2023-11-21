@@ -1,9 +1,10 @@
 
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Modal, Select, Spin, Steps, Switch, message } from 'antd'
+import { Button, Form, Input, Modal, Select, Spin, Steps, Switch, message, notification} from 'antd'
 import { UserOutlined, CarOutlined, CheckOutlined } from '@ant-design/icons';
 import { getUsers } from '../../../services/user';
 import { getvehicles } from '../../../services/vehicles';
+import { createQuote } from '../../../services/quotes';
 import useAuth from 'auth';
 
 
@@ -29,7 +30,7 @@ const steps = [
 ];
 
 
-export const QuotationsModal = ({ isVisible, onCancel }) => {
+export const QuotationsModal = ({ isVisible, onCancel, onConfirm }) => {
 
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
@@ -46,6 +47,7 @@ export const QuotationsModal = ({ isVisible, onCancel }) => {
       const vehicles = await getvehicles();
       setVehiclesData(vehicles.filter((car) => car.is_for_sale == false));
       const usersList = await getUsers();
+
       setUsersData(usersList.filter((user) => user.role == 4));
       setSellersData(usersList.filter((user) => user.role == 2));
     } catch (error) {
@@ -74,25 +76,24 @@ export const QuotationsModal = ({ isVisible, onCancel }) => {
     setCurrentStep(currentStep - 1);
   };
 
-  const combineObjects = (objeto1, objeto2) => {
+  const combineObjects =  (objeto1, objeto2) => {
     return {
       oneStepper: objeto1,
       twoStepper: objeto2,
     };
   }
 
-  const handleFinish = (values) => {
+  const handleFinish = async () => {
     // Aquí puedes enviar los datos al servidor
 
-    console.log(formData)
 
     if (usuarioCreado) {
+
 
       const dataToSend = new FormData();
       const dataToSendQuote = new FormData();
       dataToSend.append("emailuserCreated", formData.usuario)
-     
-     
+    
       dataToSendQuote.append("price", formData.precio)
       dataToSendQuote.append("description", formData.description)
       dataToSendQuote.append("vehicle", formData.vehicle)
@@ -106,29 +107,18 @@ export const QuotationsModal = ({ isVisible, onCancel }) => {
       dataToSendQuote.append("vehicle", formData.vehicle)
       dataToSendQuote.append("seller", user?.id)
 
-      console.log("user id", user?.id)
-      console.log("user id", user?.branch)
+      await createQuote(dataToSend, dataToSendQuote);
 
-      console.log("creamos un usuario nuevo")
-      for (const pair of dataToSend.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      form.resetFields();
+    
+      notification.success({
+        message: 'Operacion exitosa',
+        description: 'La cotización ha sido creada exitosamente',
+      });
 
-      // Imprimir los datos en la consola
-      console.log("creamos la cotizacion en otro objeto")
-      for (const pair of dataToSendQuote.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      
+      onCancel();
 
-      console.log(combineObjects(dataToSend, dataToSendQuote))
-
-      // Imprimir los datos en la consola
-      console.log("pasamos un usuario ya creado")
-
-      console.log("user id", user)
-      for (const pair of dataToSend.entries()) {
-        console.log(pair[0], pair[1]);
-      }
     } else {
 
       const dataToSendClient = new FormData();
@@ -156,32 +146,30 @@ export const QuotationsModal = ({ isVisible, onCancel }) => {
       dataToSendQuote.append("vehicle", formData.vehicle)
       dataToSendQuote.append("seller", user.id)
 
-      console.log("user id", user.id)
-      // Imprimir los datos en la consola
-      console.log("creamos un usuario nuevo")
-      for (const pair of dataToSendClient.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      await createQuote(dataToSendClient, dataToSendQuote);
+    
+      form.resetFields();
 
-      // Imprimir los datos en la consola
-      console.log("creamos la cotizacion en otro objeto")
-      for (const pair of dataToSendQuote.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      notification.success({
+        message: 'Operacion exitosa',
+        description: 'La cotización ha sido creada exitosamente',
+      });
 
-      console.log(combineObjects(dataToSendClient, dataToSendQuote))
-
+      
+      onCancel();
     }
   };
 
   const onClose = () => {
+
+    
     if (onCancel) {
       onCancel();
-
     }
+    
     setFormData({});
     form.resetFields();
-    console.log('se ejecuto el cancelar')
+
   }
 
 
@@ -465,9 +453,11 @@ export const QuotationsModal = ({ isVisible, onCancel }) => {
     <>
       <div className='row mt-4'>
         <div className="alert alert-success alert-dismissible fade show">
-          ¡Operación exitosa! Todos los datos se guardaron correctamente.
+         Por favor, verifica tus datos antes de darle enviar.
         </div>
       </div>
+
+    
     </>
   );
 

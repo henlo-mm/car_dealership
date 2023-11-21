@@ -37,8 +37,6 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
 
     useEffect(() => {
         if (workOrderData && isVisible) {
-            console.log(workOrderData);
-            console.log('dayJs', dayjs(workOrderData.completion_date))
             //Si hay data entonces configure la data
             form.setFieldsValue({
                 ...workOrderData,
@@ -72,22 +70,11 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
 
             if (workOrderData) {
 
-                console.log("updateWorkOrder")
-                console.log("valores que paso en el update",{
-                    ...values,
-                    start_date: dayjs(values.start_date).format('YYYY-MM-DD'),
-                    completion_date: dayjs(values.completion_date).format('YYYY-MM-DD')
-                })
-
-                console.log("lo que paso con dayjs", dayjs(values.start_date).format('YYYY-MM-DD'));
-
                 await updateWorkOrder(workOrderData.id, {
                     ...values,
                     start_date: dayjs(values.start_date).format('YYYY-MM-DD'),
                     completion_date: dayjs(values.completion_date).format('YYYY-MM-DD')
                 });
-
-                console.log(values)
 
                 onWorkOrderUpdate();
 
@@ -103,7 +90,6 @@ export const WorkOrdersModal = ({ isVisible, onConfirm, onCancel, workOrderData,
 
             } else {
                 
-                console.log("updateWorkOrder")
                 await createWorkOrder({
                     ...values,
                     start_date: dayjs(values.start_date).format('YYYY-MM-DD'),

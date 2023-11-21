@@ -66,7 +66,6 @@ export const VehiclesView = () => {
 
         if (values) {
             setVehicleToEdit(values)
-            console.log({ vehicleToEdit })
         }
 
         setIsModalVisible(true);
@@ -91,12 +90,10 @@ export const VehiclesView = () => {
 
     const handleCancel = () => {
         // todo: logica para cerrar el modal
-        console.log('se ejecuto el cancelar')
         setIsModalVisible(false);
     };
     const handleOk = () => {
         // todo: logica para crear un usuario nuevo
-        console.log('se ejecuto el ok')
         setIsModalVisible(false);
     };
 
@@ -230,7 +227,6 @@ export const VehiclesView = () => {
     ];
 
 
-    console.log({ vehiclesData })
     return (
 
         <div className='card card-body'>

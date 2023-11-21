@@ -58,7 +58,6 @@ export const BranchesView = () => {
     };
 
     const handleOk = () => {
-        console.log('se ejecuto el ok')
         setIsModalVisible(false);
         setBranchToEdit(null);
     };

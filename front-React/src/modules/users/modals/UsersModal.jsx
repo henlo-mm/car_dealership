@@ -50,7 +50,6 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
     const onSubmit = async (values) => {
         try {
-            console.log(values)
             //todo
             // los values del form
             setLoading(true);
@@ -94,7 +93,6 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
                 // await createUser( {...values, avatar: imgData});
 
-                console.log("form enviado", { ...values, avatar: imgData[0] })
 
                 onUserUpdate();
 
@@ -351,7 +349,6 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
                                         onChange={(event) => {
                                             if (event) {
                                                 setimgData([event]);
-                                                console.log(imgData);
                                             }
                                         }}
                                         onRemove={(event) => {

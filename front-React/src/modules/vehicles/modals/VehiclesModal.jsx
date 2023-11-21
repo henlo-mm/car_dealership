@@ -50,7 +50,6 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
             onCancel();
         }
         form.resetFields();
-        console.log('se ejecuto el cancelar')
     }
 
 
@@ -61,11 +60,9 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
         try {
 
             setLoading(true);
-            console.log("vehicleData", vehicleData);
 
             if (vehicleData) {
 
-                console.log("actualización de vehiculo")
                 const year = parseInt(values.year.format('YYYY'));
                 const formData = new FormData();
                 formData.append("make", values.make);
@@ -100,7 +97,6 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
 
             } else {
 
-                console.log("creacion de vehiculo",)
                 const year = parseInt(values.year.format('YYYY'));
                 const formData = new FormData();
                 formData.append("make", values.make);
@@ -119,12 +115,8 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
                     setimgData([]);
                 }
 
-                console.log({ values });
-
                 // Imprimir los datos en la consola
-                for (const pair of formData.entries()) {
-                    console.log(pair[0], pair[1]);
-                }
+            
 
                 await createVehicle(formData);
 
@@ -340,8 +332,7 @@ export const VehiclesModal = ({ isVisible, onConfirm, onCancel, vehicleData, onV
                                         onChange={(event) => {
                                             if (event) {
                                                 setimgData([event]);
-                                                console.log(imgData);
-                                            }
+d                                            }
                                         }}
                                         onRemove={(event) => {
                                             if (event) {

@@ -42,8 +42,6 @@ export const DashboardView = () => {
     fetchUserData();
   }, [refreshKey]);
 
-  console.log(userData)
-
   const info_cards = {
     clientes: { titulo: "Clientes", cantidad: userData },
     ventas: { titulo: "Ventas", cantidad: sales },

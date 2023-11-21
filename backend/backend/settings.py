@@ -35,7 +35,8 @@ ALLOWED_HOSTS = [
     'autohaus.link',
     'www.autohaus.link',
     '76.76.21.21',
-    'car_dealership.auto-haus.link'     
+    'car_dealership.auto-haus.link',
+    #'127.0.0.1'   
 ]
 
 # Application definition

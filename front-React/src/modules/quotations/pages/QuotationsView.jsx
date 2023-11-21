@@ -1,9 +1,13 @@
 import { Button, Input, Table } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { QuotationsModal } from '../modals/QuotationsModal';
+import { DeleteModal } from '../../../core/modals/DeleteModal';
+
 import { PlusCircleOutlined, FilterOutlined } from '@ant-design/icons';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
+import { getQuotes, deleteQuote } from '../../../services/quotes';
+import dayjs from 'dayjs';
 
 
 const { Search } = Input;
@@ -12,14 +16,54 @@ export const QuotationsView = () => {
 
     const [quotationsData, setQuotationsData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [openModal, setOpenModal] = useState(true)
+    const [openModal, setOpenModal] = useState(false)
+    const [openDeleteModal, setDeleteModal] = useState(false)
+    const [quoteToDelete, setQuoteToDelete] = useState(null);
+    const [refreshKey, setRefreshKey] = useState(0);
+
 
     const handleCancel = () => {
         setOpenModal(false);
     }
    
+    const refreshTable = () => {
+        setRefreshKey((prevKey) => prevKey + 1);
+    };
 
+    const fetchQuoteData = async () => {
+        try {
+            const data = await getQuotes();
+            console.log(data)
+            setQuotationsData(data);
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const handleCancelDelete = () => {
+        setDeleteModal(false);
+      };
+    
+      const showDeleteConfirmationModal = (data) => {
+        setQuoteToDelete(data.id);
+        setDeleteModal(true);
+      };
+    
+      const handleDeleteSale = async () => {
+        try {
+            await deleteQuote(quoteToDelete);
+            refreshTable();
+            setDeleteModal(false);
+        } catch (error) {
+            console.error('Error:', error);
+            setDeleteModal(false);
+        }
+      };
+    useEffect(() => {
+        fetchQuoteData();
+    }, [refreshKey]);
 
     const columns = [
         {
@@ -31,11 +75,14 @@ export const QuotationsView = () => {
             title: 'Vendedor',
             dataIndex: 'seller',
             key: 'seller',
+            render: (seller) => seller.name + " " + seller.lastname,
+
         },
         {
             title: 'Vehiculo',
             dataIndex: 'vehicle',
             key: 'vehicle',
+            render: (vehicle) => vehicle.model,
         },
         {
             title: 'Valor ',
@@ -46,21 +93,23 @@ export const QuotationsView = () => {
             title: 'Fecha cotizacion',
             dataIndex: 'created_at',
             key: 'created_at',
+            render: (created_at) => dayjs(created_at).format('YYYY-MM-DD')
         },
         {
             title: 'Acciones',
             key: 'actions',
             render: (values) => (
                 <div>
-                    <Button
+                   {/*  <Button
                         type="link"
                         icon={<BiSolidEditAlt />}
                         size={20}
-                    />
+                    /> */}
                     <Button
                         type="link"
                         size={20}
                         icon={<AiOutlineDelete />}
+                        onClick={() => showDeleteConfirmationModal(values)}
                     />
                 </div>
             ),
@@ -125,21 +174,15 @@ export const QuotationsView = () => {
             // branchData={branchToEdit}
             // onBranchUpdate={refreshTable}
            />
-            <QuotationsModal
-            isVisible={openModal}
-            // onConfirm={handleOk}
-            // onCancel={handleCancel}
-            // branchData={branchToEdit}
-            // onBranchUpdate={refreshTable}
-           />
+          
 
-            {/* <DeleteModal
-            isVisible={isDeleteModalVisible}
-            onConfirm={handleDeleteBranch}
-            onCancel={handleCancelDeleteBranch}
-            title={"Eliminar Sucursal"}
-            message={"¿Está seguro(a) de eliminar esta sucursal?"}
-          /> */}
+            <DeleteModal
+                isVisible={openDeleteModal}
+                onConfirm={handleDeleteSale}
+                onCancel={handleCancelDelete}
+                title={"Eliminar Sucursal"}
+                message={"¿Está seguro(a) de eliminar esta sucursal?"}
+          />
         </div>
     );
 }
