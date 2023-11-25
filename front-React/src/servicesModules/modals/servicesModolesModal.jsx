@@ -24,7 +24,7 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
     useEffect(() => {
         fetchOrderWorkData();
-    }, []);
+    }, [userData]);
 
 
 
