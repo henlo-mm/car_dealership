@@ -91,11 +91,11 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
 
             } else {
 
-                // await createUser( {...values, avatar: imgData});
+                await createUser({ ...values, avatar: imgData[0] });
 
 
                 onUserUpdate();
-
+                setimgData([]);
                 form.resetFields();
 
 
