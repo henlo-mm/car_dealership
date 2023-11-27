@@ -20,7 +20,7 @@ export const getvehicles = async () => {
     const response = await api.get('/vehicles/');
     return response.data;
   } catch (error) {
-    console.error('Error al obtener los vehiculos', error);
+    console.error('Error al obtener los vehículos', error);
   }
 };
 

@@ -127,12 +127,12 @@ useEffect(() => {
   const handleCancel = () => {
     // todo: logica para cerrar el modal
     setIsModalVisible(false);
-    setWorkOrderToEdit(null)
+    setSellToEdit(null)
 };
 
   const handleOk = () => {
     setIsModalVisible(false);
-    setWorkOrderToEdit(null);
+    setSellToEdit(null);
 };
 
   return (
@@ -145,7 +145,7 @@ useEffect(() => {
         <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
           <div className='col-lg-4 col-md-12 py-2'>
             <Input.Search
-                placeholder="Buscar"
+                placeholder="Buscar Ventas"
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onSearch={(value) => {
@@ -199,8 +199,8 @@ useEffect(() => {
           isVisible={isModalDeleteVisible}
           onConfirm={handleDeleteSale}
           onCancel={handleCancelDelete}
-          title={"Eliminar Orden de trabajo"}
-          message={"¿Está seguro(a) de eliminar esta orden de trabajo"}
+          title={"Eliminar Venta"}
+          message={"¿Está seguro(a) de eliminar esta venta"}
       />
     </div>
   );

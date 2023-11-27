@@ -120,12 +120,12 @@ export const QuotationsView = () => {
 
         <div className='card card-body'>
             <div className='card-header'>
-                <h5 className='card-title'>
-                    QuotationsView
+                <h5 className='card-title h3'>
+                    Cotizaciones
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>
-                        <Search placeholder="Buscar ventas" />
+                        <Search placeholder="Buscar Cotizaciones" />
                     </div>
                     <div className='col-lg-6 col-md-12 py-2'>
                         <div className='d-flex flex-column flex-sm-wrap flex-lg-row justify-content-end align-items-lg-center align-items-sm-start flex-wrap py-3'>

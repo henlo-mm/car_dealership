@@ -12,6 +12,7 @@ import { MdCarRepair, MdCarRental, MdMiscellaneousServices, MdDirectionsCarFille
 import { MdRequestQuote } from "react-icons/md";
 import logo from '../../assets/logo-autohaus.svg';
 import avatar from '../../assets/usuario.png';
+import salir from '../../assets/cerrar-sesion.png';
 
 import { Layout, Menu, Avatar, Dropdown, Button, FloatButton } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -111,7 +112,7 @@ if (matchingRole) {
         },
         {
           type: 'list',
-          label: 'Vehiculos',
+          label: 'Vehículos',
           icon: <MdDirectionsCarFilled />,
           key: '/client/main/management/vehicles'
         },
@@ -152,7 +153,7 @@ if (matchingRole) {
             <Avatar src={user.avatar ? user.avatar : avatar} size={42}  />
             <span className='h5 mb-0 mt-1'>{user?.name + ' ' + user?.lastname}</span>
             <span className='mt-0'>({roleName})</span>
-            <button className='my-3 salir' onClick={() => logout()}>Salir</button>
+            
           </div>
           <Menu
             className='mt-3'
@@ -162,7 +163,9 @@ if (matchingRole) {
             onClick={(e) => navigate(e.key)}
             selectedKeys={selectedKeysMenu}
           />
-
+          <div className='text-center'>
+            <button className='my-3 salir' onClick={() => logout()}> <img src={salir} alt="Cerrar sesion" /><br />Salir</button>
+          </div>
         </Sider>}
     </>
   );

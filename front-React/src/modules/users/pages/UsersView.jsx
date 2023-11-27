@@ -195,7 +195,7 @@ export const UsersView = () => {
         <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
           <div className='col-lg-4 col-md-12 py-2'>
             <Input.Search
-              placeholder="Buscar partes"
+              placeholder="Buscar Usuarios"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               onSearch={(value) => {
@@ -238,13 +238,7 @@ export const UsersView = () => {
                   })
                   )
                 }
-              />
-              <Button
-                className='m-1'
-                type="default"
-                icon={<FilterOutlined />}>
-                tipo de usuario
-              </Button>
+              />              
             </div>
 
           </div>

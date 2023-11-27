@@ -8,29 +8,35 @@ import { getQuotes } from '../../../services/quotes';
 import Card from '../templates/card';
 import DemoPie from '../templates/pie';
 import { Flex } from 'antd';
+import usuario from '../../../assets/usuario_card.png';
+import ventas from '../../../assets/contrato.png';
+import cotizaciones from '../../../assets/coche.png';
+import ordenes from '../../../assets/carro.png';
 
 export const DashboardView = () => {
-  const [userData, setUserData] = useState([]);
-  const [workOrder, setWorkOrder] = useState([]);
-  const [sales, setSales] = useState([]);
-  const [quotes, setQuotes] = useState([]);
+  const [userData, setUserData] = useState(0);
+  const [workOrder, setWorkOrder] = useState(0);
+  const [sales, setSales] = useState(0);
+  const [quotes, setQuotes] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchUserData = async () => {
     try {
       const dataUsers = await getUsers();
+      const dataWorkOrders = await getWorkOrders();
+      const dataSales = await getSales();
+      const dataQuotes = await getQuotes();
       const cantidadElementosUsers = Object.keys(dataUsers).length;
       setUserData(cantidadElementosUsers);
 
-      const dataWorkOrders = await getWorkOrders();
       const cantidadElementosWorkOrder = Object.keys(dataWorkOrders).length;
       setWorkOrder(cantidadElementosWorkOrder);
 
-      const dataSales = await getSales();
+      
       const cantidadElementosSales = Object.keys(dataSales).length;
       setSales(cantidadElementosSales);
 
-      const dataQuotes = await getQuotes();
+      
       const cantidadElementosQuotes = Object.keys(dataQuotes).length;
       setQuotes(cantidadElementosQuotes);
     } catch (error) {
@@ -43,10 +49,10 @@ export const DashboardView = () => {
   }, [refreshKey]);
 
   const info_cards = {
-    clientes: { titulo: "Clientes", cantidad: userData },
-    ventas: { titulo: "Ventas", cantidad: sales },
-    cotizaciones: { titulo: "Cotizaciones", cantidad: quotes },
-    ordenes: { titulo: "Ordenes de trabajo", cantidad: workOrder }
+    clientes: { titulo: "Clientes", cantidad: userData , icono: usuario },
+    ventas: { titulo: "Ventas", cantidad: sales , icono: ventas },
+    cotizaciones: { titulo: "Cotizaciones", cantidad: quotes , icono: cotizaciones },
+    ordenes: { titulo: "Taller", cantidad: workOrder , icono: ordenes }
   };
 
 const data = [
@@ -133,17 +139,17 @@ label: {
         </h5>
       </div>
       <div className='card-body'>
-        <Flex gap="middle" horizontal='horizontal'>
+        <div className="row d-flex gap-0">
           {Object.entries(info_cards).map(([key, value]) => (
-            <Card key={key} count={value.cantidad} title={value.titulo} />
+            <Card key={key} count={value.cantidad} title={value.titulo} icono={value.icono}/>
           ))}
-        </Flex>
+        </div>
         <div className='row my-5'>
           <div className='col-12 col-lg-6'>
             <Column {...config} />
           </div>
           <div className='col-12 col-lg-6 text-center'>
-            <h2>Vehiculos</h2>
+            <h2>Vehículos</h2>
             <DemoPie />
           </div>          
         </div>
