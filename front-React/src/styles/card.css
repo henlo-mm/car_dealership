@@ -1,15 +1,43 @@
 .card_perz {
     background-color: #f0f0f0;
     border-radius: 8px;
-    padding: 20px;
+    padding: 20px 40px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 25%;
-
+    background-image: linear-gradient(to left top, #3182ce, #3d8ed6, #499ade, #56a7e6, #63b3ed);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: white;
+    position: relative;
+  }
+  @media only screen and (min-width: 575px) {
+    .card_perz {
+      max-width: 48%;
+      margin: 1%;
+    }
+  }
+  @media only screen and (min-width: 990px) {
+    .card_perz {
+      max-width: 23%;
+      margin: 0 1%;
+    }
   }
   
+  
   .vehicle-count {
-    font-size: 48px;
-    color: #333;
+    font-size: 68px;
+    color: white;
     margin-top: 10px;
+    line-height: 75px;
+  }
+
+  .card_perz .icon{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    opacity: 0.2;
+  }
+  .card_perz .icon img{
+    max-width: 100%;
   }

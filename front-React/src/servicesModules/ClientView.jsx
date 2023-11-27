@@ -7,6 +7,7 @@ import '../styles/login.css';
 import { Footer } from '../core/footer/Footer';
 import { Header } from '../core/header/Header';
 
+
 export const Clientview = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
