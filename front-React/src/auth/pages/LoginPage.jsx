@@ -5,6 +5,7 @@ import useAuth from '../../hooks/useAuth';
 import './../../styles/login.css';
 import { Footer } from '../../core/footer/Footer';
 import { Header } from '../../core/header/Header';
+import { Link } from 'react-router-dom';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export const LoginPage = () => {
       <Header />
       <Row justify="center" align="middle" style={{ minHeight: '90vh' }} className="back-byw login">
         <Col xs={24} sm={16} md={12} lg={10} >
-          <Card title="Bienvenido de nuevo Login" extra={"Inicia sesión para seguir"}>
+          <Card title="Bienvenido de nuevo" extra={"Inicia sesión para seguir"}>
             
             <Form
               name="loginForm"
@@ -54,7 +55,7 @@ export const LoginPage = () => {
                 <Input.Password placeholder="Contraseña" />
               </Form.Item>
               <div className='link_ext'>
-                <a href="#">Consultar servicios</a>
+                <Link to="/">Consultar servicios</Link>
               </div>
               <Form.Item  className='btn_entrar'>
                 <Button type="primary" htmlType="submit" block>

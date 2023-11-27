@@ -9,24 +9,32 @@ const DemoPie = () => {
   const [branchList, setBranchList] = useState([]);
   const [carsList, setCarsList] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [loading, setLoading] = useState(true); // Estado para manejar la carga
 
-  const fetchData = async () => {
-    try {
-        const data = await getBranches();
-        const dataCars = await getvehicles();
-        setBranchList(data);
-        setCarsList(dataCars);
-    } catch (error) {
-        console.error('Error branch list:', error);
-    }
-};
 
 useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const data = await getBranches();
+      const dataCars = await getvehicles();
+
+      setBranchList(data);
+      setCarsList(dataCars);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+      setLoading(false);
+    }
+  };
+
   fetchData();
 }, [refreshKey]);
 
 // Función para contar los vehículos por sucursal
 const contarVehiculosPorSucursal = () => {
+  if (carsList.length === 0) {
+    return [];
+  }
   const vehiculosPorSucursal = {};
 
   carsList.forEach((vehiculo) => {
@@ -56,27 +64,11 @@ if (Array.isArray(data2) && data2.length > 0) {
     value: Number(item.value), // Convertir a número
   }));
 }
-  
 
-  const data = [
-    {
-      type: 'Sucursal A',
-      value: 27,
-    },
-    {
-      type: 'Sucursal B',
-      value: 25,
-    },
-    {
-      type: 'Sucursal C',
-      value: 18,
-    },
-    {
-      type: 'Sucursal D',
-      value: 15,
-    },
-    
-  ];
+  if (loading) {
+    return <p>Cargando datos...</p>; // Muestra un mensaje de carga mientras se obtienen los datos
+  }
+
   const config = {
     appendPadding: 10,
     data: formattedData,
