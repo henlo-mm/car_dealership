@@ -169,10 +169,9 @@ export const QuotationsView = () => {
 
             <QuotationsModal
             isVisible={openModal}
-            // onConfirm={handleOk}
             onCancel={handleCancel}
             // branchData={branchToEdit}
-            // onBranchUpdate={refreshTable}
+            onQuoteUpdate={refreshTable}
            />
           
 
