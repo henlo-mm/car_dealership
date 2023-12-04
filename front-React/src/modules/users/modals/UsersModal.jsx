@@ -97,8 +97,6 @@ export const UsersModal = ({ isVisible, onConfirm, onCancel, userData, onUserUpd
                 onUserUpdate();
                 setimgData([]);
                 form.resetFields();
-
-
                 if (onConfirm) {
                     onConfirm();
                 }
