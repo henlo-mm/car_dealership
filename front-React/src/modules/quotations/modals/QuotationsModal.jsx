@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Modal, Select, Spin, Steps, Switch, message, notification} from 'antd'
+import { Button, Form, Input, Modal, Select, Spin, Steps, Switch, message, notification } from 'antd'
 import { UserOutlined, CarOutlined, CheckOutlined } from '@ant-design/icons';
 import { getUsers } from '../../../services/user';
 import { getvehicles } from '../../../services/vehicles';
@@ -30,7 +30,7 @@ const steps = [
 ];
 
 
-export const QuotationsModal = ({ isVisible, onCancel, onConfirm }) => {
+export const QuotationsModal = ({ isVisible, onCancel, onConfirm, onQuoteUpdate }) => {
 
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
@@ -76,7 +76,7 @@ export const QuotationsModal = ({ isVisible, onCancel, onConfirm }) => {
     setCurrentStep(currentStep - 1);
   };
 
-  const combineObjects =  (objeto1, objeto2) => {
+  const combineObjects = (objeto1, objeto2) => {
     return {
       oneStepper: objeto1,
       twoStepper: objeto2,
@@ -93,7 +93,7 @@ export const QuotationsModal = ({ isVisible, onCancel, onConfirm }) => {
       const dataToSend = new FormData();
       const dataToSendQuote = new FormData();
       dataToSend.append("emailuserCreated", formData.usuario)
-    
+
       dataToSendQuote.append("price", formData.precio)
       dataToSendQuote.append("description", formData.description)
       dataToSendQuote.append("vehicle", formData.vehicle)
@@ -110,13 +110,16 @@ export const QuotationsModal = ({ isVisible, onCancel, onConfirm }) => {
       await createQuote(dataToSend, dataToSendQuote);
 
       form.resetFields();
-    
+
+      onQuoteUpdate();
+
       notification.success({
         message: 'Operacion exitosa',
         description: 'La cotización ha sido creada exitosamente',
       });
 
-      
+
+
       onCancel();
 
     } else {
@@ -147,26 +150,27 @@ export const QuotationsModal = ({ isVisible, onCancel, onConfirm }) => {
       dataToSendQuote.append("seller", user.id)
 
       await createQuote(dataToSendClient, dataToSendQuote);
-    
+
       form.resetFields();
+
+      onQuoteUpdate();
 
       notification.success({
         message: 'Operacion exitosa',
         description: 'La cotización ha sido creada exitosamente',
       });
 
-      
       onCancel();
     }
   };
 
   const onClose = () => {
 
-    
+
     if (onCancel) {
       onCancel();
     }
-    
+
     setFormData({});
     form.resetFields();
 
@@ -453,11 +457,11 @@ export const QuotationsModal = ({ isVisible, onCancel, onConfirm }) => {
     <>
       <div className='row mt-4'>
         <div className="alert alert-success alert-dismissible fade show">
-         Por favor, verifica tus datos antes de darle enviar.
+          Por favor, verifica tus datos antes de darle enviar.
         </div>
       </div>
 
-    
+
     </>
   );
 

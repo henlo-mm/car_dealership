@@ -6,10 +6,12 @@ import { UsersModal } from '../modals/UsersModal';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
 import { IoMdRefresh } from 'react-icons/io';
+import { FileExcelOutlined } from '@ant-design/icons';
 import { getUsers, deleteUser } from '../../../services/user';
 import { DeleteModal } from '../../../core/modals/DeleteModal';
 import { getBranches } from '../../../services/branches';
-
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 
 
 export const UsersView = () => {
@@ -109,14 +111,35 @@ export const UsersView = () => {
     setIsModalDeleteVisible(false);
   };
 
+  const exportToExcel = () => {
+    const data = userData.map(user => ({
+      ID: user.id,
+      Name: user.name,
+      LastName: user.lastName,
+      Address: user.address || 'N/A',
+      Phone: user.phone || 'N/A',
+      Document: user.document,
+      Email: user.email,
+      Branch: user.branch_name,
+      Role: user.role_name,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, 'usuarios.xlsx');
+  };
+
 
   const columns = [
     {
       title: '',
       dataIndex: 'avatar',
       key: 'avatar',
-      render:(avatar) => {
-       return  <Avatar src={avatar} size={50}  />
+      render: (avatar) => {
+        return <Avatar src={avatar} size={50} />
       }
     },
     {
@@ -203,8 +226,8 @@ export const UsersView = () => {
               }}
             />
           </div>
-          <div className='col-lg-6 col-md-12 py-2'>
-            <div className='d-flex flex-column flex-sm-wrap flex-lg-row justify-content-end align-items-lg-center align-items-sm-start flex-wrap py-3'>
+          <div className='col-12 col-md-5 py-2 d-flex justify-content-lg-end justify-content-center aling-items-center aling-items-md-end'>
+            <div className='d-flex flex-column flex-sm-wrap flex-lg-row flex-wrap py-3 w-50'>
               <Button
                 className='m-1'
                 type="primary"
@@ -220,11 +243,17 @@ export const UsersView = () => {
                 onClick={refreshTable}
               >
               </Button>
+              <Button
+                className='m-1'
+                type="primary"
+                icon={<FileExcelOutlined />}
+                onClick={exportToExcel}
+              >
+                Descargar Excel
+              </Button>
               <Select
                 placeholder="Sucursal"
-                style={{
-                  width: '25%',
-                }}
+                className='  w-100'
                 suffixIcon={<FilterOutlined />}
                 onChange={
                   (id) => filterBranchData(id)
@@ -238,9 +267,9 @@ export const UsersView = () => {
                   })
                   )
                 }
-              />              
-            </div>
+              />
 
+            </div>
           </div>
         </div>
       </div>
