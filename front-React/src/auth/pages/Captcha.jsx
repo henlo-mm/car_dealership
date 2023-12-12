@@ -7,21 +7,26 @@ const RecaptchaComponent = ({ onCaptchaSuccess }) => {
 
     const onChange = async (value) => {
         if (value) {
-            const result = await validateCaptcha(value);
-            onCaptchaSuccess(result.success);
+            console.log("CAPTCHA:", value);
+            try {
+                const response = await validateCaptcha(value);
+                onCaptchaSuccess(response && response.success);
+            } catch (error) {
+                console.error('Error al validar CAPTCHA:', error);
+                onCaptchaSuccess(false);
+            }
         } else {
             onCaptchaSuccess(false);
         }
     };
 
     return (
-        <div>
-            <ReCAPTCHA
-                sitekey={apiKey}
-                onChange={onChange}
-            />
-        </div>
+        <ReCAPTCHA
+            sitekey={apiKey}
+            onChange={onChange}
+        />
     );
 };
+
 
 export default RecaptchaComponent;
