@@ -10,8 +10,9 @@ import { IoMdRefresh } from 'react-icons/io';
 import { getBranches } from '../../../services/branches';
 import { DeleteModal } from '../../../core/modals/DeleteModal';
 import dayjs from 'dayjs';
-//import 'antd/dist/antd.css';
-
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
+import { FileExcelOutlined } from '@ant-design/icons';
 
 export const VehiclesView = () => {
     const [loading, setLoading] = useState(true);
@@ -131,6 +132,26 @@ export const VehiclesView = () => {
 
     const handleCancelVehicle = () => {
         setIsDeleteModalVisible(false);
+    };
+
+
+    const exportToExcel = () => {
+        const data = vehiclesData.map(vehicle => ({
+            ID: vehicle.id,
+            Model: vehicle.model,
+            Make: vehicle.make,
+            Car_plate: vehicle.car_plate || 'N/A',
+            Color: vehicle.color,
+            Year: vehicle.year,
+            Make: vehicle.make,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Vehiculos');
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, 'vehiculos.xlsx');
     };
 
     const columns = [
@@ -262,7 +283,14 @@ export const VehiclesView = () => {
                                 onClick={refreshTable}
                             >
                             </Button>
-
+                            <Button
+                                className='m-1'
+                                type="primary"
+                                icon={<FileExcelOutlined />}
+                                onClick={exportToExcel}
+                            >
+                                Descargar Excel
+                            </Button>
 
                             <Select
                                 placeholder="Sucursal"
