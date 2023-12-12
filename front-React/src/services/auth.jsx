@@ -12,7 +12,7 @@ export const login = async (credentials) => {
 
 export const validateCaptcha = async (value) => {
     try {
-      const response = await api.post('/captcha/verify', value);
+      const response = await api.post('/captcha/verify', { token: value });
       return response.data;
     } catch (error) {
       console.error('Error de autenticación:', error);

@@ -7,10 +7,9 @@ const RecaptchaComponent = ({ onCaptchaSuccess }) => {
 
     const onChange = async (value) => {
         if (value) {
-            console.log("CAPTCHA:", value);
             try {
                 const response = await validateCaptcha(value);
-                onCaptchaSuccess(response && response.success);
+                onCaptchaSuccess(response);
             } catch (error) {
                 console.error('Error al validar CAPTCHA:', error);
                 onCaptchaSuccess(false);
