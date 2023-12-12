@@ -16,6 +16,7 @@ export const LoginPage = () => {
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
 
   const handleCaptchaSuccess = (isValid) => {
+    console.log("CAPTCHA válido:", isValid); 
     setIsCaptchaValid(isValid);
   };
 
