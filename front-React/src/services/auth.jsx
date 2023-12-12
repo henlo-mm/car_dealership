@@ -9,3 +9,13 @@ export const login = async (credentials) => {
       throw error
     }
 };
+
+export const validateCaptcha = async (value) => {
+    try {
+      const response = await api.post('/captcha/verify', value);
+      return response.data;
+    } catch (error) {
+      console.error('Error de autenticación:', error);
+      throw error
+    }
+};
