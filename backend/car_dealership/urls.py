@@ -11,6 +11,7 @@ from rest_framework.routers import DefaultRouter
 from .views.users.views import *
 #from .views.users.views2 import UserViewSet
 from .views.auth.views import AuthView
+from .views.auth.captcha import CaptchaView
 from .views.branches.views import BranchViewSet
 from .views.vehicles.views import VehicleViewSet
 from .views.parts.views import PartViewSet
@@ -60,6 +61,7 @@ urlpatterns = [
 
     # Auth
     path('auth/login', AuthView.as_view(), name='login_user'),
+    path('captcha/verify', CaptchaView.as_view(), name='verify_captcha'),
 
     # JWT
     path('api-token-auth/', obtain_jwt_token),
