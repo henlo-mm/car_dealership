@@ -8,8 +8,10 @@ import { DeleteModal } from '../../../core/modals/DeleteModal';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BiSolidEditAlt } from 'react-icons/bi';
 import { IoMdRefresh } from 'react-icons/io';
+import { FileExcelOutlined } from '@ant-design/icons';
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 
-//import 'antd/dist/antd.css';
 
 
 export const PartsView = () => {
@@ -93,6 +95,26 @@ export const PartsView = () => {
         setIsDeleteModalVisible(false);
     };
 
+
+    const exportToExcel = () => {
+        const data = partsData.map( part => ({
+            ID: part.id,
+            Code: part.code,
+            Name: part.name,
+            Quantity: part.quantity || 'N/A',
+            Description: part.description,
+            Price: part.price,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Partes');
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, 'partes.xlsx');
+    };
+
+
     const columns = [
         {
             title: '',
@@ -168,7 +190,7 @@ export const PartsView = () => {
                 </h5>
                 <div className=' d-flex flex-column flex-sm-wrap  flex-lg-row justify-content-between align-items-center py-3 gap-3 gap-md-0'>
                     <div className='col-lg-4 col-md-12 py-2'>
-                    <Input.Search
+                        <Input.Search
                             placeholder="Buscar Repuestos"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
@@ -191,6 +213,14 @@ export const PartsView = () => {
                                 className='m-1'
                                 type="default"
                                 icon={<IoMdRefresh />}>
+                            </Button>
+                            <Button
+                                className='m-1'
+                                type="primary"
+                                icon={<FileExcelOutlined />}
+                                onClick={exportToExcel}
+                            >
+                                Descargar Excel
                             </Button>
                         </div>
 

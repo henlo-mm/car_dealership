@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { Row, Col, Card, Form, Input, Button, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
@@ -6,19 +6,34 @@ import './../../styles/login.css';
 import { Footer } from '../../core/footer/Footer';
 import { Header } from '../../core/header/Header';
 import { Link } from 'react-router-dom';
+import RecaptchaComponent from './Captcha';
+
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+
+  const handleCaptchaSuccess = (isValid) => {
+    setIsCaptchaValid(isValid);
+  };
+
   const onFinish = async (values) => { 
-    try {
-      await login(values)
-    } catch (error) {
-      console.error('Error:', error);
+    if (isCaptchaValid) {
+      try {
+        await login(values)
+      } catch (error) {
+        console.error('Error:', error);
+        notification.error({
+          message: 'Error en autenticación',
+          description: error.message,
+        });
+      }
+    } else {
       notification.error({
         message: 'Error en autenticación',
-        description: error.message,
+        description: 'Por favor, verifica que no eres un robot.',
       });
     }
   };
@@ -57,6 +72,10 @@ export const LoginPage = () => {
               <div className='link_ext'>
                 <Link to="/">Consultar servicios</Link>
               </div>
+
+              <Form.Item>
+                <RecaptchaComponent onCaptchaSuccess={handleCaptchaSuccess}  />
+              </Form.Item>
               <Form.Item  className='btn_entrar'>
                 <Button type="primary" htmlType="submit" block>
                   Entrar
