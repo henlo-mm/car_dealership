@@ -5,6 +5,7 @@ import { validateCaptcha } from '../../services/auth';
 const RecaptchaComponent = ({ onCaptchaSuccess }) => {
     const [captchaValue, setCaptchaValue] = useState(null);
     const apiKey = import.meta.env.VITE_GOOGLE_CAPTCHA;
+
     useEffect(() => {
         if (captchaValue) {
             const validate = async () => {
